@@ -1,0 +1,13 @@
+{
+  "itemGroup.solenoid": "Example Mod Tab",
+  "block.solenoid.example_block": "Example Block",
+  "item.solenoid.example_item": "Example Item",
+
+  "solenoid.configuration.title": "Solenoid Configs",
+  "solenoid.configuration.section.solenoid.common.toml": "Solenoid Configs",
+  "solenoid.configuration.section.solenoid.common.toml.title": "Solenoid Configs",
+  "solenoid.configuration.items": "Item List",
+  "solenoid.configuration.logDirtBlock": "Log Dirt Block",
+  "solenoid.configuration.magicNumberIntroduction": "Magic Number Text",
+  "solenoid.configuration.magicNumber": "Magic Number"
+}
