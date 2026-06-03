@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "solenoid:block/magnetite_ore"
+    }
+  }
+}

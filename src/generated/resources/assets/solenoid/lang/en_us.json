@@ -1,0 +1,14 @@
+{
+  "block.solenoid.deepslate_magnetite_ore": "Deepslate Magnetite Ore",
+  "block.solenoid.magnetite_ore": "Magnetite Ore",
+  "item.solenoid.magnetite_ingot": "Magnetite Ingot",
+  "item.solenoid.raw_magnetite": "Raw Magnetite",
+  "itemGroup.solenoid": "Solenoid",
+  "solenoid.configuration.items": "Item List",
+  "solenoid.configuration.logDirtBlock": "Log Dirt Block",
+  "solenoid.configuration.magicNumber": "Magic Number",
+  "solenoid.configuration.magicNumberIntroduction": "Magic Number Text",
+  "solenoid.configuration.section.solenoid.common.toml": "Solenoid Configs",
+  "solenoid.configuration.section.solenoid.common.toml.title": "Solenoid Configs",
+  "solenoid.configuration.title": "Solenoid Configs"
+}

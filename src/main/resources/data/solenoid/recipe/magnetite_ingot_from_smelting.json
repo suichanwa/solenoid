@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.7,
+  "ingredient": "solenoid:raw_magnetite",
+  "result": {
+    "id": "solenoid:magnetite_ingot"
+  }
+}

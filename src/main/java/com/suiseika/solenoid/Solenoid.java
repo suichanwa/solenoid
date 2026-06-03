@@ -19,9 +19,9 @@ import net.minecraft.world.level.material.MapColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -54,13 +54,21 @@ public class Solenoid {
     public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", p -> p.food(new FoodProperties.Builder()
             .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
 
-    // Creates a creative tab with the id "solenoid:example_tab" for the example item, that is placed after the combat tab
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
-            .title(Component.translatable("itemGroup.solenoid")) //The language key for the title of your CreativeModeTab
+    // Creates a creative tab with the id "solenoid:solenoid_tab" for magnetite items
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> SOLENOID_TAB = CREATIVE_MODE_TABS.register("solenoid_tab", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.solenoid")) // The language key for the title of your CreativeModeTab
             .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> EXAMPLE_ITEM.get().getDefaultInstance())
+            .icon(() -> MagnetiteItems.MAGNETITE_INGOT.toStack())
             .displayItems((parameters, output) -> {
-                output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
+                // Magnetite ores
+                output.accept(MagnetiteBlocks.MAGNETITE_ORE_ITEM);
+                output.accept(MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE_ITEM);
+                // Magnetite materials
+                output.accept(MagnetiteItems.RAW_MAGNETITE);
+                output.accept(MagnetiteItems.MAGNETITE_INGOT);
+                // Example items (keep for template compatibility)
+                output.accept(EXAMPLE_ITEM);
+                output.accept(EXAMPLE_BLOCK_ITEM);
             }).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
@@ -69,16 +77,17 @@ public class Solenoid {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
-        // Register the Deferred Register to the mod event bus so blocks get registered
+        // Register the Deferred Registers to the mod event bus
         BLOCKS.register(modEventBus);
-        // Register the Deferred Register to the mod event bus so items get registered
         ITEMS.register(modEventBus);
-        // Register the Deferred Register to the mod event bus so tabs get registered
         CREATIVE_MODE_TABS.register(modEventBus);
 
+        // Register magnetite deferred registers
+        MagnetiteBlocks.BLOCKS.register(modEventBus);
+        MagnetiteBlocks.ITEMS.register(modEventBus);
+        MagnetiteItems.ITEMS.register(modEventBus);
+
         // Register ourselves for server and other game events we are interested in.
-        // Note that this is necessary if and only if we want *this* class (Solenoid) to respond directly to events.
-        // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this);
 
         // Register the item to a creative tab
