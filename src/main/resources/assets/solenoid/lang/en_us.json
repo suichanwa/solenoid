@@ -1,7 +1,5 @@
 {
-  "itemGroup.solenoid": "Example Mod Tab",
-  "block.solenoid.example_block": "Example Block",
-  "item.solenoid.example_item": "Example Item",
+  "itemGroup.solenoid": "Solenoid",
 
   "item.solenoid.raw_magnetite": "Raw Magnetite",
   "item.solenoid.magnetite_ingot": "Magnetite Ingot",
