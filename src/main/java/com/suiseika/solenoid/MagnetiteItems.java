@@ -10,4 +10,8 @@ public class MagnetiteItems {
     public static final DeferredItem<Item> RAW_MAGNETITE = ITEMS.registerSimpleItem("raw_magnetite");
 
     public static final DeferredItem<Item> MAGNETITE_INGOT = ITEMS.registerSimpleItem("magnetite_ingot");
+
+    public static final DeferredItem<Item> MAGNET = ITEMS.registerSimpleItem("magnet");
+
+    public static final DeferredItem<Item> COPPER_COIL = ITEMS.registerSimpleItem("copper_coil");
 }

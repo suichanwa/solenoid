@@ -1,6 +1,12 @@
 {
   "block.solenoid.deepslate_magnetite_ore": "Deepslate Magnetite Ore",
+  "block.solenoid.emf_cable": "EMF Cable",
+  "block.solenoid.emf_sink": "EMF Sink",
+  "block.solenoid.emf_source": "Creative EMF Source",
+  "block.solenoid.hand_crank_generator": "Hand-Crank Generator",
   "block.solenoid.magnetite_ore": "Magnetite Ore",
+  "item.solenoid.copper_coil": "Copper Coil",
+  "item.solenoid.magnet": "Magnet",
   "item.solenoid.magnetite_ingot": "Magnetite Ingot",
   "item.solenoid.raw_magnetite": "Raw Magnetite",
   "itemGroup.solenoid": "Solenoid",
@@ -10,5 +16,11 @@
   "solenoid.configuration.magicNumberIntroduction": "Magic Number Text",
   "solenoid.configuration.section.solenoid.common.toml": "Solenoid Configs",
   "solenoid.configuration.section.solenoid.common.toml.title": "Solenoid Configs",
-  "solenoid.configuration.title": "Solenoid Configs"
+  "solenoid.configuration.title": "Solenoid Configs",
+  "tooltip.solenoid.emf_cable": "Relays up to 256 EMF/t between neighbours.",
+  "tooltip.solenoid.emf_sink": "Receives up to 256 EMF/t. Comparator-readable.",
+  "tooltip.solenoid.emf_sink.capacity": "Stores up to 100,000 EMF",
+  "tooltip.solenoid.emf_source": "Pushes 256 EMF/t into adjacent blocks. Infinite.",
+  "tooltip.solenoid.hand_crank_generator": "Generates EMF when cranked.",
+  "tooltip.solenoid.hand_crank_generator.capacity": "Stores up to 50,000 EMF."
 }

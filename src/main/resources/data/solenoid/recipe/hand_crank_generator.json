@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ICI",
+    "CMC",
+    "ILI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "C": "solenoid:copper_coil",
+    "M": "solenoid:magnet",
+    "L": "minecraft:lever"
+  },
+  "result": {
+    "id": "solenoid:hand_crank_generator",
+    "count": 1
+  }
+}

@@ -1,0 +1,11 @@
+task printValueOutputMethods {
+    doLast {
+        def cl = null
+        try {
+            cl = Class.forName('net.minecraft.world.level.storage.ValueOutput', true, project.buildscript.classLoader)
+            cl.getMethods().each { println it }
+        } catch(Exception e) {
+            println "Class not found in buildscript classloader, trying something else..."
+        }
+    }
+}

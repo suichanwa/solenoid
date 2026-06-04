@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "solenoid:block/hand_crank_generator" }
+  }
+}

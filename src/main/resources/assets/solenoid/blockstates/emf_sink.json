@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "solenoid:block/emf_sink"
+    },
+    "lit=true": {
+      "model": "solenoid:block/emf_sink_lit"
+    }
+  }
+}

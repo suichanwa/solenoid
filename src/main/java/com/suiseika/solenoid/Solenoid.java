@@ -3,6 +3,7 @@ package com.suiseika.solenoid;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
+import com.suiseika.solenoid.energy.EmfBlocks;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -43,6 +44,14 @@ public class Solenoid {
                 // Magnetite materials
                 output.accept(MagnetiteItems.RAW_MAGNETITE);
                 output.accept(MagnetiteItems.MAGNETITE_INGOT);
+                // Components
+                output.accept(MagnetiteItems.MAGNET);
+                output.accept(MagnetiteItems.COPPER_COIL);
+                // EMF energy blocks
+                output.accept(EmfBlocks.HAND_CRANK_GENERATOR_ITEM);
+                output.accept(EmfBlocks.EMF_SOURCE_ITEM);
+                output.accept(EmfBlocks.EMF_CABLE_ITEM);
+                output.accept(EmfBlocks.EMF_SINK_ITEM);
             }).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
@@ -59,6 +68,10 @@ public class Solenoid {
         MagnetiteBlocks.ITEMS.register(modEventBus);
         MagnetiteItems.ITEMS.register(modEventBus);
 
+        // Register EMF energy blocks, block entities, items, and the energy capability
+        EmfBlocks.register(modEventBus);
+        modEventBus.addListener(EmfBlocks::registerCapabilities);
+
         // Register ourselves for server and other game events we are interested in.
         NeoForge.EVENT_BUS.register(this);
 
@@ -69,6 +82,13 @@ public class Solenoid {
     private void commonSetup(FMLCommonSetupEvent event) {
         // Some common setup code
         LOGGER.info("HELLO FROM COMMON SETUP");
+
+        for (java.lang.reflect.Method m : net.minecraft.world.level.storage.ValueOutput.class.getMethods()) {
+            LOGGER.info("ValueOutput method: {} args: {}", m.getName(), java.util.Arrays.toString(m.getParameterTypes()));
+        }
+        for (java.lang.reflect.Method m : net.minecraft.world.level.storage.ValueInput.class.getMethods()) {
+            LOGGER.info("ValueInput method: {} args: {}", m.getName(), java.util.Arrays.toString(m.getParameterTypes()));
+        }
 
         if (Config.LOG_DIRT_BLOCK.getAsBoolean()) {
             LOGGER.info("DIRT BLOCK >> {}", BuiltInRegistries.BLOCK.getKey(Blocks.DIRT));
