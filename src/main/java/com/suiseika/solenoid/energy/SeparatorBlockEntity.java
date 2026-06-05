@@ -7,6 +7,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -31,6 +32,46 @@ public class SeparatorBlockEntity extends AbstractEmfBlockEntity implements Menu
         }
     };
 
+    /** Server-side processing progress (synced to the client for the progress arrow). */
+    private int progress = 0;
+    private int maxProgress = 200;
+    /** Whether the separator currently sits in an active magnetic field (synced for the indicator). */
+    private boolean fieldActive = false;
+
+    /**
+     * Server-authoritative view of the values the client GUI needs. Large ints (energy, capacity) are
+     * split across two 16-bit data slots because the container-data wire format is a signed short
+     * (see {@link net.minecraft.network.protocol.game.ClientboundContainerSetDataPacket}). The client
+     * reassembles the halves as unsigned in the menu.
+     */
+    private final ContainerData dataAccess = new ContainerData() {
+        @Override
+        public int get(int index) {
+            int energy = energyHandler.getAmountAsInt();
+            int capacity = energyHandler.getCapacityAsInt();
+            return switch (index) {
+                case 0 -> energy & 0xFFFF;
+                case 1 -> (energy >>> 16) & 0xFFFF;
+                case 2 -> capacity & 0xFFFF;
+                case 3 -> (capacity >>> 16) & 0xFFFF;
+                case 4 -> progress;
+                case 5 -> maxProgress;
+                case 6 -> fieldActive ? 1 : 0;
+                default -> 0;
+            };
+        }
+
+        @Override
+        public void set(int index, int value) {
+            // Server reads from the block entity; the synced copy lives client-side in the menu.
+        }
+
+        @Override
+        public int getCount() {
+            return 7;
+        }
+    };
+
     public SeparatorBlockEntity(BlockPos pos, BlockState state) {
         super(EmfBlocks.SEPARATOR_BE.get(), pos, state);
     }
@@ -40,10 +81,14 @@ public class SeparatorBlockEntity extends AbstractEmfBlockEntity implements Menu
         return Component.translatable("container.solenoid.separator");
     }
 
+    public ContainerData getDataAccess() {
+        return dataAccess;
+    }
+
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new SeparatorMenu(containerId, playerInventory, this);
+        return new SeparatorMenu(containerId, playerInventory, this, dataAccess);
     }
 
     public ItemStacksResourceHandler getItemHandler() {

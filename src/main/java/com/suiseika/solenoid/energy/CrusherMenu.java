@@ -5,27 +5,57 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
 public class CrusherMenu extends AbstractContainerMenu {
     private final CrusherBlockEntity blockEntity;
+    private final ContainerData data;
 
     public CrusherMenu(int containerId, Inventory playerInventory, FriendlyByteBuf buffer) {
-        this(containerId, playerInventory, (CrusherBlockEntity) playerInventory.player.level().getBlockEntity(buffer.readBlockPos()));
+        this(containerId, playerInventory,
+                (CrusherBlockEntity) playerInventory.player.level().getBlockEntity(buffer.readBlockPos()),
+                new SimpleContainerData(6));
     }
 
-    public CrusherMenu(int containerId, Inventory playerInventory, CrusherBlockEntity blockEntity) {
+    public CrusherMenu(int containerId, Inventory playerInventory, CrusherBlockEntity blockEntity, ContainerData data) {
         super(SolenoidMenus.CRUSHER_MENU.get(), containerId);
         this.blockEntity = blockEntity;
+        this.data = data;
 
         var handler = blockEntity.getItemHandler();
         this.addSlot(new ResourceHandlerSlot(handler, handler::set, 0, 56, 35));
         this.addSlot(new ResourceHandlerSlot(handler, handler::set, 1, 116, 35));
 
         addPlayerInventory(playerInventory);
+        addDataSlots(data);
+    }
+
+    // ---- Client-readable synced values (energy split across two short slots, reassembled unsigned) ----
+
+    private int combine(int lowIndex, int highIndex) {
+        return ((data.get(highIndex) & 0xFFFF) << 16) | (data.get(lowIndex) & 0xFFFF);
+    }
+
+    public int getEnergyStored() {
+        return combine(0, 1);
+    }
+
+    public int getEnergyMax() {
+        return combine(2, 3);
+    }
+
+    public int getProgress() {
+        return data.get(4);
+    }
+
+    public int getMaxProgress() {
+        int max = data.get(5);
+        return max <= 0 ? 1 : max;
     }
 
     private void addPlayerInventory(Inventory playerInventory) {

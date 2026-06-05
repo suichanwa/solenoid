@@ -7,6 +7,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -31,6 +32,43 @@ public class CrusherBlockEntity extends AbstractEmfBlockEntity implements MenuPr
         }
     };
 
+    /** Server-side processing progress (synced to the client for the progress arrow). */
+    private int progress = 0;
+    private int maxProgress = 200;
+
+    /**
+     * Server-authoritative view of the values the client GUI needs. Each large int (energy, capacity)
+     * is split across two 16-bit data slots because the container-data wire format is a signed short
+     * (see {@link net.minecraft.network.protocol.game.ClientboundContainerSetDataPacket}, which
+     * truncates with {@code writeShort}). The client reassembles the halves as unsigned in the menu.
+     */
+    private final ContainerData dataAccess = new ContainerData() {
+        @Override
+        public int get(int index) {
+            int energy = energyHandler.getAmountAsInt();
+            int capacity = energyHandler.getCapacityAsInt();
+            return switch (index) {
+                case 0 -> energy & 0xFFFF;
+                case 1 -> (energy >>> 16) & 0xFFFF;
+                case 2 -> capacity & 0xFFFF;
+                case 3 -> (capacity >>> 16) & 0xFFFF;
+                case 4 -> progress;
+                case 5 -> maxProgress;
+                default -> 0;
+            };
+        }
+
+        @Override
+        public void set(int index, int value) {
+            // Server reads from the block entity; the synced copy lives client-side in the menu.
+        }
+
+        @Override
+        public int getCount() {
+            return 6;
+        }
+    };
+
     public CrusherBlockEntity(BlockPos pos, BlockState state) {
         super(EmfBlocks.CRUSHER_BE.get(), pos, state);
     }
@@ -40,10 +78,14 @@ public class CrusherBlockEntity extends AbstractEmfBlockEntity implements MenuPr
         return Component.translatable("container.solenoid.crusher");
     }
 
+    public ContainerData getDataAccess() {
+        return dataAccess;
+    }
+
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new CrusherMenu(containerId, playerInventory, this);
+        return new CrusherMenu(containerId, playerInventory, this, dataAccess);
     }
 
     public ItemStacksResourceHandler getItemHandler() {
