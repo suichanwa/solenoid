@@ -34,9 +34,9 @@ public final class EmfBlocks {
             EmfSourceBlock::new,
             p -> p.strength(2.0f).sound(SoundType.METAL).requiresCorrectToolForDrops());
 
-    public static final DeferredBlock<EmfCableBlock> EMF_CABLE = BLOCKS.registerBlock(
-            "emf_cable",
-            EmfCableBlock::new,
+    public static final DeferredBlock<CopperCableBlock> COPPER_CABLE = BLOCKS.registerBlock(
+            "copper_cable",
+            CopperCableBlock::new,
             p -> p.strength(1.0f).sound(SoundType.METAL).noOcclusion());
 
     public static final DeferredBlock<EmfSinkBlock> EMF_SINK = BLOCKS.registerBlock(
@@ -57,9 +57,9 @@ public final class EmfBlocks {
             props -> new EmfBlockItem(EMF_SOURCE.get(), props, "tooltip.solenoid.emf_source"),
             p -> p.useBlockDescriptionPrefix());
 
-    public static final DeferredItem<BlockItem> EMF_CABLE_ITEM = ITEMS.registerItem(
-            "emf_cable",
-            props -> new EmfBlockItem(EMF_CABLE.get(), props, "tooltip.solenoid.emf_cable"),
+    public static final DeferredItem<BlockItem> COPPER_CABLE_ITEM = ITEMS.registerItem(
+            "copper_cable",
+            props -> new EmfBlockItem(COPPER_CABLE.get(), props, "tooltip.solenoid.copper_cable"),
             p -> p.useBlockDescriptionPrefix());
 
     public static final DeferredItem<BlockItem> EMF_SINK_ITEM = ITEMS.registerItem(
@@ -80,9 +80,9 @@ public final class EmfBlocks {
             BLOCK_ENTITIES.register("emf_source",
                     () -> new BlockEntityType<>(EmfSourceBlockEntity::new, EMF_SOURCE.get()));
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EmfCableBlockEntity>> EMF_CABLE_BE =
-            BLOCK_ENTITIES.register("emf_cable",
-                    () -> new BlockEntityType<>(EmfCableBlockEntity::new, EMF_CABLE.get()));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CopperCableBlockEntity>> COPPER_CABLE_BE =
+            BLOCK_ENTITIES.register("copper_cable",
+                    () -> new BlockEntityType<>(CopperCableBlockEntity::new, COPPER_CABLE.get()));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EmfSinkBlockEntity>> EMF_SINK_BE =
             BLOCK_ENTITIES.register("emf_sink",
@@ -91,6 +91,14 @@ public final class EmfBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HandCrankGeneratorBlockEntity>> HAND_CRANK_GENERATOR_BE =
             BLOCK_ENTITIES.register("hand_crank_generator",
                     () -> new BlockEntityType<>(HandCrankGeneratorBlockEntity::new, HAND_CRANK_GENERATOR.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrusherBlockEntity>> CRUSHER_BE =
+            BLOCK_ENTITIES.register("crusher",
+                    () -> new BlockEntityType<>(CrusherBlockEntity::new, CRUSHER.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SeparatorBlockEntity>> SEPARATOR_BE =
+            BLOCK_ENTITIES.register("separator",
+                    () -> new BlockEntityType<>(SeparatorBlockEntity::new, SEPARATOR.get()));
 
     /** Wire the deferred registers to the mod event bus. Called from the main mod constructor. */
     public static void register(net.neoforged.bus.api.IEventBus modEventBus) {
@@ -106,11 +114,14 @@ public final class EmfBlocks {
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, EMF_SOURCE_BE.get(),
                 (be, side) -> be.getEnergyHandler(side));
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, EMF_CABLE_BE.get(),
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, COPPER_CABLE_BE.get(),
                 (be, side) -> be.getEnergyHandler(side));
         event.registerBlockEntity(Capabilities.Energy.BLOCK, EMF_SINK_BE.get(),
                 (be, side) -> be.getEnergyHandler(side));
         event.registerBlockEntity(Capabilities.Energy.BLOCK, HAND_CRANK_GENERATOR_BE.get(),
                 (be, side) -> be.getEnergyHandler(side));
+    }
+}
+       (be, side) -> be.getItemHandler(side));
     }
 }

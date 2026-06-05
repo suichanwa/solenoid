@@ -33,6 +33,10 @@ tasks.named('processResources', ProcessResources).configure {
 
 repositories {
     // Add here additional repositories if required by some of the dependencies below.
+    maven {
+        name = "DAQEM Studios"
+        url = "https://maven.daqem.com/"
+    }
 }
 
 base {
@@ -83,7 +87,7 @@ neoForge {
             programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
 
-        // applies to all the run configs above
+        // applies to all the run configurations above
         configureEach {
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
@@ -118,6 +122,8 @@ configurations {
 }
 
 dependencies {
+    implementation "com.daqem:uilib-neoforge:${uilib_version}"
+
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"

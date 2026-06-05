@@ -16,6 +16,9 @@ public final class EmfConstants {
     /** Max EMF an EMF Cable relays per side (pull and push), per server tick. */
     public static final int CABLE_TRANSFER = 256;
 
+    /** Max EMF a Copper Cable relays per side, per server tick. */
+    public static final int COPPER_CABLE_TRANSFER = 200;
+
     /** Small internal buffer of an EMF Cable, so it has somewhere to hold in-flight EMF. */
     public static final int CABLE_BUFFER = 2_000;
 

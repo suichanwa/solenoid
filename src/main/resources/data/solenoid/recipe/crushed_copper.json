@@ -1,0 +1,10 @@
+{
+  "type": "solenoid:crushing",
+  "ingredient": "minecraft:raw_copper",
+  "result": {
+    "id": "solenoid:crushed_copper",
+    "count": 2
+  },
+  "energy": 6000,
+  "time": 200
+}

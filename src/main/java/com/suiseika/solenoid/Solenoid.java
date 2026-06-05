@@ -22,6 +22,8 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import com.suiseika.solenoid.recipe.SolenoidRecipes;
+
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(Solenoid.MODID)
 public class Solenoid {
@@ -44,13 +46,25 @@ public class Solenoid {
                 // Magnetite materials
                 output.accept(MagnetiteItems.RAW_MAGNETITE);
                 output.accept(MagnetiteItems.MAGNETITE_INGOT);
+
+                // Ore processing items
+                output.accept(OreProcessingItems.CRUSHED_MAGNETITE);
+                output.accept(OreProcessingItems.CRUSHED_COPPER);
+                output.accept(OreProcessingItems.CRUSHED_IRON);
+                output.accept(OreProcessingItems.MAGNETITE_CONCENTRATE);
+                output.accept(OreProcessingItems.COPPER_CONCENTRATE);
+                output.accept(OreProcessingItems.IRON_CONCENTRATE);
+                output.accept(OreProcessingItems.MAGNETITE_SLAG);
+                output.accept(OreProcessingItems.COPPER_SLAG);
+                output.accept(OreProcessingItems.IRON_SLAG);
+
                 // Components
                 output.accept(MagnetiteItems.MAGNET);
                 output.accept(MagnetiteItems.COPPER_COIL);
                 // EMF energy blocks
                 output.accept(EmfBlocks.HAND_CRANK_GENERATOR_ITEM);
                 output.accept(EmfBlocks.EMF_SOURCE_ITEM);
-                output.accept(EmfBlocks.EMF_CABLE_ITEM);
+                output.accept(EmfBlocks.COPPER_CABLE_ITEM);
                 output.accept(EmfBlocks.EMF_SINK_ITEM);
             }).build());
 
@@ -67,6 +81,12 @@ public class Solenoid {
         MagnetiteBlocks.BLOCKS.register(modEventBus);
         MagnetiteBlocks.ITEMS.register(modEventBus);
         MagnetiteItems.ITEMS.register(modEventBus);
+        OreProcessingItems.ITEMS.register(modEventBus);
+        SolenoidMenus.MENUS.register(modEventBus);
+
+        // Register recipes
+        SolenoidRecipes.RECIPE_TYPES.register(modEventBus);
+        SolenoidRecipes.RECIPE_SERIALIZERS.register(modEventBus);
 
         // Register EMF energy blocks, block entities, items, and the energy capability
         EmfBlocks.register(modEventBus);

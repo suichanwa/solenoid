@@ -77,18 +77,30 @@ public class SolenoidDataGenerator {
             addItem(MagnetiteItems.MAGNETITE_INGOT, "Magnetite Ingot");
             addItem(MagnetiteItems.MAGNET, "Magnet");
             addItem(MagnetiteItems.COPPER_COIL, "Copper Coil");
+
+            // Ore processing items
+            addItem(OreProcessingItems.CRUSHED_MAGNETITE, "Crushed Magnetite");
+            addItem(OreProcessingItems.CRUSHED_COPPER, "Crushed Copper");
+            addItem(OreProcessingItems.CRUSHED_IRON, "Crushed Iron");
+            addItem(OreProcessingItems.MAGNETITE_CONCENTRATE, "Magnetite Concentrate");
+            addItem(OreProcessingItems.COPPER_CONCENTRATE, "Copper Concentrate");
+            addItem(OreProcessingItems.IRON_CONCENTRATE, "Iron Concentrate");
+            addItem(OreProcessingItems.MAGNETITE_SLAG, "Magnetite Slag");
+            addItem(OreProcessingItems.COPPER_SLAG, "Copper Slag");
+            addItem(OreProcessingItems.IRON_SLAG, "Iron Slag");
+
             add("itemGroup.solenoid", "Solenoid");
 
             // EMF energy blocks
             addBlock(com.suiseika.solenoid.energy.EmfBlocks.HAND_CRANK_GENERATOR, "Hand-Crank Generator");
             addBlock(com.suiseika.solenoid.energy.EmfBlocks.EMF_SOURCE, "Creative EMF Source");
-            addBlock(com.suiseika.solenoid.energy.EmfBlocks.EMF_CABLE, "EMF Cable");
+            addBlock(com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE, "Copper Cable");
             addBlock(com.suiseika.solenoid.energy.EmfBlocks.EMF_SINK, "EMF Sink");
             // EMF tooltips (role + sink capacity)
             add("tooltip.solenoid.hand_crank_generator", "Generates EMF when cranked.");
             add("tooltip.solenoid.hand_crank_generator.capacity", "Stores up to 50,000 EMF.");
             add("tooltip.solenoid.emf_source", "Pushes 256 EMF/t into adjacent blocks. Infinite.");
-            add("tooltip.solenoid.emf_cable", "Relays up to 256 EMF/t between neighbours.");
+            add("tooltip.solenoid.copper_cable", "Moves EMF between machines.");
             add("tooltip.solenoid.emf_sink", "Receives up to 256 EMF/t. Comparator-readable.");
             add("tooltip.solenoid.emf_sink.capacity", "Stores up to 100,000 EMF");
 
@@ -124,13 +136,17 @@ public class SolenoidDataGenerator {
                     createOreDrop(MagnetiteBlocks.MAGNETITE_ORE.get(), MagnetiteItems.RAW_MAGNETITE.get()));
             add(MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get(),
                     createOreDrop(MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get(), MagnetiteItems.RAW_MAGNETITE.get()));
+            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.HAND_CRANK_GENERATOR.get());
+            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE.get());
         }
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
             return List.of(
                     MagnetiteBlocks.MAGNETITE_ORE.get(),
-                    MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get());
+                    MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get(),
+                    com.suiseika.solenoid.energy.EmfBlocks.HAND_CRANK_GENERATOR.get(),
+                    com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE.get());
         }
     }
 
