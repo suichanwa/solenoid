@@ -60,6 +60,8 @@ public class Solenoid {
                 output.accept(MagnetiteItems.COPPER_COIL);
                 // EMF energy blocks
                 output.accept(EmfBlocks.HAND_CRANK_GENERATOR_ITEM);
+                output.accept(EmfBlocks.CRUSHER_ITEM);
+                output.accept(EmfBlocks.SEPARATOR_ITEM);
                 output.accept(EmfBlocks.EMF_SOURCE_ITEM);
                 output.accept(EmfBlocks.COPPER_CABLE_ITEM);
                 output.accept(EmfBlocks.EMF_SINK_ITEM);
@@ -79,6 +81,7 @@ public class Solenoid {
         MagnetiteBlocks.ITEMS.register(modEventBus);
         MagnetiteItems.ITEMS.register(modEventBus);
         OreProcessingItems.ITEMS.register(modEventBus);
+        SolenoidMenus.MENUS.register(modEventBus);
 
         // Register recipes
         SolenoidRecipes.RECIPE_TYPES.register(modEventBus);

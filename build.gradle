@@ -33,10 +33,6 @@ tasks.named('processResources', ProcessResources).configure {
 
 repositories {
     // Add here additional repositories if required by some of the dependencies below.
-    maven {
-        name = "DAQEM Studios"
-        url = "https://maven.daqem.com/"
-    }
 }
 
 base {

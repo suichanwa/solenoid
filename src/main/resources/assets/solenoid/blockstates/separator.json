@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "solenoid:block/separator" },
+    "facing=south": { "model": "solenoid:block/separator", "y": 180 },
+    "facing=east": { "model": "solenoid:block/separator", "y": 90 },
+    "facing=west": { "model": "solenoid:block/separator", "y": 270 }
+  }
+}

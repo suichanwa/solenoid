@@ -1,5 +1,7 @@
 package com.suiseika.solenoid;
 
+import com.suiseika.solenoid.energy.CrusherScreen;
+import com.suiseika.solenoid.energy.SeparatorScreen;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -7,6 +9,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
@@ -27,5 +30,11 @@ public class SolenoidClient {
         // Some client setup code
         Solenoid.LOGGER.info("HELLO FROM CLIENT SETUP");
         Solenoid.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+    }
+
+    @SubscribeEvent
+    static void registerScreens(RegisterMenuScreensEvent event) {
+        event.register(SolenoidMenus.CRUSHER_MENU.get(), CrusherScreen::new);
+        event.register(SolenoidMenus.SEPARATOR_MENU.get(), SeparatorScreen::new);
     }
 }

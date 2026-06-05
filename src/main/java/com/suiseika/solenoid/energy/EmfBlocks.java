@@ -50,6 +50,16 @@ public final class EmfBlocks {
             HandCrankGeneratorBlock::new,
             p -> p.strength(2.0f).sound(SoundType.METAL).requiresCorrectToolForDrops());
 
+    public static final DeferredBlock<CrusherBlock> CRUSHER = BLOCKS.registerBlock(
+            "crusher",
+            CrusherBlock::new,
+            p -> p.strength(3.5f).sound(SoundType.METAL).requiresCorrectToolForDrops());
+
+    public static final DeferredBlock<SeparatorBlock> SEPARATOR = BLOCKS.registerBlock(
+            "separator",
+            SeparatorBlock::new,
+            p -> p.strength(3.5f).sound(SoundType.METAL).requiresCorrectToolForDrops());
+
     // ---- Block items (with EMF role tooltips) ----
 
     public static final DeferredItem<BlockItem> EMF_SOURCE_ITEM = ITEMS.registerItem(
@@ -74,6 +84,16 @@ public final class EmfBlocks {
                     "tooltip.solenoid.hand_crank_generator", "tooltip.solenoid.hand_crank_generator.capacity"),
             p -> p.useBlockDescriptionPrefix());
 
+    public static final DeferredItem<BlockItem> CRUSHER_ITEM = ITEMS.registerItem(
+            "crusher",
+            props -> new EmfBlockItem(CRUSHER.get(), props, "tooltip.solenoid.crusher"),
+            p -> p.useBlockDescriptionPrefix());
+
+    public static final DeferredItem<BlockItem> SEPARATOR_ITEM = ITEMS.registerItem(
+            "separator",
+            props -> new EmfBlockItem(SEPARATOR.get(), props, "tooltip.solenoid.separator"),
+            p -> p.useBlockDescriptionPrefix());
+
     // ---- Block entity types ----
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EmfSourceBlockEntity>> EMF_SOURCE_BE =
@@ -91,6 +111,14 @@ public final class EmfBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HandCrankGeneratorBlockEntity>> HAND_CRANK_GENERATOR_BE =
             BLOCK_ENTITIES.register("hand_crank_generator",
                     () -> new BlockEntityType<>(HandCrankGeneratorBlockEntity::new, HAND_CRANK_GENERATOR.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrusherBlockEntity>> CRUSHER_BE =
+            BLOCK_ENTITIES.register("crusher",
+                    () -> new BlockEntityType<>(CrusherBlockEntity::new, CRUSHER.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SeparatorBlockEntity>> SEPARATOR_BE =
+            BLOCK_ENTITIES.register("separator",
+                    () -> new BlockEntityType<>(SeparatorBlockEntity::new, SEPARATOR.get()));
 
     /** Wire the deferred registers to the mod event bus. Called from the main mod constructor. */
     public static void register(net.neoforged.bus.api.IEventBus modEventBus) {
@@ -112,5 +140,14 @@ public final class EmfBlocks {
                 (be, side) -> be.getEnergyHandler(side));
         event.registerBlockEntity(Capabilities.Energy.BLOCK, HAND_CRANK_GENERATOR_BE.get(),
                 (be, side) -> be.getEnergyHandler(side));
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, CRUSHER_BE.get(),
+                (be, side) -> be.getEnergyHandler(side));
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, SEPARATOR_BE.get(),
+                (be, side) -> be.getEnergyHandler(side));
+
+        event.registerBlockEntity(Capabilities.Item.BLOCK, CRUSHER_BE.get(),
+                (be, side) -> be.getItemHandler(side));
+        event.registerBlockEntity(Capabilities.Item.BLOCK, SEPARATOR_BE.get(),
+                (be, side) -> be.getItemHandler(side));
     }
 }

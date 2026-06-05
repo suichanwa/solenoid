@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "solenoid:block/crusher_face",
+    "front": "solenoid:block/crusher_face",
+    "side": "solenoid:block/crusher_face"
+  }
+}

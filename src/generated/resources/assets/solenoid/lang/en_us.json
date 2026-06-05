@@ -1,5 +1,11 @@
 {
   "block.solenoid.copper_cable": "Copper Cable",
+  "block.solenoid.crusher": "Crusher",
+  "block.solenoid.separator": "Electromagnetic Separator",
+  "container.solenoid.crusher": "Crusher",
+  "container.solenoid.separator": "Electromagnetic Separator",
+  "tooltip.solenoid.crusher": "Crushes ores into dust",
+  "tooltip.solenoid.separator": "Separates ore dust into slag and product",
   "block.solenoid.deepslate_magnetite_ore": "Deepslate Magnetite Ore",
   "block.solenoid.emf_sink": "EMF Sink",
   "block.solenoid.emf_source": "Creative EMF Source",

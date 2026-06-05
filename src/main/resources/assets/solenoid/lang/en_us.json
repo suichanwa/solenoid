@@ -6,6 +6,25 @@
   "block.solenoid.magnetite_ore": "Magnetite Ore",
   "block.solenoid.deepslate_magnetite_ore": "Deepslate Magnetite Ore",
 
+  "block.solenoid.emf_source": "EMF Source",
+  "block.solenoid.copper_cable": "Copper Cable",
+  "block.solenoid.emf_sink": "EMF Sink",
+  "block.solenoid.hand_crank_generator": "Hand Crank Generator",
+  "block.solenoid.crusher": "Crusher",
+  "block.solenoid.separator": "Electromagnetic Separator",
+
+  "container.solenoid.crusher": "Crusher",
+  "container.solenoid.separator": "Electromagnetic Separator",
+
+  "tooltip.solenoid.emf_source": "Provides EMF energy",
+  "tooltip.solenoid.copper_cable": "Transfers EMF energy",
+  "tooltip.solenoid.emf_sink": "Stores EMF energy",
+  "tooltip.solenoid.emf_sink.capacity": "Capacity: 10,000 EMF",
+  "tooltip.solenoid.hand_crank_generator": "Generates EMF energy by hand",
+  "tooltip.solenoid.hand_crank_generator.capacity": "Capacity: 10,000 EMF",
+  "tooltip.solenoid.crusher": "Crushes ores into dust",
+  "tooltip.solenoid.separator": "Separates ore dust into slag and product",
+
   "solenoid.configuration.title": "Solenoid Configs",
   "solenoid.configuration.section.solenoid.common.toml": "Solenoid Configs",
   "solenoid.configuration.section.solenoid.common.toml.title": "Solenoid Configs",
