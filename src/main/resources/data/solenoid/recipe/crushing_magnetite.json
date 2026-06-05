@@ -1,0 +1,10 @@
+{
+  "type": "solenoid:crushing",
+  "ingredient": "solenoid:raw_magnetite",
+  "result": {
+    "id": "solenoid:crushed_magnetite",
+    "count": 2
+  },
+  "energy": 1000,
+  "time": 100
+}

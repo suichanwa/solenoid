@@ -4,7 +4,5 @@
   "cookingtime": 200,
   "experience": 0.7,
   "ingredient": "solenoid:iron_concentrate",
-  "result": {
-    "id": "minecraft:iron_ingot"
-  }
+  "result": "minecraft:iron_ingot"
 }

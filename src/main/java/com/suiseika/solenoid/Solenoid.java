@@ -48,15 +48,12 @@ public class Solenoid {
                 output.accept(MagnetiteItems.MAGNETITE_INGOT);
 
                 // Ore processing items
-                output.accept(OreProcessingItems.CRUSHED_MAGNETITE);
-                output.accept(OreProcessingItems.CRUSHED_COPPER);
-                output.accept(OreProcessingItems.CRUSHED_IRON);
-                output.accept(OreProcessingItems.MAGNETITE_CONCENTRATE);
-                output.accept(OreProcessingItems.COPPER_CONCENTRATE);
-                output.accept(OreProcessingItems.IRON_CONCENTRATE);
-                output.accept(OreProcessingItems.MAGNETITE_SLAG);
-                output.accept(OreProcessingItems.COPPER_SLAG);
-                output.accept(OreProcessingItems.IRON_SLAG);
+                for (ProcessedForm form : ProcessedForm.values()) {
+                    for (ProcessedOre ore : ProcessedOre.values()) {
+                        output.accept(OreProcessingItems.getItem(ore, form));
+                    }
+                }
+                output.accept(OreProcessingItems.ORE_SLAG);
 
                 // Components
                 output.accept(MagnetiteItems.MAGNET);
@@ -82,7 +79,6 @@ public class Solenoid {
         MagnetiteBlocks.ITEMS.register(modEventBus);
         MagnetiteItems.ITEMS.register(modEventBus);
         OreProcessingItems.ITEMS.register(modEventBus);
-        SolenoidMenus.MENUS.register(modEventBus);
 
         // Register recipes
         SolenoidRecipes.RECIPE_TYPES.register(modEventBus);

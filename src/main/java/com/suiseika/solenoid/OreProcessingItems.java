@@ -4,21 +4,27 @@ import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 public class OreProcessingItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Solenoid.MODID);
 
-    // Crushed Ores
-    public static final DeferredItem<Item> CRUSHED_MAGNETITE = ITEMS.registerSimpleItem("crushed_magnetite");
-    public static final DeferredItem<Item> CRUSHED_COPPER = ITEMS.registerSimpleItem("crushed_copper");
-    public static final DeferredItem<Item> CRUSHED_IRON = ITEMS.registerSimpleItem("crushed_iron");
+    public static final Map<ProcessedOre, Map<ProcessedForm, DeferredItem<Item>>> PROCESSED_ITEMS = new EnumMap<>(ProcessedOre.class);
+    public static final DeferredItem<Item> ORE_SLAG = ITEMS.registerSimpleItem("ore_slag");
 
-    // Concentrates
-    public static final DeferredItem<Item> MAGNETITE_CONCENTRATE = ITEMS.registerSimpleItem("magnetite_concentrate");
-    public static final DeferredItem<Item> COPPER_CONCENTRATE = ITEMS.registerSimpleItem("copper_concentrate");
-    public static final DeferredItem<Item> IRON_CONCENTRATE = ITEMS.registerSimpleItem("iron_concentrate");
+    static {
+        for (ProcessedOre ore : ProcessedOre.values()) {
+            Map<ProcessedForm, DeferredItem<Item>> formMap = new EnumMap<>(ProcessedForm.class);
+            for (ProcessedForm form : ProcessedForm.values()) {
+                String id = form.getPrefix() + ore.getName() + form.getSuffix();
+                formMap.put(form, ITEMS.registerSimpleItem(id));
+            }
+            PROCESSED_ITEMS.put(ore, formMap);
+        }
+    }
 
-    // Slags
-    public static final DeferredItem<Item> MAGNETITE_SLAG = ITEMS.registerSimpleItem("magnetite_slag");
-    public static final DeferredItem<Item> COPPER_SLAG = ITEMS.registerSimpleItem("copper_slag");
-    public static final DeferredItem<Item> IRON_SLAG = ITEMS.registerSimpleItem("iron_slag");
+    public static DeferredItem<Item> getItem(ProcessedOre ore, ProcessedForm form) {
+        return PROCESSED_ITEMS.get(ore).get(form);
+    }
 }

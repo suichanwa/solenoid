@@ -58,8 +58,63 @@ public class SolenoidDataGenerator {
         // Item tags
         event.addProvider(new ModItemTagsProvider(output, lookupProvider, blockTags.contentsGetter()));
 
+        // Item Model Definitions (1.21.2+ style)
+        event.addProvider(new ModItemModelDefinitionProvider(output));
+
         // Worldgen
         event.addProvider(new ModWorldgenProvider(output, lookupProvider));
+    }
+
+    // ---- Item Model Definitions ----
+
+    private static class ModItemModelDefinitionProvider implements net.minecraft.data.DataProvider {
+        private final net.minecraft.data.PackOutput output;
+
+        public ModItemModelDefinitionProvider(net.minecraft.data.PackOutput output) {
+            this.output = output;
+        }
+
+        @Override
+        public CompletableFuture<?> run(net.minecraft.data.CachedOutput cache) {
+            List<CompletableFuture<?>> futures = new java.util.ArrayList<>();
+            net.minecraft.data.PackOutput.PathProvider pathProvider = output.createPathProvider(net.minecraft.data.PackOutput.Target.RESOURCE_PACK, "items");
+
+            for (ProcessedOre ore : ProcessedOre.values()) {
+                for (ProcessedForm form : ProcessedForm.values()) {
+                    String id = form.getPrefix() + ore.getName() + form.getSuffix();
+                    com.google.gson.JsonObject json = new com.google.gson.JsonObject();
+                    com.google.gson.JsonObject model = new com.google.gson.JsonObject();
+                    model.addProperty("type", "minecraft:model");
+                    model.addProperty("model", "solenoid:item/" + form.getTemplateModel());
+                    
+                    com.google.gson.JsonArray tints = new com.google.gson.JsonArray();
+                    com.google.gson.JsonObject tint = new com.google.gson.JsonObject();
+                    tint.addProperty("type", "minecraft:constant");
+                    tint.addProperty("value", ore.getColor());
+                    tints.add(tint);
+                    model.add("tints", tints);
+                    
+                    json.add("model", model);
+                    
+                    futures.add(net.minecraft.data.DataProvider.saveStable(cache, json, pathProvider.json(Identifier.fromNamespaceAndPath(Solenoid.MODID, id))));
+                }
+            }
+
+            // Single Ore Slag model
+            com.google.gson.JsonObject slagJson = new com.google.gson.JsonObject();
+            com.google.gson.JsonObject slagModel = new com.google.gson.JsonObject();
+            slagModel.addProperty("type", "minecraft:model");
+            slagModel.addProperty("model", "solenoid:item/ore_concentrate_template"); // Placeholder template
+            slagJson.add("model", slagModel);
+            futures.add(net.minecraft.data.DataProvider.saveStable(cache, slagJson, pathProvider.json(Identifier.fromNamespaceAndPath(Solenoid.MODID, "ore_slag"))));
+
+            return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+        }
+
+        @Override
+        public String getName() {
+            return "Item Model Definitions";
+        }
     }
 
     // ---- Language ----
@@ -79,15 +134,20 @@ public class SolenoidDataGenerator {
             addItem(MagnetiteItems.COPPER_COIL, "Copper Coil");
 
             // Ore processing items
-            addItem(OreProcessingItems.CRUSHED_MAGNETITE, "Crushed Magnetite");
-            addItem(OreProcessingItems.CRUSHED_COPPER, "Crushed Copper");
-            addItem(OreProcessingItems.CRUSHED_IRON, "Crushed Iron");
-            addItem(OreProcessingItems.MAGNETITE_CONCENTRATE, "Magnetite Concentrate");
-            addItem(OreProcessingItems.COPPER_CONCENTRATE, "Copper Concentrate");
-            addItem(OreProcessingItems.IRON_CONCENTRATE, "Iron Concentrate");
-            addItem(OreProcessingItems.MAGNETITE_SLAG, "Magnetite Slag");
-            addItem(OreProcessingItems.COPPER_SLAG, "Copper Slag");
-            addItem(OreProcessingItems.IRON_SLAG, "Iron Slag");
+            for (ProcessedOre ore : ProcessedOre.values()) {
+                String oreName = ore.getName().substring(0, 1).toUpperCase() + ore.getName().substring(1);
+                for (ProcessedForm form : ProcessedForm.values()) {
+                    String id = form.getPrefix() + ore.getName() + form.getSuffix();
+                    String name;
+                    if (form == ProcessedForm.CRUSHED) {
+                        name = "Crushed " + oreName;
+                    } else {
+                        name = oreName + " Concentrate";
+                    }
+                    add("item." + Solenoid.MODID + "." + id, name);
+                }
+            }
+            add("item." + Solenoid.MODID + ".ore_slag", "Ore Slag");
 
             add("itemGroup.solenoid", "Solenoid");
 
@@ -138,6 +198,8 @@ public class SolenoidDataGenerator {
                     createOreDrop(MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get(), MagnetiteItems.RAW_MAGNETITE.get()));
             dropSelf(com.suiseika.solenoid.energy.EmfBlocks.HAND_CRANK_GENERATOR.get());
             dropSelf(com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE.get());
+            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.EMF_SOURCE.get()); 
+            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.EMF_SINK.get());
         }
 
         @Override
@@ -146,7 +208,9 @@ public class SolenoidDataGenerator {
                     MagnetiteBlocks.MAGNETITE_ORE.get(),
                     MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get(),
                     com.suiseika.solenoid.energy.EmfBlocks.HAND_CRANK_GENERATOR.get(),
-                    com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE.get());
+                    com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE.get(),
+                    com.suiseika.solenoid.energy.EmfBlocks.EMF_SOURCE.get(),
+                    com.suiseika.solenoid.energy.EmfBlocks.EMF_SINK.get());
         }
     }
 

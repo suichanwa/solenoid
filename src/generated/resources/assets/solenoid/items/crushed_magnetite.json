@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "solenoid:item/crushed_ore_template",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -12235950
+      }
+    ]
+  }
+}

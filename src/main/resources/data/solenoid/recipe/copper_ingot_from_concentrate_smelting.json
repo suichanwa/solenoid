@@ -4,7 +4,5 @@
   "cookingtime": 200,
   "experience": 0.7,
   "ingredient": "solenoid:copper_concentrate",
-  "result": {
-    "id": "minecraft:copper_ingot"
-  }
+  "result": "minecraft:copper_ingot"
 }

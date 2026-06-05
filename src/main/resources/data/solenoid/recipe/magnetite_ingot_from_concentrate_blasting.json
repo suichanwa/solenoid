@@ -4,7 +4,5 @@
   "cookingtime": 100,
   "experience": 0.7,
   "ingredient": "solenoid:magnetite_concentrate",
-  "result": {
-    "id": "solenoid:magnetite_ingot"
-  }
+  "result": "solenoid:magnetite_ingot"
 }

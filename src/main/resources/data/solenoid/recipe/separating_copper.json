@@ -1,0 +1,13 @@
+{
+  "type": "solenoid:separating",
+  "ingredient": "solenoid:crushed_copper",
+  "result": {
+    "id": "solenoid:copper_concentrate"
+  },
+  "secondary": {
+    "id": "solenoid:ore_slag"
+  },
+  "secondaryChance": 0.40,
+  "energy": 5000,
+  "time": 180
+}

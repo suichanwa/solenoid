@@ -92,14 +92,6 @@ public final class EmfBlocks {
             BLOCK_ENTITIES.register("hand_crank_generator",
                     () -> new BlockEntityType<>(HandCrankGeneratorBlockEntity::new, HAND_CRANK_GENERATOR.get()));
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrusherBlockEntity>> CRUSHER_BE =
-            BLOCK_ENTITIES.register("crusher",
-                    () -> new BlockEntityType<>(CrusherBlockEntity::new, CRUSHER.get()));
-
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SeparatorBlockEntity>> SEPARATOR_BE =
-            BLOCK_ENTITIES.register("separator",
-                    () -> new BlockEntityType<>(SeparatorBlockEntity::new, SEPARATOR.get()));
-
     /** Wire the deferred registers to the mod event bus. Called from the main mod constructor. */
     public static void register(net.neoforged.bus.api.IEventBus modEventBus) {
         BLOCKS.register(modEventBus);
@@ -120,8 +112,5 @@ public final class EmfBlocks {
                 (be, side) -> be.getEnergyHandler(side));
         event.registerBlockEntity(Capabilities.Energy.BLOCK, HAND_CRANK_GENERATOR_BE.get(),
                 (be, side) -> be.getEnergyHandler(side));
-    }
-}
-       (be, side) -> be.getItemHandler(side));
     }
 }
