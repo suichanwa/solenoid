@@ -125,13 +125,13 @@ configurations {
 dependencies {
     // JEI, dev-only. API at compile time; full jar on localRuntime so it loads in runClient/runServer
     // but is NOT published as a dependency and is NOT required to play with the mod.
-    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    compileOnly "mezz.jei:jei-1.21.4-neoforge-api:${jei_version}"
     // The full (non-api) jar is also needed at compile time for mezz.jei.common.Internal: as of MC
     // 26.1.x the vanilla RecipeManager is no longer synced to the client, so JEI's own synced
     // RecipeMap (Internal.getClientSyncedRecipes()) is the only client-side source for our custom
     // recipes. compileOnly keeps JEI an optional dependency (it is never bundled/published).
-    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
-    localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    compileOnly "mezz.jei:jei-1.21.4-neoforge:${jei_version}"
+    localRuntime "mezz.jei:jei-1.21.4-neoforge:${jei_version}"
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
