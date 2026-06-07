@@ -1,6 +1,8 @@
 {
   "type": "solenoid:crushing",
-  "ingredient": "solenoid:raw_magnetite",
+  "ingredient": {
+    "item": "solenoid:raw_magnetite"
+  },
   "result": {
     "id": "solenoid:crushed_magnetite",
     "count": 2

@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
+    "particle": "solenoid:block/electromagnetic_separator_side",
     "top": "solenoid:block/electromagnetic_separator_side",
     "front": "solenoid:block/electromagnetic_separator_face",
     "side": "solenoid:block/electromagnetic_separator_side"

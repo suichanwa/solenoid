@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
+    "particle": "solenoid:block/induction_furance_side",
     "top": "solenoid:block/induction_furance_side",
     "front": "solenoid:block/induction_furnace_face",
     "side": "solenoid:block/induction_furance_side"

@@ -2,7 +2,8 @@ package com.suiseika.solenoid;
 
 public enum ProcessedForm {
     CRUSHED("crushed_", "", "crushed_ore_template"),
-    CONCENTRATE("", "_concentrate", "ore_concentrate_template");
+    CONCENTRATE("", "_concentrate", "ore_concentrate_template"),
+    SLAG("", "_slag", "ore_concentrate_template");
 
     private final String prefix;
     private final String suffix;

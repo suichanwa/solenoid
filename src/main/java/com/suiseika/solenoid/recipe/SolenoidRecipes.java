@@ -57,8 +57,8 @@ public class SolenoidRecipes {
     public static final Supplier<RecipeSerializer<SeparatingRecipe>> SEPARATING_SERIALIZER = RECIPE_SERIALIZERS.register("separating", () -> {
         MapCodec<SeparatingRecipe> codec = RecordCodecBuilder.mapCodec(inst -> inst.group(
                 Ingredient.CODEC.fieldOf("ingredient").forGetter(SeparatingRecipe::ingredient),
-                ItemStack.CODEC.fieldOf("result").forGetter(SeparatingRecipe::result),
-                ItemStack.CODEC.fieldOf("secondary").forGetter(SeparatingRecipe::secondary),
+                ItemStackTemplate.CODEC.fieldOf("result").forGetter(SeparatingRecipe::result),
+                ItemStackTemplate.CODEC.fieldOf("secondary").forGetter(SeparatingRecipe::secondary),
                 Codec.FLOAT.fieldOf("secondaryChance").forGetter(SeparatingRecipe::secondaryChance),
                 Codec.INT.fieldOf("energy").forGetter(SeparatingRecipe::energy),
                 Codec.INT.fieldOf("time").forGetter(SeparatingRecipe::time)
@@ -66,8 +66,8 @@ public class SolenoidRecipes {
 
         StreamCodec<RegistryFriendlyByteBuf, SeparatingRecipe> streamCodec = StreamCodec.composite(
                 Ingredient.CONTENTS_STREAM_CODEC, SeparatingRecipe::ingredient,
-                ItemStack.STREAM_CODEC, SeparatingRecipe::result,
-                ItemStack.STREAM_CODEC, SeparatingRecipe::secondary,
+                ItemStackTemplate.STREAM_CODEC, SeparatingRecipe::result,
+                ItemStackTemplate.STREAM_CODEC, SeparatingRecipe::secondary,
                 ByteBufCodecs.FLOAT, SeparatingRecipe::secondaryChance,
                 ByteBufCodecs.INT, SeparatingRecipe::energy,
                 ByteBufCodecs.INT, SeparatingRecipe::time,

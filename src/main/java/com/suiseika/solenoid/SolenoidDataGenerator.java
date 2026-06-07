@@ -100,14 +100,6 @@ public class SolenoidDataGenerator {
                 }
             }
 
-            // Single Ore Slag model
-            com.google.gson.JsonObject slagJson = new com.google.gson.JsonObject();
-            com.google.gson.JsonObject slagModel = new com.google.gson.JsonObject();
-            slagModel.addProperty("type", "minecraft:model");
-            slagModel.addProperty("model", "solenoid:item/ore_concentrate_template"); // Placeholder template
-            slagJson.add("model", slagModel);
-            futures.add(net.minecraft.data.DataProvider.saveStable(cache, slagJson, pathProvider.json(Identifier.fromNamespaceAndPath(Solenoid.MODID, "ore_slag"))));
-
             return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
         }
 
@@ -138,16 +130,14 @@ public class SolenoidDataGenerator {
                 String oreName = ore.getName().substring(0, 1).toUpperCase() + ore.getName().substring(1);
                 for (ProcessedForm form : ProcessedForm.values()) {
                     String id = form.getPrefix() + ore.getName() + form.getSuffix();
-                    String name;
-                    if (form == ProcessedForm.CRUSHED) {
-                        name = "Crushed " + oreName;
-                    } else {
-                        name = oreName + " Concentrate";
-                    }
+                    String name = switch (form) {
+                        case CRUSHED -> "Crushed " + oreName;
+                        case CONCENTRATE -> oreName + " Concentrate";
+                        case SLAG -> oreName + " Slag";
+                    };
                     add("item." + Solenoid.MODID + "." + id, name);
                 }
             }
-            add("item." + Solenoid.MODID + ".ore_slag", "Ore Slag");
 
             add("itemGroup.solenoid", "Solenoid");
 

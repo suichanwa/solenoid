@@ -1,6 +1,8 @@
 {
   "type": "solenoid:separating",
-  "ingredient": "solenoid:crushed_iron",
+  "ingredient": {
+    "item": "solenoid:crushed_iron"
+  },
   "result": {
     "id": "solenoid:iron_concentrate"
   },

@@ -1,6 +1,8 @@
 {
   "type": "solenoid:separating",
-  "ingredient": "solenoid:crushed_copper",
+  "ingredient": {
+    "item": "solenoid:crushed_copper"
+  },
   "result": {
     "id": "solenoid:copper_concentrate"
   },

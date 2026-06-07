@@ -1,6 +1,8 @@
 {
   "type": "solenoid:crushing",
-  "ingredient": "minecraft:raw_copper",
+  "ingredient": {
+    "item": "minecraft:raw_copper"
+  },
   "result": {
     "id": "solenoid:crushed_copper",
     "count": 2

@@ -47,13 +47,12 @@ public class Solenoid {
                 output.accept(MagnetiteItems.RAW_MAGNETITE);
                 output.accept(MagnetiteItems.MAGNETITE_INGOT);
 
-                // Ore processing items
+                // Ore processing items (crushed / concentrate / slag, all per-ore)
                 for (ProcessedForm form : ProcessedForm.values()) {
                     for (ProcessedOre ore : ProcessedOre.values()) {
                         output.accept(OreProcessingItems.getItem(ore, form));
                     }
                 }
-                output.accept(OreProcessingItems.ORE_SLAG);
 
                 // Components
                 output.accept(MagnetiteItems.MAGNET);

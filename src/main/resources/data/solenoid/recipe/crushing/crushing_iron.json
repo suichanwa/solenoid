@@ -1,6 +1,8 @@
 {
   "type": "solenoid:crushing",
-  "ingredient": "minecraft:raw_iron",
+  "ingredient": {
+    "item": "minecraft:raw_iron"
+  },
   "result": {
     "id": "solenoid:crushed_iron",
     "count": 2

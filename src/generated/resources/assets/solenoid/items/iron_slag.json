@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "solenoid:item/ore_concentrate_template",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -3749686
+      }
+    ]
+  }
+}

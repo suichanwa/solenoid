@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
+    "particle": "solenoid:block/crusher_side",
     "top": "solenoid:block/crusher_side",
     "front": "solenoid:block/crusher_face",
     "side": "solenoid:block/crusher_side"

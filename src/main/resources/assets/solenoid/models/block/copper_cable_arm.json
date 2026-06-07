@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
+    "particle": "solenoid:block/copper_cable",
     "texture": "solenoid:block/copper_cable"
   },
   "elements": [

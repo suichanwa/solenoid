@@ -32,7 +32,10 @@ public record CrushingRecipe(Ingredient ingredient, ItemStackTemplate result, in
 
     @Override
     public PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
+        // Build a real placement from the (non-empty) ingredient so the recipe is not flagged
+        // "impossible to place" by RecipeManager#finalizeRecipeLoading (which logs the misleading
+        // "can't be placed due to empty ingredients" warning for NOT_PLACEABLE machine recipes).
+        return PlacementInfo.create(this.ingredient);
     }
 
     @Override

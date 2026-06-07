@@ -1,6 +1,8 @@
 {
   "type": "solenoid:separating",
-  "ingredient": "solenoid:crushed_magnetite",
+  "ingredient": {
+    "item": "solenoid:crushed_magnetite"
+  },
   "result": {
     "id": "solenoid:magnetite_concentrate"
   },
