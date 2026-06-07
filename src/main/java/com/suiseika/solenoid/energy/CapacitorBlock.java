@@ -3,6 +3,8 @@ package com.suiseika.solenoid.energy;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -15,12 +17,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Large EMF storage block. The {@code FACING} property only orients the meter face for rendering;
  * energy I/O is omnidirectional (handled in {@link CapacitorBlockEntity}). Exposes a comparator
- * analog output scaled to its stored charge. GUI-less — state is read via the comparator + meter.
+ * analog output scaled to its stored charge, and a GUI showing the stored EMF on right-click.
  */
 public class CapacitorBlock extends BaseEntityBlock {
     public static final MapCodec<CapacitorBlock> CODEC = simpleCodec(CapacitorBlock::new);
@@ -55,6 +58,16 @@ public class CapacitorBlock extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new CapacitorBlockEntity(pos, state);
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (!level.isClientSide()) {
+            if (level.getBlockEntity(pos) instanceof CapacitorBlockEntity capacitor) {
+                player.openMenu(capacitor, pos);
+            }
+        }
+        return InteractionResult.SUCCESS;
     }
 
     @Override

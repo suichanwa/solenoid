@@ -161,12 +161,14 @@ public class SolenoidDataGenerator {
             add("tooltip.solenoid.crusher", "Crushes ores into dust");
             add("tooltip.solenoid.separator", "Separates ore dust into slag and product");
             add("tooltip.solenoid.induction_furnace", "Smelts items using EMF, no fuel needed");
+            add("item.solenoid.magnetometer", "Magnetometer");
             add("tooltip.solenoid.capacitor", "Stores EMF and powers adjacent machines");
             add("tooltip.solenoid.capacitor.capacity", "Capacity: 100,000 EMF");
             // Machine GUI container titles
             add("container.solenoid.crusher", "Crusher");
             add("container.solenoid.separator", "Electromagnetic Separator");
             add("container.solenoid.induction_furnace", "Induction Furnace");
+            add("container.solenoid.capacitor", "Capacitor");
             // JEI recipe categories
             add("gui.solenoid.category.crushing", "Crushing");
             add("gui.solenoid.category.separating", "Electromagnetic Separation");

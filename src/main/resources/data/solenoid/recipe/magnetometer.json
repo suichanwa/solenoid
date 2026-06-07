@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " K ",
+    "CMC",
+    " R "
+  ],
+  "key": {
+    "K": "solenoid:copper_coil",
+    "C": "minecraft:copper_ingot",
+    "M": "solenoid:magnet",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "solenoid:magnetometer",
+    "count": 1
+  }
+}

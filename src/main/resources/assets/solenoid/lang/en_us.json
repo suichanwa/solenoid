@@ -3,6 +3,7 @@
 
   "item.solenoid.raw_magnetite": "Raw Magnetite",
   "item.solenoid.magnetite_ingot": "Magnetite Ingot",
+  "item.solenoid.magnetometer": "Magnetometer",
   "block.solenoid.magnetite_ore": "Magnetite Ore",
   "block.solenoid.deepslate_magnetite_ore": "Deepslate Magnetite Ore",
 
@@ -18,6 +19,7 @@
   "container.solenoid.crusher": "Crusher",
   "container.solenoid.separator": "Electromagnetic Separator",
   "container.solenoid.induction_furnace": "Induction Furnace",
+  "container.solenoid.capacitor": "Capacitor",
 
   "gui.solenoid.category.crushing": "Crushing",
   "gui.solenoid.category.separating": "Electromagnetic Separation",

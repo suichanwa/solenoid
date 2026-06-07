@@ -58,6 +58,7 @@ public class Solenoid {
                 output.accept(MagnetiteItems.MAGNET);
                 output.accept(MagnetiteItems.COPPER_COIL);
                 output.accept(MagnetiteItems.GRINDING_GEAR);
+                output.accept(MagnetometerItems.MAGNETOMETER);
                 // EMF energy blocks
                 output.accept(EmfBlocks.HAND_CRANK_GENERATOR_ITEM);
                 output.accept(EmfBlocks.CRUSHER_ITEM);
@@ -84,6 +85,11 @@ public class Solenoid {
         MagnetiteItems.ITEMS.register(modEventBus);
         OreProcessingItems.ITEMS.register(modEventBus);
         SolenoidMenus.MENUS.register(modEventBus);
+
+        // Powered handheld items (Magnetometer) + their stack data components
+        SolenoidDataComponents.COMPONENTS.register(modEventBus);
+        MagnetometerItems.ITEMS.register(modEventBus);
+        modEventBus.addListener(MagnetometerItem::registerCapabilities);
 
         // Register recipes
         SolenoidRecipes.RECIPE_TYPES.register(modEventBus);

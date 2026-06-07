@@ -1,5 +1,6 @@
 package com.suiseika.solenoid;
 
+import com.suiseika.solenoid.energy.CapacitorMenu;
 import com.suiseika.solenoid.energy.CrusherMenu;
 import com.suiseika.solenoid.energy.InductionFurnaceMenu;
 import com.suiseika.solenoid.energy.SeparatorMenu;
@@ -20,4 +21,7 @@ public class SolenoidMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<InductionFurnaceMenu>> INDUCTION_FURNACE_MENU =
             MENUS.register("induction_furnace", () -> IMenuTypeExtension.create(InductionFurnaceMenu::new));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<CapacitorMenu>> CAPACITOR_MENU =
+            MENUS.register("capacitor", () -> IMenuTypeExtension.create(CapacitorMenu::new));
 }

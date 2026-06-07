@@ -2,7 +2,13 @@ package com.suiseika.solenoid.energy;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -23,7 +29,7 @@ import java.util.List;
  * ping-pong charge back into generators, cables or other batteries. NBT-persisted; exposes a
  * comparator analog signal scaled to fill via {@link CapacitorBlock}.
  */
-public class CapacitorBlockEntity extends AbstractEmfBlockEntity {
+public class CapacitorBlockEntity extends AbstractEmfBlockEntity implements MenuProvider {
     // Receive and extract on all sides; extraction is used by our own outward push.
     private final SimpleEnergyHandler handler = new SimpleEnergyHandler(
             EmfConstants.CAPACITOR_CAPACITY, EmfConstants.CAPACITOR_TRANSFER, EmfConstants.CAPACITOR_TRANSFER) {
@@ -36,6 +42,36 @@ public class CapacitorBlockEntity extends AbstractEmfBlockEntity {
     /** Stored amount at the end of the previous tick, used to refresh comparators only on change. */
     private int lastEnergy;
 
+    /**
+     * Server-authoritative view of the stored/max EMF the client GUI needs. Each large int is split
+     * across two 16-bit data slots because the container-data wire format is a signed short; the
+     * client menu reassembles the halves as unsigned.
+     */
+    private final ContainerData dataAccess = new ContainerData() {
+        @Override
+        public int get(int index) {
+            int energy = handler.getAmountAsInt();
+            int capacity = handler.getCapacityAsInt();
+            return switch (index) {
+                case 0 -> energy & 0xFFFF;
+                case 1 -> (energy >>> 16) & 0xFFFF;
+                case 2 -> capacity & 0xFFFF;
+                case 3 -> (capacity >>> 16) & 0xFFFF;
+                default -> 0;
+            };
+        }
+
+        @Override
+        public void set(int index, int value) {
+            // Server reads from the block entity; the synced copy lives client-side in the menu.
+        }
+
+        @Override
+        public int getCount() {
+            return 4;
+        }
+    };
+
     public CapacitorBlockEntity(BlockPos pos, BlockState state) {
         super(EmfBlocks.CAPACITOR_BE.get(), pos, state);
     }
@@ -43,6 +79,17 @@ public class CapacitorBlockEntity extends AbstractEmfBlockEntity {
     @Override
     public @Nullable EnergyHandler getEnergyHandler(@Nullable Direction side) {
         return handler;
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return Component.translatable("container.solenoid.capacitor");
+    }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
+        return new CapacitorMenu(containerId, playerInventory, this, dataAccess);
     }
 
     /** Comparator output 0-15 scaled to fill. */

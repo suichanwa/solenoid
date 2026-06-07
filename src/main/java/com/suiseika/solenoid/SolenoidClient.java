@@ -1,5 +1,6 @@
 package com.suiseika.solenoid;
 
+import com.suiseika.solenoid.energy.CapacitorScreen;
 import com.suiseika.solenoid.energy.CrusherScreen;
 import com.suiseika.solenoid.energy.InductionFurnaceScreen;
 import com.suiseika.solenoid.energy.SeparatorScreen;
@@ -38,5 +39,6 @@ public class SolenoidClient {
         event.register(SolenoidMenus.CRUSHER_MENU.get(), CrusherScreen::new);
         event.register(SolenoidMenus.SEPARATOR_MENU.get(), SeparatorScreen::new);
         event.register(SolenoidMenus.INDUCTION_FURNACE_MENU.get(), InductionFurnaceScreen::new);
+        event.register(SolenoidMenus.CAPACITOR_MENU.get(), CapacitorScreen::new);
     }
 }

@@ -1,0 +1,30 @@
+package com.suiseika.solenoid;
+
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+
+/**
+ * Tag keys used by detection logic. Detection is tag-driven so new ore families can be added by
+ * editing the tag JSON -- no code change. The Magnetometer scans {@link Blocks#FERROMAGNETIC};
+ * a future EM-induction device can add a {@code CONDUCTIVE} tag + a second blip colour with minimal
+ * change (see {@code MagnetometerScreen.DetectionMode}).
+ */
+public final class SolenoidTags {
+    private SolenoidTags() {}
+
+    public static final class Blocks {
+        private Blocks() {}
+
+        /** Ferromagnetic ores detectable by the Magnetometer (magnetite family). */
+        public static final TagKey<Block> FERROMAGNETIC = create("ferromagnetic");
+
+        // Future EM-induction target, not implemented yet:
+        // public static final TagKey<Block> CONDUCTIVE = create("conductive");
+
+        private static TagKey<Block> create(String path) {
+            return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(Solenoid.MODID, path));
+        }
+    }
+}
