@@ -18,8 +18,8 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 public class SeparatingRecipeCategory implements IRecipeCategory<SeparatingRecipe> {
-    private static final int WIDTH = 140;
-    private static final int HEIGHT = 64;
+    private static final int WIDTH = 120;
+    private static final int HEIGHT = 68;
     private static final int TEXT_COLOR = 0xFF404040;
 
     private final IDrawable icon;
@@ -59,15 +59,15 @@ public class SeparatingRecipeCategory implements IRecipeCategory<SeparatingRecip
     public void setRecipe(IRecipeLayoutBuilder builder, SeparatingRecipe recipe, IFocusGroup focuses) {
         builder.addInputSlot(4, 22)
                 .setStandardSlotBackground()
-                .add(recipe.ingredient());
+                .addIngredients(recipe.ingredient());
 
         builder.addOutputSlot(66, 8)
                 .setOutputSlotBackground()
-                .add(recipe.result().create());
+                .addItemStack(recipe.result().create());
 
         builder.addOutputSlot(66, 36)
                 .setStandardSlotBackground()
-                .add(recipe.secondary().create());
+                .addItemStack(recipe.secondary().create());
     }
 
     @Override

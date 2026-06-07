@@ -59,11 +59,11 @@ public class CrushingRecipeCategory implements IRecipeCategory<CrushingRecipe> {
     public void setRecipe(IRecipeLayoutBuilder builder, CrushingRecipe recipe, IFocusGroup focuses) {
         builder.addInputSlot(4, 10)
                 .setStandardSlotBackground()
-                .add(recipe.ingredient());
+                .addIngredients(recipe.ingredient());
 
         builder.addOutputSlot(66, 9)
                 .setOutputSlotBackground()
-                .add(recipe.result().create());
+                .addItemStack(recipe.result().create());
     }
 
     @Override

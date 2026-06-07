@@ -57,6 +57,7 @@ public class Solenoid {
                 // Components
                 output.accept(MagnetiteItems.MAGNET);
                 output.accept(MagnetiteItems.COPPER_COIL);
+                output.accept(MagnetiteItems.GRINDING_GEARS);
                 // EMF energy blocks
                 output.accept(EmfBlocks.HAND_CRANK_GENERATOR_ITEM);
                 output.accept(EmfBlocks.CRUSHER_ITEM);
@@ -117,6 +118,12 @@ public class Solenoid {
         LOGGER.info("{}{}", Config.MAGIC_NUMBER_INTRODUCTION.get(), Config.MAGIC_NUMBER.getAsInt());
 
         Config.ITEM_STRINGS.get().forEach((item) -> LOGGER.info("ITEM >> {}", item));
+    }
+
+    @SubscribeEvent
+    public void onDatapackSync(net.neoforged.neoforge.event.OnDatapackSyncEvent event) {
+        event.sendRecipes(SolenoidRecipes.CRUSHING_TYPE.get());
+        event.sendRecipes(SolenoidRecipes.SEPARATING_TYPE.get());
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

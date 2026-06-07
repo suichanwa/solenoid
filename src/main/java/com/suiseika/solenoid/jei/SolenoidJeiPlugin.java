@@ -16,7 +16,7 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.common.Internal;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeMap;
 
@@ -26,13 +26,13 @@ import java.util.List;
 public class SolenoidJeiPlugin implements IModPlugin {
 
     public static final RecipeType<CrushingRecipe> CRUSHING =
-            new RecipeType<>(ResourceLocation.fromNamespaceAndPath(Solenoid.MODID, "crushing"), CrushingRecipe.class);
+            new RecipeType<>(Identifier.fromNamespaceAndPath(Solenoid.MODID, "crushing"), CrushingRecipe.class);
     public static final RecipeType<SeparatingRecipe> SEPARATING =
-            new RecipeType<>(ResourceLocation.fromNamespaceAndPath(Solenoid.MODID, "separating"), SeparatingRecipe.class);
+            new RecipeType<>(Identifier.fromNamespaceAndPath(Solenoid.MODID, "separating"), SeparatingRecipe.class);
 
     @Override
-    public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(Solenoid.MODID, "jei");
+    public Identifier getPluginUid() {
+        return Identifier.fromNamespaceAndPath(Solenoid.MODID, "jei");
     }
 
     @Override

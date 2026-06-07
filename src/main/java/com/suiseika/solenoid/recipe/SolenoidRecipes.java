@@ -8,7 +8,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -21,7 +20,7 @@ public class SolenoidRecipes {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, Solenoid.MODID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, Solenoid.MODID);
 
-    public static final Supplier<RecipeType<CrushingRecipe>> CRUSHING_TYPE = RECIPE_TYPES.register("crushing", () -> new RecipeType<>() {
+    public static final Supplier<RecipeType<CrushingRecipe>> CRUSHING_TYPE = RECIPE_TYPES.<RecipeType<CrushingRecipe>>register("crushing", () -> new RecipeType<CrushingRecipe>() {
         @Override
         public String toString() {
             return "crushing";
@@ -47,7 +46,7 @@ public class SolenoidRecipes {
         return new RecipeSerializer<>(codec, streamCodec);
     });
 
-    public static final Supplier<RecipeType<SeparatingRecipe>> SEPARATING_TYPE = RECIPE_TYPES.register("separating", () -> new RecipeType<>() {
+    public static final Supplier<RecipeType<SeparatingRecipe>> SEPARATING_TYPE = RECIPE_TYPES.<RecipeType<SeparatingRecipe>>register("separating", () -> new RecipeType<SeparatingRecipe>() {
         @Override
         public String toString() {
             return "separating";
