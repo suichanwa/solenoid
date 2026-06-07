@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -27,7 +26,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
  *       Cannot scan below the scan cost.</li>
  * </ul>
  */
-public class MagnetometerItem extends Item {
+public class MagnetometerItem extends EmfPoweredItem {
     /** EMF the buffer holds. */
     public static final int CAPACITY = 5_000;
     /** EMF spent per scan/refresh. */
@@ -39,12 +38,9 @@ public class MagnetometerItem extends Item {
         super(properties);
     }
 
-    public static int getEnergy(ItemStack stack) {
-        return stack.getOrDefault(SolenoidDataComponents.EMF_ENERGY.get(), 0);
-    }
-
-    private static void setEnergy(ItemStack stack, int value) {
-        stack.set(SolenoidDataComponents.EMF_ENERGY.get(), Math.max(0, Math.min(CAPACITY, value)));
+    @Override
+    public int getCapacity() {
+        return CAPACITY;
     }
 
     @Override
@@ -88,7 +84,7 @@ public class MagnetometerItem extends Item {
     /** Pulls EMF out of {@code source} into the item buffer, capped at remaining space. */
     private void rechargeFrom(EnergyHandler source, ItemStack stack) {
         int current = getEnergy(stack);
-        int space = CAPACITY - current;
+        int space = getCapacity() - current;
         if (space <= 0) {
             return;
         }

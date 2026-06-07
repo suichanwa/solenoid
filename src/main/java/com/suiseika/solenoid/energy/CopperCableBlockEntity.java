@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
  * Transfers up to {@link EmfConstants#COPPER_CABLE_TRANSFER} EMF/tick.
  */
 public class CopperCableBlockEntity extends AbstractEmfBlockEntity {
+    private final boolean[] forcedDisconnected = new boolean[6];
     private final SimpleEnergyHandler handler = new SimpleEnergyHandler(
             EmfConstants.CABLE_BUFFER, EmfConstants.COPPER_CABLE_TRANSFER) {
         @Override
@@ -29,8 +30,21 @@ public class CopperCableBlockEntity extends AbstractEmfBlockEntity {
         super(EmfBlocks.COPPER_CABLE_BE.get(), pos, state);
     }
 
+    public boolean toggleSide(Direction dir) {
+        forcedDisconnected[dir.ordinal()] = !forcedDisconnected[dir.ordinal()];
+        setChanged();
+        return forcedDisconnected[dir.ordinal()];
+    }
+
+    public boolean isForcedDisconnected(Direction dir) {
+        return forcedDisconnected[dir.ordinal()];
+    }
+
     @Override
     public @Nullable EnergyHandler getEnergyHandler(@Nullable Direction side) {
+        if (side != null && isForcedDisconnected(side)) {
+            return null;
+        }
         return handler;
     }
 
@@ -39,6 +53,10 @@ public class CopperCableBlockEntity extends AbstractEmfBlockEntity {
         int transfer = EmfConstants.COPPER_CABLE_TRANSFER;
 
         for (Direction dir : Direction.values()) {
+            if (isForcedDisconnected(dir)) {
+                continue;
+            }
+
             EnergyHandler neighbour = neighbourHandler(level, pos, dir);
             if (neighbour == null || neighbour == handler) {
                 continue;
@@ -80,11 +98,17 @@ public class CopperCableBlockEntity extends AbstractEmfBlockEntity {
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         handler.serialize(output.child("emf"));
+        for (int i = 0; i < 6; i++) {
+            output.putBoolean("disconnected_" + i, forcedDisconnected[i]);
+        }
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         handler.deserialize(input.childOrEmpty("emf"));
+        for (int i = 0; i < 6; i++) {
+            forcedDisconnected[i] = input.getBooleanOr("disconnected_" + i, false);
+        }
     }
 }

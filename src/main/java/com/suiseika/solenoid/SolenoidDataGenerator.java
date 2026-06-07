@@ -162,6 +162,11 @@ public class SolenoidDataGenerator {
             add("tooltip.solenoid.separator", "Separates ore dust into slag and product");
             add("tooltip.solenoid.induction_furnace", "Smelts items using EMF, no fuel needed");
             add("item.solenoid.magnetometer", "Magnetometer");
+            add("item.solenoid.wrench", "Wrench");
+
+            add("message.solenoid.wrench.facing", "Facing: %s");
+            add("message.solenoid.wrench.cable", "Cable %s: %s");
+            
             add("tooltip.solenoid.capacitor", "Stores EMF and powers adjacent machines");
             add("tooltip.solenoid.capacitor.capacity", "Capacity: 100,000 EMF");
             // Machine GUI container titles
@@ -252,6 +257,14 @@ public class SolenoidDataGenerator {
             tag(Tags.Blocks.ORES).add(magOre, deepOre);
             tag(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores/magnetite")))
                     .add(magOre, deepOre);
+
+            tag(SolenoidTags.Blocks.WRENCHABLE).add(
+                    com.suiseika.solenoid.energy.EmfBlocks.CRUSHER.get(),
+                    com.suiseika.solenoid.energy.EmfBlocks.SEPARATOR.get(),
+                    com.suiseika.solenoid.energy.EmfBlocks.INDUCTION_FURNACE.get(),
+                    com.suiseika.solenoid.energy.EmfBlocks.CAPACITOR.get(),
+                    com.suiseika.solenoid.energy.EmfBlocks.HAND_CRANK_GENERATOR.get()
+            );
         }
     }
 

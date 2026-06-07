@@ -8,37 +8,52 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Code-drawn radar for the Magnetometer. Scans the CLIENT level (loaded blocks around the player)
- * for blocks in a detection tag and plots them on a dark radar disc, north up. Everything is painted
- * with {@link GuiGraphicsExtractor#fill}/{@code text} primitives via the deferred render pipeline
- * ({@code extractRenderState}) -- no texture sheet.
+ * for blocks in a detection tag, classifies each hit into an {@link OreType} (name + colour), and
+ * plots them on a circular radar disc, north up. Painted entirely with {@link GuiGraphicsExtractor}
+ * primitives via the deferred render pipeline ({@code extractRenderState}) -- no texture sheet.
  *
- * <p>Detection is generic over {@link DetectionMode} (tag + blip colour + label). v1 ships a single
- * ferromagnetic mode; a future EM-induction device adds a second mode with no structural change.
+ * <p>Detection is tag-driven ({@link SolenoidTags.Blocks#FERROMAGNETIC}); per-hit identity is derived
+ * from the block id so a future {@code conductive} tag can plug in another {@link OreType} with no
+ * structural change.
  */
 public class MagnetometerScreen extends Screen {
-    /** A detectable family: which block tag, what colour to plot it, and a human label. */
-    private record DetectionMode(TagKey<Block> tag, int color, String label) {}
 
-    private static final List<DetectionMode> MODES = List.of(
-            new DetectionMode(SolenoidTags.Blocks.FERROMAGNETIC, 0xFFFF5A1E, "Ferromagnetic")
-            // Future: new DetectionMode(SolenoidTags.Blocks.CONDUCTIVE, 0xFF35C7FF, "Conductive")
-    );
+    /** A classified anomaly family: display name + blip colour. */
+    private record OreType(String name, int color) {}
 
-    /** One detected block, position relative to the player eye, plus which mode found it. */
-    private record Blip(double dx, double dy, double dz, int color) {
+    private static final OreType MAGNETITE = new OreType("Magnetite", 0xFFFF6A2A);
+    private static final OreType IRON = new OreType("Iron", 0xFFB8C6D4);
+    private static final OreType UNKNOWN = new OreType("Anomaly", 0xFFE34BFF);
+
+    /** Detection tag(s) scanned. v1: ferromagnetic only. */
+    private static final List<TagKey<Block>> TAGS = List.of(SolenoidTags.Blocks.FERROMAGNETIC);
+
+    private static OreType classify(BlockState state) {
+        String path = BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
+        if (path.contains("magnetite")) return MAGNETITE;
+        if (path.contains("iron")) return IRON;
+        return UNKNOWN;
+    }
+
+    /** One detected block, position relative to the player eye, plus its classified type. */
+    private record Blip(double dx, double dy, double dz, OreType type) {
         double horizontal() { return Math.sqrt(dx * dx + dz * dz); }
         double distance() { return Math.sqrt(dx * dx + dy * dy + dz * dz); }
     }
@@ -50,20 +65,22 @@ public class MagnetometerScreen extends Screen {
     private static final int RESCAN_TICKS = 20;
 
     // Radar geometry.
-    private static final int RADAR_PX = 150;
+    private static final int RADAR_R = 62;
     private static final int RANGE = H_RADIUS; // world blocks mapped to the radar radius
+    private static final int PANEL_W = RADAR_R * 2 + 28;
 
     // Palette.
-    private static final int PANEL_BG = 0xE6101418;
-    private static final int PANEL_EDGE = 0xFF3A4450;
-    private static final int RADAR_FACE = 0xFF06120A;
-    private static final int GRID = 0x223AA6FF;
-    private static final int RING = 0x553AA6FF;
+    private static final int PANEL_BG = 0xE60B1016;
+    private static final int PANEL_EDGE = 0xFF2C3A47;
+    private static final int DISC_FACE = 0xFF071019;
+    private static final int DISC_EDGE = 0xFF1E3344;
+    private static final int RING = 0x443AA6FF;
+    private static final int SPOKE = 0x222F6E8F;
     private static final int CROSS = 0xFF5CC8FF;
-    private static final int TEXT = 0xFFCFE7FF;
-    private static final int TEXT_DIM = 0xFF7E93A6;
-    private static final int BAR_FRAME = 0xFF000000;
-    private static final int BAR_EMPTY = 0xFF20303A;
+    private static final int TEXT = 0xFFDCEBFF;
+    private static final int TEXT_DIM = 0xFF8197A8;
+    private static final int BAR_FRAME = 0xFF05080B;
+    private static final int BAR_EMPTY = 0xFF1A2730;
     private static final int BAR_FILL = 0xFF3AA6FF;
 
     private final List<Blip> blips = new ArrayList<>();
@@ -96,7 +113,7 @@ public class MagnetometerScreen extends Screen {
         }
     }
 
-    /** Sweeps the loaded client level around the player for blocks in each detection mode's tag. */
+    /** Sweeps the loaded client level around the player for blocks in each detection tag. */
     private void scan() {
         blips.clear();
         if (minecraft == null || minecraft.level == null || minecraft.player == null) {
@@ -114,109 +131,202 @@ public class MagnetometerScreen extends Screen {
                 }
                 for (int dy = -Y_DOWN; dy <= Y_UP; dy++) {
                     cursor.set(center.getX() + dx, center.getY() + dy, center.getZ() + dz);
-                    var state = level.getBlockState(cursor);
-                    for (DetectionMode mode : MODES) {
-                        if (state.is(mode.tag())) {
-                            blips.add(new Blip(
-                                    cursor.getX() + 0.5 - eye.x,
-                                    cursor.getY() + 0.5 - eye.y,
-                                    cursor.getZ() + 0.5 - eye.z,
-                                    mode.color()));
-                            break;
-                        }
+                    BlockState state = level.getBlockState(cursor);
+                    if (!isTarget(state)) {
+                        continue;
                     }
+                    blips.add(new Blip(
+                            cursor.getX() + 0.5 - eye.x,
+                            cursor.getY() + 0.5 - eye.y,
+                            cursor.getZ() + 0.5 - eye.z,
+                            classify(state)));
                 }
             }
         }
+    }
+
+    private static boolean isTarget(BlockState state) {
+        for (TagKey<Block> tag : TAGS) {
+            if (state.is(tag)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float a) {
         super.extractRenderState(g, mouseX, mouseY, a);
 
-        int cx = this.width / 2;
-        int cy = this.height / 2 - 8;
-        int half = RADAR_PX / 2;
-        int x0 = cx - half, y0 = cy - half, x1 = cx + half, y1 = cy + half;
-
-        // Panel + radar face.
-        g.fill(x0 - 6, y0 - 20, x1 + 6, y1 + 58, PANEL_BG);
-        g.fill(x0 - 6, y0 - 20, x1 + 6, y0 - 19, PANEL_EDGE);
-        g.fill(x0 - 6, y1 + 57, x1 + 6, y1 + 58, PANEL_EDGE);
-        g.fill(x0 - 6, y0 - 20, x0 - 5, y1 + 58, PANEL_EDGE);
-        g.fill(x1 + 5, y0 - 20, x1 + 6, y1 + 58, PANEL_EDGE);
-        g.fill(x0, y0, x1, y1, RADAR_FACE);
-
-        // Grid lines.
-        for (int i = 1; i < 6; i++) {
-            int gx = x0 + RADAR_PX * i / 6;
-            int gy = y0 + RADAR_PX * i / 6;
-            g.fill(gx, y0, gx + 1, y1, GRID);
-            g.fill(x0, gy, x1, gy + 1, GRID);
-        }
-
-        // Concentric range rings (1/3, 2/3, full).
-        drawRing(g, cx, cy, half / 3, RING);
-        drawRing(g, cx, cy, half * 2 / 3, RING);
-        drawRing(g, cx, cy, half, RING);
-
-        // Center crosshair (player).
-        g.fill(cx - 4, cy, cx + 5, cy + 1, CROSS);
-        g.fill(cx, cy - 4, cx + 1, cy + 5, CROSS);
-
-        // North marker.
-        g.centeredText(this.font, "N", cx, y0 - 11, CROSS);
-
-        // Blips.
+        // ---- Layout (measured top-down so the panel hugs the content) ----
+        // Per-type tallies, ordered by first appearance.
+        Map<OreType, Integer> counts = new LinkedHashMap<>();
         Blip nearest = null;
         for (Blip blip : blips) {
             if (blip.horizontal() > RANGE) {
                 continue;
             }
-            int bx = cx + (int) Math.round(blip.dx / RANGE * half);
-            int bz = cy + (int) Math.round(blip.dz / RANGE * half);
-            double t = Math.min(1.0, blip.distance() / (RANGE * 1.2)); // 0 close .. 1 far
-            int color = scaleBrightness(blip.color(), 1.0 - 0.7 * t);
-            int s = t < 0.33 ? 2 : (t < 0.66 ? 1 : 0); // half-size: closer = bigger
-            g.fill(bx - s, bz - s, bx + s + 1, bz + s + 1, color);
+            counts.merge(blip.type(), 1, Integer::sum);
             if (nearest == null || blip.distance() < nearest.distance()) {
                 nearest = blip;
             }
         }
 
-        // ---- Text readout ----
-        int tx = x0 - 4;
-        int ty = y1 + 4;
-        g.text(this.font, "Magnetometer", tx, ty, TEXT, false);
-        ty += 11;
+        int cx = this.width / 2;
+        int contentLeft = cx - PANEL_W / 2 + 12;
+        int top = this.height / 2 - RADAR_R - 34;
 
-        if (nearest != null) {
-            int depth = (int) Math.round(-nearest.dy); // positive = below player
-            String depthStr = depth == 0 ? "level" : (depth > 0 ? depth + "m below" : (-depth) + "m above");
-            g.text(this.font, String.format("Nearest: %.1fm (%s)", nearest.distance(), depthStr), tx, ty, TEXT_DIM, false);
-        } else {
-            g.text(this.font, "Nearest: none in range", tx, ty, TEXT_DIM, false);
+        int titleY = top;
+        int discCY = top + 14 + RADAR_R;
+        int readoutY = discCY + RADAR_R + 8;
+        int legendY = readoutY + 22;
+        int barY = legendY + counts.size() * 11 + 6;
+        int panelBottom = barY + 11 + 6;
+
+        // ---- Panel ----
+        int px0 = cx - PANEL_W / 2, px1 = cx + PANEL_W / 2;
+        int py0 = titleY - 8, py1 = panelBottom;
+        g.fill(px0, py0, px1, py1, PANEL_BG);
+        g.fill(px0, py0, px1, py0 + 1, PANEL_EDGE);
+        g.fill(px0, py1 - 1, px1, py1, PANEL_EDGE);
+        g.fill(px0, py0, px0 + 1, py1, PANEL_EDGE);
+        g.fill(px1 - 1, py0, px1, py1, PANEL_EDGE);
+
+        // ---- Title ----
+        g.centeredText(this.font, "Magnetometer", cx, titleY, TEXT);
+
+        // ---- Radar disc ----
+        fillDisc(g, cx, discCY, RADAR_R + 1, DISC_EDGE);
+        fillDisc(g, cx, discCY, RADAR_R, DISC_FACE);
+        // Spokes (faint cross through the disc).
+        g.fill(cx - RADAR_R, discCY, cx + RADAR_R, discCY + 1, SPOKE);
+        g.fill(cx, discCY - RADAR_R, cx + 1, discCY + RADAR_R, SPOKE);
+        // Range rings.
+        drawRing(g, cx, discCY, RADAR_R / 3, RING);
+        drawRing(g, cx, discCY, RADAR_R * 2 / 3, RING);
+        drawRing(g, cx, discCY, RADAR_R, RING);
+        // Cardinal markers.
+        g.centeredText(this.font, "N", cx, discCY - RADAR_R - 1, CROSS);
+        g.centeredText(this.font, "S", cx, discCY + RADAR_R - 7, TEXT_DIM);
+        g.centeredText(this.font, "E", cx + RADAR_R - 5, discCY - 4, TEXT_DIM);
+        g.centeredText(this.font, "W", cx - RADAR_R + 5, discCY - 4, TEXT_DIM);
+
+        // ---- Blips ----
+        for (Blip blip : blips) {
+            if (blip.horizontal() > RANGE) {
+                continue;
+            }
+            int bx = cx + (int) Math.round(blip.dx / RANGE * RADAR_R);
+            int bz = discCY + (int) Math.round(blip.dz / RANGE * RADAR_R);
+            double t = Math.min(1.0, blip.distance() / (RANGE * 1.2)); // 0 close .. 1 far
+            int color = scaleBrightness(blip.type().color(), 1.0 - 0.65 * t);
+            int s = t < 0.33 ? 2 : (t < 0.66 ? 1 : 0); // half-size: closer = bigger
+            g.fill(bx - s, bz - s, bx + s + 1, bz + s + 1, color);
         }
-        ty += 11;
-        g.text(this.font, "Anomalies: " + blips.size(), tx, ty, TEXT_DIM, false);
-        ty += 13;
+        // ---- Direction arrow to the nearest deposit (horizontal bearing, north up) ----
+        if (nearest != null && nearest.horizontal() > 0.01) {
+            double ux = nearest.dx / nearest.horizontal();
+            double uz = nearest.dz / nearest.horizontal();
+            drawArrow(g, cx, discCY, ux, uz, RADAR_R * 0.55, nearest.type().color());
+        }
 
-        // EMF bar.
+        // Player at center.
+        g.fill(cx - 1, discCY - 1, cx + 2, discCY + 2, CROSS);
+
+        // ---- Readout ----
+        if (nearest != null) {
+            int depth = (int) Math.round(-nearest.dy);
+            String where = depth == 0 ? "same level" : (depth > 0 ? depth + "m below" : (-depth) + "m above");
+            g.text(this.font, "Nearest: " + nearest.type().name(), contentLeft, readoutY, nearest.type().color(), false);
+            g.text(this.font, String.format("%.1fm  %s", nearest.distance(), where), contentLeft, readoutY + 10, TEXT_DIM, false);
+        } else {
+            g.text(this.font, "Nearest: none in range", contentLeft, readoutY, TEXT_DIM, false);
+        }
+
+        // ---- Legend (per ore type, with count) ----
+        int ly = legendY;
+        for (Map.Entry<OreType, Integer> e : counts.entrySet()) {
+            OreType type = e.getKey();
+            g.fill(contentLeft, ly + 1, contentLeft + 7, ly + 8, type.color());
+            g.fill(contentLeft, ly + 1, contentLeft + 7, ly + 2, 0x40FFFFFF);
+            g.text(this.font, type.name() + "  x" + e.getValue(), contentLeft + 12, ly, TEXT, false);
+            ly += 11;
+        }
+        if (counts.isEmpty()) {
+            g.text(this.font, "No deposits in range", contentLeft, legendY, TEXT_DIM, false);
+        }
+
+        // ---- EMF bar ----
         ItemStack device = findDevice();
         int energy = device == null ? 0 : device.getOrDefault(SolenoidDataComponents.EMF_ENERGY.get(), 0);
         int capacity = MagnetometerItem.CAPACITY;
-        int barW = RADAR_PX + 8;
-        int bx0 = tx;
-        g.fill(bx0 - 1, ty - 1, bx0 + barW + 1, ty + 9, BAR_FRAME);
-        g.fill(bx0, ty, bx0 + barW, ty + 8, BAR_EMPTY);
+        int barW = PANEL_W - 24;
+        int bx0 = contentLeft;
+        g.fill(bx0 - 1, barY - 1, bx0 + barW + 1, barY + 9, BAR_FRAME);
+        g.fill(bx0, barY, bx0 + barW, barY + 8, BAR_EMPTY);
         if (capacity > 0 && energy > 0) {
             int fillW = (int) ((long) barW * energy / capacity);
-            g.fill(bx0, ty, bx0 + fillW, ty + 8, BAR_FILL);
+            g.fill(bx0, barY, bx0 + fillW, barY + 8, BAR_FILL);
         }
-        g.text(this.font, energy + " / " + capacity + " EMF", bx0 + 2, ty, TEXT, false);
+        g.centeredText(this.font, energy + " / " + capacity + " EMF", cx, barY, TEXT);
     }
 
-    /** Plots a 1px-thick circle outline by sampling points around the circumference. */
+    /**
+     * Draws a thick arrow from {@code (cx,cy)} along unit vector {@code (ux,uz)} of the given length,
+     * with a two-barb arrowhead. A bright core is laid over a darker outline so it reads on the disc.
+     */
+    private static void drawArrow(GuiGraphicsExtractor g, int cx, int cy, double ux, double uz, double length, int color) {
+        int outline = 0xFF05080B;
+        double tipX = cx + ux * length;
+        double tipY = cy + uz * length;
+        double perpX = -uz, perpZ = ux;
+
+        // Shaft: outline (width 3) then bright core (width 1).
+        plotThickSegment(g, cx, cy, tipX, tipY, perpX, perpZ, 1.5, outline);
+        plotThickSegment(g, cx, cy, tipX, tipY, perpX, perpZ, 0.5, color);
+
+        // Arrowhead: two barbs swept back from the tip.
+        double ang = Math.atan2(uz, ux);
+        double barb = 8.0;
+        for (int sgn = -1; sgn <= 1; sgn += 2) {
+            double ba = ang + Math.PI + sgn * 0.6;
+            double ex = tipX + Math.cos(ba) * barb;
+            double ey = tipY + Math.sin(ba) * barb;
+            plotThickSegment(g, tipX, tipY, ex, ey, perpX, perpZ, 1.5, outline);
+            plotThickSegment(g, tipX, tipY, ex, ey, perpX, perpZ, 0.5, color);
+        }
+    }
+
+    /** Samples a segment, plotting a perpendicular band of pixels for the given half-thickness. */
+    private static void plotThickSegment(GuiGraphicsExtractor g, double x0, double y0, double x1, double y1,
+                                         double perpX, double perpZ, double halfWidth, int color) {
+        double len = Math.hypot(x1 - x0, y1 - y0);
+        int steps = Math.max(1, (int) Math.round(len * 2));
+        int w = (int) Math.ceil(halfWidth);
+        for (int i = 0; i <= steps; i++) {
+            double t = (double) i / steps;
+            double x = x0 + (x1 - x0) * t;
+            double y = y0 + (y1 - y0) * t;
+            for (int o = -w; o <= w; o++) {
+                if (Math.abs(o) > halfWidth) {
+                    continue;
+                }
+                int px = (int) Math.round(x + perpX * o);
+                int py = (int) Math.round(y + perpZ * o);
+                g.fill(px, py, px + 1, py + 1, color);
+            }
+        }
+    }
+
+    /** Filled disc via per-row horizontal spans. */
+    private static void fillDisc(GuiGraphicsExtractor g, int cx, int cy, int r, int color) {
+        for (int dy = -r; dy <= r; dy++) {
+            int dx = (int) Math.sqrt((double) r * r - dy * dy);
+            g.fill(cx - dx, cy + dy, cx + dx + 1, cy + dy + 1, color);
+        }
+    }
+
+    /** 1px-thick circle outline by sampling points around the circumference. */
     private static void drawRing(GuiGraphicsExtractor g, int cx, int cy, int r, int color) {
         if (r <= 0) {
             return;

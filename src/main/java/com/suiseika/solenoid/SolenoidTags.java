@@ -20,6 +20,9 @@ public final class SolenoidTags {
         /** Ferromagnetic ores detectable by the Magnetometer (magnetite family). */
         public static final TagKey<Block> FERROMAGNETIC = create("ferromagnetic");
 
+        /** Blocks that can be rotated with a wrench. */
+        public static final TagKey<Block> WRENCHABLE = create("wrenchable");
+
         // Future EM-induction target, not implemented yet:
         // public static final TagKey<Block> CONDUCTIVE = create("conductive");
 

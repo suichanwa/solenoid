@@ -122,6 +122,11 @@ public class CopperCableBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     private boolean canConnect(LevelReader level, BlockPos pos, Direction dir) {
+        BlockEntity be = level.getBlockEntity(pos);
+        if (be instanceof CopperCableBlockEntity cableBe && cableBe.isForcedDisconnected(dir)) {
+            return false;
+        }
+
         BlockPos neighborPos = pos.relative(dir);
         BlockState neighborState = level.getBlockState(neighborPos);
         

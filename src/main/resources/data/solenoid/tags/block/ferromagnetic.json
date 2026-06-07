@@ -1,6 +1,8 @@
 {
   "values": [
     "solenoid:magnetite_ore",
-    "solenoid:deepslate_magnetite_ore"
+    "solenoid:deepslate_magnetite_ore",
+    "minecraft:iron_ore",
+    "minecraft:deepslate_iron_ore"
   ]
 }
