@@ -161,11 +161,18 @@ public class SolenoidDataGenerator {
             add("tooltip.solenoid.crusher", "Crushes ores into dust");
             add("tooltip.solenoid.separator", "Separates ore dust into slag and product");
             add("tooltip.solenoid.induction_furnace", "Smelts items using EMF, no fuel needed");
-            add("item.solenoid.magnetometer", "Magnetometer");
-            add("item.solenoid.wrench", "Wrench");
+            add("item.solenoid.magnetometer", "Solenoid Magnetometer");
+            add("item.solenoid.wrench", "Solenoid Wrench");
+            add("item.solenoid.multimeter", "Multimeter");
+            add("item.solenoid.screen", "Screen");
+            add("item.solenoid.induction_surveyor", "Induction Surveyor");
 
             add("message.solenoid.wrench.facing", "Facing: %s");
             add("message.solenoid.wrench.cable", "Cable %s: %s");
+
+            add("message.solenoid.multimeter.energy", "EMF: %s / %s (%d%%)");
+            add("message.solenoid.multimeter.progress", "Progress: %d%% (%s)");
+            add("message.solenoid.multimeter.no_data", "No EMF data");
             
             add("tooltip.solenoid.capacitor", "Stores EMF and powers adjacent machines");
             add("tooltip.solenoid.capacitor.capacity", "Capacity: 100,000 EMF");
@@ -257,6 +264,17 @@ public class SolenoidDataGenerator {
             tag(Tags.Blocks.ORES).add(magOre, deepOre);
             tag(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores/magnetite")))
                     .add(magOre, deepOre);
+
+            tag(SolenoidTags.Blocks.CONDUCTIVE).add(
+                    net.minecraft.world.level.block.Blocks.COPPER_ORE,
+                    net.minecraft.world.level.block.Blocks.DEEPSLATE_COPPER_ORE,
+                    net.minecraft.world.level.block.Blocks.GOLD_ORE,
+                    net.minecraft.world.level.block.Blocks.DEEPSLATE_GOLD_ORE,
+                    net.minecraft.world.level.block.Blocks.LAPIS_ORE,
+                    net.minecraft.world.level.block.Blocks.DEEPSLATE_LAPIS_ORE,
+                    net.minecraft.world.level.block.Blocks.REDSTONE_ORE,
+                    net.minecraft.world.level.block.Blocks.DEEPSLATE_REDSTONE_ORE
+            );
 
             tag(SolenoidTags.Blocks.WRENCHABLE).add(
                     com.suiseika.solenoid.energy.EmfBlocks.CRUSHER.get(),

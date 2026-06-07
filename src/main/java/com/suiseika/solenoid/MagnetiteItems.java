@@ -18,4 +18,11 @@ public class MagnetiteItems {
     public static final DeferredItem<Item> GRINDING_GEAR = ITEMS.registerItem("grinding_gear", Item::new);
 
     public static final DeferredItem<WrenchItem> WRENCH = ITEMS.registerItem("wrench", WrenchItem::new, p -> p.stacksTo(1));
+
+    public static final DeferredItem<MultimeterItem> MULTIMETER = ITEMS.registerItem("multimeter", MultimeterItem::new, p -> p.stacksTo(1));
+
+    public static final DeferredItem<Item> SCREEN = ITEMS.registerItem("screen", Item::new);
+
+    public static final DeferredItem<InductionSurveyorItem> INDUCTION_SURVEYOR =
+            ITEMS.registerItem("induction_surveyor", InductionSurveyorItem::new, p -> p.stacksTo(1));
 }

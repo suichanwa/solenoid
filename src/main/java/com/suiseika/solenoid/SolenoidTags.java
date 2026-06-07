@@ -23,8 +23,8 @@ public final class SolenoidTags {
         /** Blocks that can be rotated with a wrench. */
         public static final TagKey<Block> WRENCHABLE = create("wrenchable");
 
-        // Future EM-induction target, not implemented yet:
-        // public static final TagKey<Block> CONDUCTIVE = create("conductive");
+        /** Conductive ores detectable by the Induction Surveyor (copper, gold, etc). */
+        public static final TagKey<Block> CONDUCTIVE = create("conductive");
 
         private static TagKey<Block> create(String path) {
             return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(Solenoid.MODID, path));

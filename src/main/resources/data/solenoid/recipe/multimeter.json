@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "CRC",
+    " C "
+  ],
+  "key": {
+    "S": "solenoid:screen",
+    "C": "minecraft:copper_ingot",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "solenoid:multimeter",
+    "count": 1
+  }
+}

@@ -6,12 +6,10 @@
     " I "
   ],
   "key": {
-    "I": {
-      "item": "minecraft:iron_ingot"
-    }
+    "I": "minecraft:iron_ingot"
   },
   "result": {
-    "count": 1,
-    "id": "solenoid:wrench"
+    "id": "solenoid:wrench",
+    "count": 1
   }
 }

@@ -3,7 +3,8 @@ package com.suiseika.solenoid;
 public enum ProcessedOre {
     MAGNETITE("magnetite", 0x454B52),
     COPPER("copper", 0xC8743C),
-    IRON("iron", 0xC6C8CA);
+    IRON("iron", 0xC6C8CA),
+    GOLD("gold", 0xFCEE4B);
 
     private final String name;
     private final int color;

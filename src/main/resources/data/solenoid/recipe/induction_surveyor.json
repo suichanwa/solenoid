@@ -2,17 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     " K ",
-    "CSC",
-    " M "
+    "ISI",
+    " K "
   ],
   "key": {
     "K": "solenoid:copper_coil",
-    "C": "minecraft:copper_ingot",
-    "S": "solenoid:screen",
-    "M": "solenoid:magnet"
+    "I": "minecraft:iron_ingot",
+    "S": "solenoid:screen"
   },
   "result": {
-    "id": "solenoid:magnetometer",
+    "id": "solenoid:induction_surveyor",
     "count": 1
   }
 }
