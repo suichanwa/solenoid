@@ -124,7 +124,7 @@ public class SolenoidDataGenerator {
             addItem(MagnetiteItems.MAGNETITE_INGOT, "Magnetite Ingot");
             addItem(MagnetiteItems.MAGNET, "Magnet");
             addItem(MagnetiteItems.COPPER_COIL, "Copper Coil");
-            addItem(MagnetiteItems.GRINDING_GEARS, "Grinding Gears");
+            addItem(MagnetiteItems.GRINDING_GEAR, "Grinding Gear");
 
             // Ore processing items
             for (ProcessedOre ore : ProcessedOre.values()) {

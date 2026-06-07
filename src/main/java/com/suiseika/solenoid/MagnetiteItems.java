@@ -15,5 +15,5 @@ public class MagnetiteItems {
 
     public static final DeferredItem<Item> COPPER_COIL = ITEMS.registerItem("copper_coil", Item::new);
 
-    public static final DeferredItem<Item> GRINDING_GEARS = ITEMS.registerItem("grinding_gears", Item::new);
+    public static final DeferredItem<Item> GRINDING_GEAR = ITEMS.registerItem("grinding_gear", Item::new);
 }

@@ -57,7 +57,7 @@ public class Solenoid {
                 // Components
                 output.accept(MagnetiteItems.MAGNET);
                 output.accept(MagnetiteItems.COPPER_COIL);
-                output.accept(MagnetiteItems.GRINDING_GEARS);
+                output.accept(MagnetiteItems.GRINDING_GEAR);
                 // EMF energy blocks
                 output.accept(EmfBlocks.HAND_CRANK_GENERATOR_ITEM);
                 output.accept(EmfBlocks.CRUSHER_ITEM);

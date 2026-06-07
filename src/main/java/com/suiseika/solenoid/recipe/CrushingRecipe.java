@@ -12,7 +12,9 @@ import java.util.List;
 public record CrushingRecipe(Ingredient ingredient, ItemStackTemplate result, int energy, int time) implements Recipe<SingleRecipeInput> {
     @Override
     public boolean matches(SingleRecipeInput input, Level level) {
-        return this.ingredient.test(input.item());
+        boolean match = this.ingredient.test(input.item());
+        // com.suiseika.solenoid.Solenoid.LOGGER.info("CrushingRecipe match check: {} vs {} -> {}", input.item(), this.ingredient, match);
+        return match;
     }
 
     @Override

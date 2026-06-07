@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "solenoid:item/grinding_gears"
+    "layer0": "solenoid:item/grinding_gear"
   }
 }

@@ -1,32 +1,6 @@
 #!/usr/bin/env python3
 """
-Minecraft texture rescaler.
-
-Drop images into ./input, run this script, get game-ready textures in ./output.
-Output filenames are auto-lowercased and sanitized (Minecraft requires lowercase,
-no spaces/special chars).
-
-MODES (pick one; default is --block):
-  --block          Opaque block texture: downscale + flatten palette. No transparency.
-  --item           Item texture: removes the background to transparency, crops to the
-                   object, centers it, downscale + hard alpha edges. (the "rescale +
-                   remove background" mode)
-  --rescale-only   Just downscale. No palette flattening, no background removal.
-
-OPTIONS:
-  --size N         Target square size in px (default 16).
-  --colors N       Flatten to N colors, no dithering (default 8; use 0 to disable).
-  --method M       Downscale filter: nearest | box | lanczos (default nearest = crisp).
-  --contrast F     Contrast multiplier, e.g. 1.2 (default 1.0 = none).
-  --crop           (block mode) also trim a uniform border/frame if present.
-  --file NAME      Process only this one file in ./input (default: all images).
-
-EXAMPLES:
-  python rescale.py --block                 # cable, machine faces, ores...
-  python rescale.py --item                  # magnet, coil, ingot... (transparent bg)
-  python rescale.py --item --size 32        # same, at 32x32
-  python rescale.py --block --crop --contrast 1.2
-  python rescale.py --rescale-only --size 32 --method box
+Advanced Minecraft Texture Rescaler with Multi-Pass Background Peeling.
 """
 import argparse, os, re, sys
 import numpy as np
@@ -44,37 +18,55 @@ def sanitize(name):
     return base + ".png"
 
 def remove_bg(img):
-    """Make the border-connected uniform background transparent by matching the corner color."""
+    """Peels away the outermost background layer by sampling all 4 corners 
+    and flood-filling matching border-connected colors."""
     try:
         from scipy import ndimage
     except ImportError:
         sys.exit("--item needs scipy:  pip install scipy")
         
-    a = np.asarray(img.convert("RGB")).astype(np.int16)
+    rgb_img = img.convert("RGB")
+    a = np.asarray(rgb_img).astype(np.int16)
+    h, w, _ = a.shape
     
-    # Grab the color of the top-left corner pixel dynamically
-    corner_color = a[0, 0]
+    # Sample all 4 corners to capture multi-toned or split backgrounds safely
+    corners = [a[0, 0], a[0, w-1], a[h-1, 0], a[h-1, w-1]]
     
-    # Calculate color distance from the corner pixel across RGB channels
-    color_dist = np.abs(a - corner_color).sum(axis=2)
+    bg_mask = np.zeros((h, w), dtype=bool)
+    for color in corners:
+        dist = np.abs(a - color).sum(axis=2)
+        bg_mask |= (dist < 55)  # Generous threshold to clear compression noise & split-tones
+        
+    # Also flag near-black drop shadows hovering right on the edge boundaries
+    brightness = a.mean(axis=2)
+    bg_mask |= (brightness < 35)
     
-    # A distance threshold of 45 handles subtle compression noise/shadows smoothly
-    cand = color_dist < 45  
+    # Label connected components to isolate true border backgrounds
+    lbl, _ = ndimage.label(bg_mask)
     
-    lbl, _ = ndimage.label(cand)
-    edge = set(np.unique(np.concatenate([lbl[0, :], lbl[-1, :], lbl[:, 0], lbl[:, -1]])))
-    edge.discard(0)
-    bg = np.isin(lbl, list(edge))
-    alpha = np.where(bg, 0, 255).astype(np.uint8)
+    # Find background blocks touching ANY edge of the frame
+    border = np.concatenate([lbl[0, :], lbl[-1, :], lbl[:, 0], lbl[:, -1]])
+    edge_labels = set(np.unique(border))
+    edge_labels.discard(0)
+    
+    bg = np.isin(lbl, list(edge_labels))
+    
+    # Build the alpha channel, blending with any alpha layers from a previous pass
+    if img.mode == "RGBA":
+        old_alpha = np.asarray(img)[..., 3]
+        alpha = np.where(bg | (old_alpha == 0), 0, 255).astype(np.uint8)
+    else:
+        alpha = np.where(bg, 0, 255).astype(np.uint8)
+        
     return Image.fromarray(np.dstack([a.astype(np.uint8), alpha]), "RGBA")
 
 def crop_to_content(img):
-    """Crop to alpha bbox (RGBA) or to a non-uniform-border bbox (RGB)."""
+    """Crop tightly to the remaining non-transparent item content."""
     if img.mode == "RGBA":
         ys, xs = np.where(np.asarray(img)[..., 3] > 0)
     else:
         a = np.asarray(img.convert("RGB")).astype(int)
-        diff = np.abs(a - a[0, 0]).sum(2)         # distance from corner color
+        diff = np.abs(a - a[0, 0]).sum(2)
         ys, xs = np.where(diff > 30)
     if len(xs) == 0:
         return img
@@ -94,16 +86,20 @@ def process(path, args):
     f = FILT[args.method]
 
     if args.mode == "item":
-        img = crop_to_content(remove_bg(img))
+        # Run a 2-pass peeling sequence to completely strip nested boxes
+        for _ in range(2):
+            img = remove_bg(img)
+            img = crop_to_content(img)
+            
         w, h = img.size
-        s = max(1, args.size - 2)                 # 1px breathing room
+        s = max(1, args.size - 2)                 # 1px padding breathing room
         sc = min(s / w, s / h)
         nw, nh = max(1, round(w * sc)), max(1, round(h * sc))
         r = img.resize((nw, nh), f)
         canvas = Image.new("RGBA", (args.size, args.size), (0, 0, 0, 0))
         canvas.paste(r, ((args.size - nw) // 2, (args.size - nh) // 2), r)
         arr = np.asarray(canvas).copy()
-        arr[..., 3] = np.where(arr[..., 3] >= 128, 255, 0)   # hard alpha edges
+        arr[..., 3] = np.where(arr[..., 3] >= 128, 255, 0)   # Perfect crisp edges
         out = Image.fromarray(arr, "RGBA")
     else:
         img = img.convert("RGB")
