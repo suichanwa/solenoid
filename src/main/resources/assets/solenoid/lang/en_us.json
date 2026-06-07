@@ -12,9 +12,18 @@
   "block.solenoid.hand_crank_generator": "Hand Crank Generator",
   "block.solenoid.crusher": "Crusher",
   "block.solenoid.separator": "Electromagnetic Separator",
+  "block.solenoid.induction_furnace": "Induction Furnace",
+  "block.solenoid.capacitor": "Capacitor",
 
   "container.solenoid.crusher": "Crusher",
   "container.solenoid.separator": "Electromagnetic Separator",
+  "container.solenoid.induction_furnace": "Induction Furnace",
+
+  "gui.solenoid.category.crushing": "Crushing",
+  "gui.solenoid.category.separating": "Electromagnetic Separation",
+  "gui.solenoid.recipe.energy": "%s EMF",
+  "gui.solenoid.recipe.time": "%s ticks",
+  "gui.solenoid.recipe.chance": "%s%%",
 
   "tooltip.solenoid.emf_source": "Provides EMF energy",
   "tooltip.solenoid.copper_cable": "Transfers EMF energy",
@@ -24,6 +33,9 @@
   "tooltip.solenoid.hand_crank_generator.capacity": "Capacity: 10,000 EMF",
   "tooltip.solenoid.crusher": "Crushes ores into dust",
   "tooltip.solenoid.separator": "Separates ore dust into slag and product",
+  "tooltip.solenoid.induction_furnace": "Smelts items using EMF, no fuel needed",
+  "tooltip.solenoid.capacitor": "Stores EMF and powers adjacent machines",
+  "tooltip.solenoid.capacitor.capacity": "Capacity: 100,000 EMF",
 
   "solenoid.configuration.title": "Solenoid Configs",
   "solenoid.configuration.section.solenoid.common.toml": "Solenoid Configs",

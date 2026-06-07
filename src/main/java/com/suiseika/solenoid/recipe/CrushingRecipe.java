@@ -1,6 +1,7 @@
 package com.suiseika.solenoid.recipe;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.level.Level;
@@ -8,7 +9,7 @@ import net.minecraft.world.level.Level;
 import java.util.Collections;
 import java.util.List;
 
-public record CrushingRecipe(Ingredient ingredient, ItemStack result, int energy, int time) implements Recipe<SingleRecipeInput> {
+public record CrushingRecipe(Ingredient ingredient, ItemStackTemplate result, int energy, int time) implements Recipe<SingleRecipeInput> {
     @Override
     public boolean matches(SingleRecipeInput input, Level level) {
         return this.ingredient.test(input.item());
@@ -16,7 +17,7 @@ public record CrushingRecipe(Ingredient ingredient, ItemStack result, int energy
 
     @Override
     public ItemStack assemble(SingleRecipeInput input) {
-        return this.result.copy();
+        return this.result.create();
     }
 
     @Override

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "solenoid:block/induction_furnace" },
+    "facing=south": { "model": "solenoid:block/induction_furnace", "y": 180 },
+    "facing=east": { "model": "solenoid:block/induction_furnace", "y": 90 },
+    "facing=west": { "model": "solenoid:block/induction_furnace", "y": 270 }
+  }
+}

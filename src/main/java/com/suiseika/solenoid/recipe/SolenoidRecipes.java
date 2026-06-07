@@ -9,6 +9,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -30,14 +31,14 @@ public class SolenoidRecipes {
     public static final Supplier<RecipeSerializer<CrushingRecipe>> CRUSHING_SERIALIZER = RECIPE_SERIALIZERS.register("crushing", () -> {
         MapCodec<CrushingRecipe> codec = RecordCodecBuilder.mapCodec(inst -> inst.group(
                 Ingredient.CODEC.fieldOf("ingredient").forGetter(CrushingRecipe::ingredient),
-                ItemStack.CODEC.fieldOf("result").forGetter(CrushingRecipe::result),
+                ItemStackTemplate.CODEC.fieldOf("result").forGetter(CrushingRecipe::result),
                 Codec.INT.fieldOf("energy").forGetter(CrushingRecipe::energy),
                 Codec.INT.fieldOf("time").forGetter(CrushingRecipe::time)
         ).apply(inst, CrushingRecipe::new));
 
         StreamCodec<RegistryFriendlyByteBuf, CrushingRecipe> streamCodec = StreamCodec.composite(
                 Ingredient.CONTENTS_STREAM_CODEC, CrushingRecipe::ingredient,
-                ItemStack.STREAM_CODEC, CrushingRecipe::result,
+                ItemStackTemplate.STREAM_CODEC, CrushingRecipe::result,
                 ByteBufCodecs.INT, CrushingRecipe::energy,
                 ByteBufCodecs.INT, CrushingRecipe::time,
                 CrushingRecipe::new

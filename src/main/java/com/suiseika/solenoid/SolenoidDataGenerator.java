@@ -156,6 +156,10 @@ public class SolenoidDataGenerator {
             addBlock(com.suiseika.solenoid.energy.EmfBlocks.EMF_SOURCE, "Creative EMF Source");
             addBlock(com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE, "Copper Cable");
             addBlock(com.suiseika.solenoid.energy.EmfBlocks.EMF_SINK, "EMF Sink");
+            addBlock(com.suiseika.solenoid.energy.EmfBlocks.CRUSHER, "Crusher");
+            addBlock(com.suiseika.solenoid.energy.EmfBlocks.SEPARATOR, "Electromagnetic Separator");
+            addBlock(com.suiseika.solenoid.energy.EmfBlocks.INDUCTION_FURNACE, "Induction Furnace");
+            addBlock(com.suiseika.solenoid.energy.EmfBlocks.CAPACITOR, "Capacitor");
             // EMF tooltips (role + sink capacity)
             add("tooltip.solenoid.hand_crank_generator", "Generates EMF when cranked.");
             add("tooltip.solenoid.hand_crank_generator.capacity", "Stores up to 50,000 EMF.");
@@ -163,6 +167,21 @@ public class SolenoidDataGenerator {
             add("tooltip.solenoid.copper_cable", "Moves EMF between machines.");
             add("tooltip.solenoid.emf_sink", "Receives up to 256 EMF/t. Comparator-readable.");
             add("tooltip.solenoid.emf_sink.capacity", "Stores up to 100,000 EMF");
+            add("tooltip.solenoid.crusher", "Crushes ores into dust");
+            add("tooltip.solenoid.separator", "Separates ore dust into slag and product");
+            add("tooltip.solenoid.induction_furnace", "Smelts items using EMF, no fuel needed");
+            add("tooltip.solenoid.capacitor", "Stores EMF and powers adjacent machines");
+            add("tooltip.solenoid.capacitor.capacity", "Capacity: 100,000 EMF");
+            // Machine GUI container titles
+            add("container.solenoid.crusher", "Crusher");
+            add("container.solenoid.separator", "Electromagnetic Separator");
+            add("container.solenoid.induction_furnace", "Induction Furnace");
+            // JEI recipe categories
+            add("gui.solenoid.category.crushing", "Crushing");
+            add("gui.solenoid.category.separating", "Electromagnetic Separation");
+            add("gui.solenoid.recipe.energy", "%s EMF");
+            add("gui.solenoid.recipe.time", "%s ticks");
+            add("gui.solenoid.recipe.chance", "%s%%");
 
             // Config screen
             add("solenoid.configuration.title", "Solenoid Configs");
@@ -198,8 +217,12 @@ public class SolenoidDataGenerator {
                     createOreDrop(MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get(), MagnetiteItems.RAW_MAGNETITE.get()));
             dropSelf(com.suiseika.solenoid.energy.EmfBlocks.HAND_CRANK_GENERATOR.get());
             dropSelf(com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE.get());
-            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.EMF_SOURCE.get()); 
+            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.EMF_SOURCE.get());
             dropSelf(com.suiseika.solenoid.energy.EmfBlocks.EMF_SINK.get());
+            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.CRUSHER.get());
+            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.SEPARATOR.get());
+            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.INDUCTION_FURNACE.get());
+            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.CAPACITOR.get());
         }
 
         @Override
@@ -210,7 +233,11 @@ public class SolenoidDataGenerator {
                     com.suiseika.solenoid.energy.EmfBlocks.HAND_CRANK_GENERATOR.get(),
                     com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE.get(),
                     com.suiseika.solenoid.energy.EmfBlocks.EMF_SOURCE.get(),
-                    com.suiseika.solenoid.energy.EmfBlocks.EMF_SINK.get());
+                    com.suiseika.solenoid.energy.EmfBlocks.EMF_SINK.get(),
+                    com.suiseika.solenoid.energy.EmfBlocks.CRUSHER.get(),
+                    com.suiseika.solenoid.energy.EmfBlocks.SEPARATOR.get(),
+                    com.suiseika.solenoid.energy.EmfBlocks.INDUCTION_FURNACE.get(),
+                    com.suiseika.solenoid.energy.EmfBlocks.CAPACITOR.get());
         }
     }
 

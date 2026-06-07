@@ -27,4 +27,29 @@ public final class EmfConstants {
 
     /** Total EMF the EMF Sink can store. */
     public static final int SINK_CAPACITY = 100_000;
+
+    // ---- Induction Furnace ----
+
+    /** EMF buffer of the Induction Furnace. */
+    public static final int INDUCTION_FURNACE_CAPACITY = 10_000;
+
+    /** Max EMF the Induction Furnace accepts per server tick. */
+    public static final int INDUCTION_FURNACE_INPUT = 1_000;
+
+    /** EMF consumed by the Induction Furnace per tick of progress. */
+    public static final int INDUCTION_FURNACE_ENERGY_PER_TICK = 40;
+
+    /** Ticks the Induction Furnace takes to smelt one item (vanilla furnace is 200). */
+    public static final int INDUCTION_FURNACE_SMELT_TICKS = 100;
+
+    /** Chance of a +1 bonus output when the Induction Furnace smelts a metal ingot. */
+    public static final float INDUCTION_FURNACE_BONUS_CHANCE = 0.25f;
+
+    // ---- Capacitor ----
+
+    /** Total EMF the Capacitor can store. */
+    public static final int CAPACITOR_CAPACITY = 100_000;
+
+    /** Max EMF the Capacitor moves (in or out) per server tick, shared across all faces. */
+    public static final int CAPACITOR_TRANSFER = 500;
 }

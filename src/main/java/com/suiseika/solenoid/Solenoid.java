@@ -62,6 +62,8 @@ public class Solenoid {
                 output.accept(EmfBlocks.HAND_CRANK_GENERATOR_ITEM);
                 output.accept(EmfBlocks.CRUSHER_ITEM);
                 output.accept(EmfBlocks.SEPARATOR_ITEM);
+                output.accept(EmfBlocks.INDUCTION_FURNACE_ITEM);
+                output.accept(EmfBlocks.CAPACITOR_ITEM);
                 output.accept(EmfBlocks.EMF_SOURCE_ITEM);
                 output.accept(EmfBlocks.COPPER_CABLE_ITEM);
                 output.accept(EmfBlocks.EMF_SINK_ITEM);

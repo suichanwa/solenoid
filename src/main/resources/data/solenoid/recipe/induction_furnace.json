@@ -1,0 +1,18 @@
+{
+  "_comment": "STARTER recipe - tunable",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IKI",
+    "KFK",
+    "IKI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "K": "solenoid:copper_coil",
+    "F": "minecraft:furnace"
+  },
+  "result": {
+    "id": "solenoid:induction_furnace",
+    "count": 1
+  }
+}

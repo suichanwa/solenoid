@@ -1,10 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "CCC"
+    " C ",
+    "CIC",
+    " C "
   ],
   "key": {
-    "C": "minecraft:copper_ingot"
+    "C": "minecraft:copper_ingot",
+    "I": "minecraft:stick"
   },
   "result": {
     "id": "solenoid:copper_coil",

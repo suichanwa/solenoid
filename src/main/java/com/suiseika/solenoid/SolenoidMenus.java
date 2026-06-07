@@ -1,6 +1,7 @@
 package com.suiseika.solenoid;
 
 import com.suiseika.solenoid.energy.CrusherMenu;
+import com.suiseika.solenoid.energy.InductionFurnaceMenu;
 import com.suiseika.solenoid.energy.SeparatorMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -16,4 +17,7 @@ public class SolenoidMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<SeparatorMenu>> SEPARATOR_MENU =
             MENUS.register("separator", () -> IMenuTypeExtension.create(SeparatorMenu::new));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<InductionFurnaceMenu>> INDUCTION_FURNACE_MENU =
+            MENUS.register("induction_furnace", () -> IMenuTypeExtension.create(InductionFurnaceMenu::new));
 }

@@ -60,6 +60,16 @@ public final class EmfBlocks {
             SeparatorBlock::new,
             p -> p.strength(3.5f).sound(SoundType.METAL).requiresCorrectToolForDrops());
 
+    public static final DeferredBlock<InductionFurnaceBlock> INDUCTION_FURNACE = BLOCKS.registerBlock(
+            "induction_furnace",
+            InductionFurnaceBlock::new,
+            p -> p.strength(3.5f).sound(SoundType.METAL).requiresCorrectToolForDrops());
+
+    public static final DeferredBlock<CapacitorBlock> CAPACITOR = BLOCKS.registerBlock(
+            "capacitor",
+            CapacitorBlock::new,
+            p -> p.strength(3.0f).sound(SoundType.METAL).requiresCorrectToolForDrops());
+
     // ---- Block items (with EMF role tooltips) ----
 
     public static final DeferredItem<BlockItem> EMF_SOURCE_ITEM = ITEMS.registerItem(
@@ -94,6 +104,17 @@ public final class EmfBlocks {
             props -> new EmfBlockItem(SEPARATOR.get(), props, "tooltip.solenoid.separator"),
             p -> p.useBlockDescriptionPrefix());
 
+    public static final DeferredItem<BlockItem> INDUCTION_FURNACE_ITEM = ITEMS.registerItem(
+            "induction_furnace",
+            props -> new EmfBlockItem(INDUCTION_FURNACE.get(), props, "tooltip.solenoid.induction_furnace"),
+            p -> p.useBlockDescriptionPrefix());
+
+    public static final DeferredItem<BlockItem> CAPACITOR_ITEM = ITEMS.registerItem(
+            "capacitor",
+            props -> new EmfBlockItem(CAPACITOR.get(), props,
+                    "tooltip.solenoid.capacitor", "tooltip.solenoid.capacitor.capacity"),
+            p -> p.useBlockDescriptionPrefix());
+
     // ---- Block entity types ----
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EmfSourceBlockEntity>> EMF_SOURCE_BE =
@@ -120,6 +141,14 @@ public final class EmfBlocks {
             BLOCK_ENTITIES.register("separator",
                     () -> new BlockEntityType<>(SeparatorBlockEntity::new, SEPARATOR.get()));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<InductionFurnaceBlockEntity>> INDUCTION_FURNACE_BE =
+            BLOCK_ENTITIES.register("induction_furnace",
+                    () -> new BlockEntityType<>(InductionFurnaceBlockEntity::new, INDUCTION_FURNACE.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CapacitorBlockEntity>> CAPACITOR_BE =
+            BLOCK_ENTITIES.register("capacitor",
+                    () -> new BlockEntityType<>(CapacitorBlockEntity::new, CAPACITOR.get()));
+
     /** Wire the deferred registers to the mod event bus. Called from the main mod constructor. */
     public static void register(net.neoforged.bus.api.IEventBus modEventBus) {
         BLOCKS.register(modEventBus);
@@ -144,10 +173,16 @@ public final class EmfBlocks {
                 (be, side) -> be.getEnergyHandler(side));
         event.registerBlockEntity(Capabilities.Energy.BLOCK, SEPARATOR_BE.get(),
                 (be, side) -> be.getEnergyHandler(side));
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, INDUCTION_FURNACE_BE.get(),
+                (be, side) -> be.getEnergyHandler(side));
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, CAPACITOR_BE.get(),
+                (be, side) -> be.getEnergyHandler(side));
 
         event.registerBlockEntity(Capabilities.Item.BLOCK, CRUSHER_BE.get(),
                 (be, side) -> be.getItemHandler(side));
         event.registerBlockEntity(Capabilities.Item.BLOCK, SEPARATOR_BE.get(),
+                (be, side) -> be.getItemHandler(side));
+        event.registerBlockEntity(Capabilities.Item.BLOCK, INDUCTION_FURNACE_BE.get(),
                 (be, side) -> be.getItemHandler(side));
     }
 }

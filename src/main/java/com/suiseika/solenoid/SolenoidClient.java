@@ -1,6 +1,7 @@
 package com.suiseika.solenoid;
 
 import com.suiseika.solenoid.energy.CrusherScreen;
+import com.suiseika.solenoid.energy.InductionFurnaceScreen;
 import com.suiseika.solenoid.energy.SeparatorScreen;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
@@ -36,5 +37,6 @@ public class SolenoidClient {
     static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(SolenoidMenus.CRUSHER_MENU.get(), CrusherScreen::new);
         event.register(SolenoidMenus.SEPARATOR_MENU.get(), SeparatorScreen::new);
+        event.register(SolenoidMenus.INDUCTION_FURNACE_MENU.get(), InductionFurnaceScreen::new);
     }
 }

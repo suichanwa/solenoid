@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "solenoid:block/capacitor" },
+    "facing=south": { "model": "solenoid:block/capacitor", "y": 180 },
+    "facing=east": { "model": "solenoid:block/capacitor", "y": 90 },
+    "facing=west": { "model": "solenoid:block/capacitor", "y": 270 }
+  }
+}
