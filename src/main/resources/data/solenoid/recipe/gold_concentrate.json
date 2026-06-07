@@ -1,0 +1,13 @@
+{
+  "type": "solenoid:separating",
+  "ingredient": "solenoid:crushed_gold",
+  "result": {
+    "id": "solenoid:gold_concentrate"
+  },
+  "secondary": {
+    "id": "solenoid:gold_slag"
+  },
+  "secondaryChance": 0.25,
+  "energy": 2500,
+  "time": 120
+}

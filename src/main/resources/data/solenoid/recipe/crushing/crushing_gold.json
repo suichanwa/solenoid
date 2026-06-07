@@ -1,0 +1,10 @@
+{
+  "type": "solenoid:crushing",
+  "ingredient": "minecraft:raw_gold",
+  "result": {
+    "id": "solenoid:crushed_gold",
+    "count": 2
+  },
+  "energy": 4000,
+  "time": 180
+}

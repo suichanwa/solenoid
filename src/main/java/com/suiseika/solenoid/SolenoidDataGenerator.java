@@ -309,6 +309,18 @@ public class SolenoidDataGenerator {
 
             tag(Tags.Items.INGOTS).add(ingot);
             tag(ctag("ingots/magnetite")).add(ingot);
+
+            for (ProcessedOre ore : ProcessedOre.values()) {
+                for (ProcessedForm form : ProcessedForm.values()) {
+                    Item item = OreProcessingItems.getItem(ore, form).get();
+                    String path = switch (form) {
+                        case CRUSHED -> "crushed_ores/";
+                        case CONCENTRATE -> "ore_concentrates/";
+                        case SLAG -> "slags/";
+                    } + ore.getName();
+                    tag(ctag(path)).add(item);
+                }
+            }
         }
 
         private static TagKey<Item> ctag(String path) {
