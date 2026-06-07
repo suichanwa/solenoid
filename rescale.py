@@ -44,15 +44,23 @@ def sanitize(name):
     return base + ".png"
 
 def remove_bg(img):
-    """Make the border-connected bright/uniform background transparent.
-    Border-flood so interior light pixels (e.g. white highlights) survive."""
+    """Make the border-connected uniform background transparent by matching the corner color."""
     try:
         from scipy import ndimage
     except ImportError:
         sys.exit("--item needs scipy:  pip install scipy")
+        
     a = np.asarray(img.convert("RGB")).astype(np.int16)
-    mx, mn = a.max(2), a.min(2)
-    cand = ((mx - mn) <= 14) & (mn >= 180)        # near-neutral AND bright = bg (white/checker)
+    
+    # Grab the color of the top-left corner pixel dynamically
+    corner_color = a[0, 0]
+    
+    # Calculate color distance from the corner pixel across RGB channels
+    color_dist = np.abs(a - corner_color).sum(axis=2)
+    
+    # A distance threshold of 45 handles subtle compression noise/shadows smoothly
+    cand = color_dist < 45  
+    
     lbl, _ = ndimage.label(cand)
     edge = set(np.unique(np.concatenate([lbl[0, :], lbl[-1, :], lbl[:, 0], lbl[:, -1]])))
     edge.discard(0)
