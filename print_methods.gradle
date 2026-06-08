@@ -1,11 +1,14 @@
-task printValueOutputMethods {
+task printMethods {
     doLast {
-        def cl = null
+        if (!project.hasProperty('className')) {
+            println "Please provide a class name with -PclassName=..."
+            return
+        }
         try {
-            cl = Class.forName('net.minecraft.world.level.storage.ValueOutput', true, project.buildscript.classLoader)
+            def cl = Class.forName(project.property('className'))
             cl.getMethods().each { println it }
-        } catch(Exception e) {
-            println "Class not found in buildscript classloader, trying something else..."
+        } catch (Exception e) {
+            println "Error: " + e.getMessage()
         }
     }
 }

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "solenoid:block/chemical_reactor" },
+    "facing=south": { "model": "solenoid:block/chemical_reactor", "y": 180 },
+    "facing=east": { "model": "solenoid:block/chemical_reactor", "y": 90 },
+    "facing=west": { "model": "solenoid:block/chemical_reactor", "y": 270 }
+  }
+}

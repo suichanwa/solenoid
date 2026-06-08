@@ -24,4 +24,10 @@ public final class SolenoidDataComponents {
             COMPONENTS.registerComponentType("emf_energy", builder -> builder
                     .persistent(Codec.INT)
                     .networkSynchronized(ByteBufCodecs.INT));
+
+    /** Toggle state for the magnet charm. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ACTIVE =
+            COMPONENTS.registerComponentType("active", builder -> builder
+                    .persistent(Codec.BOOL)
+                    .networkSynchronized(ByteBufCodecs.BOOL));
 }

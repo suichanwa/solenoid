@@ -1,7 +1,10 @@
 package com.suiseika.solenoid;
 
 import com.suiseika.solenoid.energy.CapacitorMenu;
+import com.suiseika.solenoid.energy.CentrifugeMenu;
+import com.suiseika.solenoid.energy.ChemicalReactorMenu;
 import com.suiseika.solenoid.energy.CrusherMenu;
+import com.suiseika.solenoid.energy.DigesterMenu;
 import com.suiseika.solenoid.energy.InductionFurnaceMenu;
 import com.suiseika.solenoid.energy.SeparatorMenu;
 import net.minecraft.core.registries.Registries;
@@ -24,4 +27,13 @@ public class SolenoidMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<CapacitorMenu>> CAPACITOR_MENU =
             MENUS.register("capacitor", () -> IMenuTypeExtension.create(CapacitorMenu::new));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<ChemicalReactorMenu>> CHEMICAL_REACTOR_MENU =
+            MENUS.register("chemical_reactor", () -> IMenuTypeExtension.create(ChemicalReactorMenu::new));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<DigesterMenu>> DIGESTER_MENU =
+            MENUS.register("digester", () -> IMenuTypeExtension.create(DigesterMenu::new));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<CentrifugeMenu>> CENTRIFUGE_MENU =
+            MENUS.register("centrifuge", () -> IMenuTypeExtension.create(CentrifugeMenu::new));
 }

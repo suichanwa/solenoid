@@ -1,0 +1,8 @@
+{
+  "type": "solenoid:reacting",
+  "ingredient": "solenoid:sawdust",
+  "inputCount": 4,
+  "result": { "id": "solenoid:lye", "count": 1 },
+  "energy": 2400,
+  "time": 120
+}

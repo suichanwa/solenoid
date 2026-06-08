@@ -1,0 +1,10 @@
+{
+  "type": "solenoid:separating",
+  "ingredient": "solenoid:crushed_monazite",
+  "outputs": [
+    { "result": { "id": "solenoid:monazite_concentrate", "count": 1 } },
+    { "result": { "id": "minecraft:sand", "count": 1 }, "chance": 0.5 }
+  ],
+  "energy": 4000,
+  "time": 160
+}

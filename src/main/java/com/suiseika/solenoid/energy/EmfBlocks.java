@@ -70,6 +70,21 @@ public final class EmfBlocks {
             CapacitorBlock::new,
             p -> p.strength(3.0f).sound(SoundType.METAL).requiresCorrectToolForDrops());
 
+    public static final DeferredBlock<ChemicalReactorBlock> CHEMICAL_REACTOR = BLOCKS.registerBlock(
+            "chemical_reactor",
+            ChemicalReactorBlock::new,
+            p -> p.strength(3.5f).sound(SoundType.METAL).requiresCorrectToolForDrops());
+
+    public static final DeferredBlock<DigesterBlock> DIGESTER = BLOCKS.registerBlock(
+            "digester",
+            DigesterBlock::new,
+            p -> p.strength(3.5f).sound(SoundType.METAL).requiresCorrectToolForDrops());
+
+    public static final DeferredBlock<CentrifugeBlock> CENTRIFUGE = BLOCKS.registerBlock(
+            "centrifuge",
+            CentrifugeBlock::new,
+            p -> p.strength(3.5f).sound(SoundType.METAL).requiresCorrectToolForDrops());
+
     // ---- Block items (with EMF role tooltips) ----
 
     public static final DeferredItem<BlockItem> EMF_SOURCE_ITEM = ITEMS.registerItem(
@@ -115,6 +130,21 @@ public final class EmfBlocks {
                     "tooltip.solenoid.capacitor", "tooltip.solenoid.capacitor.capacity"),
             p -> p.useBlockDescriptionPrefix());
 
+    public static final DeferredItem<BlockItem> CHEMICAL_REACTOR_ITEM = ITEMS.registerItem(
+            "chemical_reactor",
+            props -> new EmfBlockItem(CHEMICAL_REACTOR.get(), props, "tooltip.solenoid.chemical_reactor"),
+            p -> p.useBlockDescriptionPrefix());
+
+    public static final DeferredItem<BlockItem> DIGESTER_ITEM = ITEMS.registerItem(
+            "digester",
+            props -> new EmfBlockItem(DIGESTER.get(), props, "tooltip.solenoid.digester"),
+            p -> p.useBlockDescriptionPrefix());
+
+    public static final DeferredItem<BlockItem> CENTRIFUGE_ITEM = ITEMS.registerItem(
+            "centrifuge",
+            props -> new EmfBlockItem(CENTRIFUGE.get(), props, "tooltip.solenoid.centrifuge"),
+            p -> p.useBlockDescriptionPrefix());
+
     // ---- Block entity types ----
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EmfSourceBlockEntity>> EMF_SOURCE_BE =
@@ -149,6 +179,18 @@ public final class EmfBlocks {
             BLOCK_ENTITIES.register("capacitor",
                     () -> new BlockEntityType<>(CapacitorBlockEntity::new, CAPACITOR.get()));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ChemicalReactorBlockEntity>> CHEMICAL_REACTOR_BE =
+            BLOCK_ENTITIES.register("chemical_reactor",
+                    () -> new BlockEntityType<>(ChemicalReactorBlockEntity::new, CHEMICAL_REACTOR.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DigesterBlockEntity>> DIGESTER_BE =
+            BLOCK_ENTITIES.register("digester",
+                    () -> new BlockEntityType<>(DigesterBlockEntity::new, DIGESTER.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CentrifugeBlockEntity>> CENTRIFUGE_BE =
+            BLOCK_ENTITIES.register("centrifuge",
+                    () -> new BlockEntityType<>(CentrifugeBlockEntity::new, CENTRIFUGE.get()));
+
     /** Wire the deferred registers to the mod event bus. Called from the main mod constructor. */
     public static void register(net.neoforged.bus.api.IEventBus modEventBus) {
         BLOCKS.register(modEventBus);
@@ -177,12 +219,24 @@ public final class EmfBlocks {
                 (be, side) -> be.getEnergyHandler(side));
         event.registerBlockEntity(Capabilities.Energy.BLOCK, CAPACITOR_BE.get(),
                 (be, side) -> be.getEnergyHandler(side));
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, CHEMICAL_REACTOR_BE.get(),
+                (be, side) -> be.getEnergyHandler(side));
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, DIGESTER_BE.get(),
+                (be, side) -> be.getEnergyHandler(side));
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, CENTRIFUGE_BE.get(),
+                (be, side) -> be.getEnergyHandler(side));
 
         event.registerBlockEntity(Capabilities.Item.BLOCK, CRUSHER_BE.get(),
                 (be, side) -> be.getItemHandler(side));
         event.registerBlockEntity(Capabilities.Item.BLOCK, SEPARATOR_BE.get(),
                 (be, side) -> be.getItemHandler(side));
         event.registerBlockEntity(Capabilities.Item.BLOCK, INDUCTION_FURNACE_BE.get(),
+                (be, side) -> be.getItemHandler(side));
+        event.registerBlockEntity(Capabilities.Item.BLOCK, CHEMICAL_REACTOR_BE.get(),
+                (be, side) -> be.getItemHandler(side));
+        event.registerBlockEntity(Capabilities.Item.BLOCK, DIGESTER_BE.get(),
+                (be, side) -> be.getItemHandler(side));
+        event.registerBlockEntity(Capabilities.Item.BLOCK, CENTRIFUGE_BE.get(),
                 (be, side) -> be.getItemHandler(side));
     }
 }

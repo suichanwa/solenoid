@@ -82,6 +82,15 @@ A tech mod about magnets
     ordering="NONE"
     side="BOTH"
 
+# Curios API - provides the bauble/charm slot the Magnet Charm and Repulsor are worn in.
+[[dependencies.${mod_id}]]
+    modId="curios"
+    type="required"
+    # Pre-release bound so the 15.0.0-beta.x build satisfies the range (Maven sorts -beta before 15.0.0).
+    versionRange="[15.0.0-beta.1,)"
+    ordering="AFTER"
+    side="BOTH"
+
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares
 # that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't
 # stop your mod loading on the server for example.

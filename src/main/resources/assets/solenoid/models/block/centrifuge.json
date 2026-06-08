@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "particle": "solenoid:block/machine_side",
+    "top": "solenoid:block/machine_side",
+    "front": "solenoid:block/centrifuge_front",
+    "side": "solenoid:block/machine_side"
+  }
+}

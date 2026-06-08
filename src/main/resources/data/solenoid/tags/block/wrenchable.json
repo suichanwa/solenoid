@@ -4,6 +4,9 @@
     "solenoid:separator",
     "solenoid:induction_furnace",
     "solenoid:capacitor",
-    "solenoid:hand_crank_generator"
+    "solenoid:hand_crank_generator",
+    "solenoid:chemical_reactor",
+    "solenoid:digester",
+    "solenoid:centrifuge"
   ]
 }

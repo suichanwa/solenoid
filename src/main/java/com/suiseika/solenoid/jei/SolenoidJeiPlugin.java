@@ -2,7 +2,10 @@ package com.suiseika.solenoid.jei;
 
 import com.suiseika.solenoid.Solenoid;
 import com.suiseika.solenoid.energy.EmfBlocks;
+import com.suiseika.solenoid.recipe.CentrifugingRecipe;
 import com.suiseika.solenoid.recipe.CrushingRecipe;
+import com.suiseika.solenoid.recipe.DigestingRecipe;
+import com.suiseika.solenoid.recipe.ReactingRecipe;
 import com.suiseika.solenoid.recipe.SeparatingRecipe;
 import com.suiseika.solenoid.recipe.SolenoidRecipes;
 
@@ -29,6 +32,12 @@ public class SolenoidJeiPlugin implements IModPlugin {
             new RecipeType<>(Identifier.fromNamespaceAndPath(Solenoid.MODID, "crushing"), CrushingRecipe.class);
     public static final RecipeType<SeparatingRecipe> SEPARATING =
             new RecipeType<>(Identifier.fromNamespaceAndPath(Solenoid.MODID, "separating"), SeparatingRecipe.class);
+    public static final RecipeType<ReactingRecipe> REACTING =
+            new RecipeType<>(Identifier.fromNamespaceAndPath(Solenoid.MODID, "reacting"), ReactingRecipe.class);
+    public static final RecipeType<DigestingRecipe> DIGESTING =
+            new RecipeType<>(Identifier.fromNamespaceAndPath(Solenoid.MODID, "digesting"), DigestingRecipe.class);
+    public static final RecipeType<CentrifugingRecipe> CENTRIFUGING =
+            new RecipeType<>(Identifier.fromNamespaceAndPath(Solenoid.MODID, "centrifuging"), CentrifugingRecipe.class);
 
     @Override
     public Identifier getPluginUid() {
@@ -40,7 +49,10 @@ public class SolenoidJeiPlugin implements IModPlugin {
         IGuiHelper guiHelper = registration.getJeiHelpers().getGuiHelper();
         registration.addRecipeCategories(
                 new CrushingRecipeCategory(guiHelper),
-                new SeparatingRecipeCategory(guiHelper)
+                new SeparatingRecipeCategory(guiHelper),
+                new ReactingRecipeCategory(guiHelper),
+                new DigestingRecipeCategory(guiHelper),
+                new CentrifugingRecipeCategory(guiHelper)
         );
     }
 
@@ -62,12 +74,22 @@ public class SolenoidJeiPlugin implements IModPlugin {
                 .map(RecipeHolder::value)
                 .toList();
         registration.addRecipes(SEPARATING, separating);
+
+        registration.addRecipes(REACTING, recipes.byType(SolenoidRecipes.REACTING_TYPE.get())
+                .stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(DIGESTING, recipes.byType(SolenoidRecipes.DIGESTING_TYPE.get())
+                .stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(CENTRIFUGING, recipes.byType(SolenoidRecipes.CENTRIFUGING_TYPE.get())
+                .stream().map(RecipeHolder::value).toList());
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addCraftingStation(CRUSHING, EmfBlocks.CRUSHER_ITEM.get());
         registration.addCraftingStation(SEPARATING, EmfBlocks.SEPARATOR_ITEM.get());
+        registration.addCraftingStation(REACTING, EmfBlocks.CHEMICAL_REACTOR_ITEM.get());
+        registration.addCraftingStation(DIGESTING, EmfBlocks.DIGESTER_ITEM.get());
+        registration.addCraftingStation(CENTRIFUGING, EmfBlocks.CENTRIFUGE_ITEM.get());
         registration.addCraftingStation(RecipeTypes.SMELTING, EmfBlocks.INDUCTION_FURNACE_ITEM.get());
     }
 }

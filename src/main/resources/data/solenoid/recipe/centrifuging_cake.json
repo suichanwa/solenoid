@@ -1,0 +1,10 @@
+{
+  "type": "solenoid:centrifuging",
+  "ingredient": "solenoid:rare_earth_cake",
+  "outputs": [
+    { "result": { "id": "solenoid:cerium_dust", "count": 2 } },
+    { "result": { "id": "solenoid:neodymium_dust", "count": 1 } }
+  ],
+  "energy": 4800,
+  "time": 160
+}

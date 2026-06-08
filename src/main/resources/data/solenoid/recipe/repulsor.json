@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MCM",
+    "CKC",
+    "MCM"
+  ],
+  "key": {
+    "M": {
+      "item": "solenoid:magnet"
+    },
+    "C": {
+      "item": "solenoid:copper_coil"
+    },
+    "K": {
+      "item": "solenoid:screen"
+    }
+  },
+  "result": {
+    "id": "solenoid:repulsor",
+    "count": 1
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "solenoid:block/digester" },
+    "facing=south": { "model": "solenoid:block/digester", "y": 180 },
+    "facing=east": { "model": "solenoid:block/digester", "y": 90 },
+    "facing=west": { "model": "solenoid:block/digester", "y": 270 }
+  }
+}

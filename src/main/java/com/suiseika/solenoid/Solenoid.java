@@ -47,6 +47,14 @@ public class Solenoid {
                 // Components
                 output.accept(MagnetiteItems.RAW_MAGNETITE);
                 output.accept(MagnetiteItems.RAW_MONAZITE);
+                // Monazite processing line intermediates
+                output.accept(MagnetiteItems.CRUSHED_MONAZITE);
+                output.accept(MagnetiteItems.MONAZITE_CONCENTRATE);
+                output.accept(MagnetiteItems.RARE_EARTH_CAKE);
+                output.accept(MagnetiteItems.THORIUM_SLUDGE);
+                output.accept(MagnetiteItems.PHOSPHATE);
+                output.accept(MagnetiteItems.SAWDUST);
+                output.accept(MagnetiteItems.LYE);
                 output.accept(MagnetiteItems.MAGNETITE_INGOT);
                 output.accept(MagnetiteItems.CERIUM_INGOT);
                 output.accept(MagnetiteItems.NEODYMIUM_INGOT);
@@ -72,12 +80,19 @@ public class Solenoid {
                 output.accept(MagnetiteItems.MULTIMETER);
                 output.accept(MagnetiteItems.SCREEN);
                 output.accept(MagnetiteItems.INDUCTION_SURVEYOR);
+                output.accept(MagnetiteItems.MACHINE_FRAME);
+                output.accept(MagnetiteItems.SCREW);
+                output.accept(MagnetiteItems.MAGNET_CHARM);
+                output.accept(MagnetiteItems.REPULSOR);
                 // EMF energy blocks
                 output.accept(EmfBlocks.HAND_CRANK_GENERATOR_ITEM);
                 output.accept(EmfBlocks.CRUSHER_ITEM);
                 output.accept(EmfBlocks.SEPARATOR_ITEM);
                 output.accept(EmfBlocks.INDUCTION_FURNACE_ITEM);
                 output.accept(EmfBlocks.CAPACITOR_ITEM);
+                output.accept(EmfBlocks.CHEMICAL_REACTOR_ITEM);
+                output.accept(EmfBlocks.DIGESTER_ITEM);
+                output.accept(EmfBlocks.CENTRIFUGE_ITEM);
                 output.accept(EmfBlocks.EMF_SOURCE_ITEM);
                 output.accept(EmfBlocks.COPPER_CABLE_ITEM);
                 output.accept(EmfBlocks.EMF_SINK_ITEM);
@@ -104,6 +119,8 @@ public class Solenoid {
         MagnetometerItems.ITEMS.register(modEventBus);
         modEventBus.addListener(MagnetometerItem::registerCapabilities);
         modEventBus.addListener(InductionSurveyorItem::registerCapabilities);
+        modEventBus.addListener(MagnetCharmItem::registerCapabilities);
+        modEventBus.addListener(RepulsorItem::registerCapabilities);
 
         // Register recipes
         SolenoidRecipes.RECIPE_TYPES.register(modEventBus);
@@ -144,6 +161,9 @@ public class Solenoid {
     public void onDatapackSync(net.neoforged.neoforge.event.OnDatapackSyncEvent event) {
         event.sendRecipes(SolenoidRecipes.CRUSHING_TYPE.get());
         event.sendRecipes(SolenoidRecipes.SEPARATING_TYPE.get());
+        event.sendRecipes(SolenoidRecipes.REACTING_TYPE.get());
+        event.sendRecipes(SolenoidRecipes.DIGESTING_TYPE.get());
+        event.sendRecipes(SolenoidRecipes.CENTRIFUGING_TYPE.get());
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

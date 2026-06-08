@@ -1,0 +1,7 @@
+{
+  "type": "solenoid:crushing",
+  "ingredient": "solenoid:raw_monazite",
+  "result": { "id": "solenoid:crushed_monazite", "count": 1 },
+  "energy": 4800,
+  "time": 160
+}

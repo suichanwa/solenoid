@@ -1,7 +1,10 @@
 package com.suiseika.solenoid;
 
 import com.suiseika.solenoid.energy.CapacitorScreen;
+import com.suiseika.solenoid.energy.CentrifugeScreen;
+import com.suiseika.solenoid.energy.ChemicalReactorScreen;
 import com.suiseika.solenoid.energy.CrusherScreen;
+import com.suiseika.solenoid.energy.DigesterScreen;
 import com.suiseika.solenoid.energy.InductionFurnaceScreen;
 import com.suiseika.solenoid.energy.SeparatorScreen;
 import net.minecraft.client.Minecraft;
@@ -40,5 +43,8 @@ public class SolenoidClient {
         event.register(SolenoidMenus.SEPARATOR_MENU.get(), SeparatorScreen::new);
         event.register(SolenoidMenus.INDUCTION_FURNACE_MENU.get(), InductionFurnaceScreen::new);
         event.register(SolenoidMenus.CAPACITOR_MENU.get(), CapacitorScreen::new);
+        event.register(SolenoidMenus.CHEMICAL_REACTOR_MENU.get(), ChemicalReactorScreen::new);
+        event.register(SolenoidMenus.DIGESTER_MENU.get(), DigesterScreen::new);
+        event.register(SolenoidMenus.CENTRIFUGE_MENU.get(), CentrifugeScreen::new);
     }
 }

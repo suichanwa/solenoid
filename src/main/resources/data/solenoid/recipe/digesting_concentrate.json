@@ -1,0 +1,12 @@
+{
+  "type": "solenoid:digesting",
+  "ingredient": "solenoid:monazite_concentrate",
+  "reagent": "solenoid:lye",
+  "outputs": [
+    { "result": { "id": "solenoid:rare_earth_cake", "count": 1 } },
+    { "result": { "id": "solenoid:phosphate", "count": 1 } },
+    { "result": { "id": "solenoid:thorium_sludge", "count": 1 }, "chance": 0.5 }
+  ],
+  "energy": 8000,
+  "time": 200
+}

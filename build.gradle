@@ -38,6 +38,11 @@ repositories {
         name = "BlameJared"
         url = "https://maven.blamejared.com/"
     }
+    // Curios API (baubles-style equipment slots).
+    maven {
+        name = "Illuseon"
+        url = "https://maven.theillusivec4.top/"
+    }
 }
 
 base {
@@ -133,6 +138,10 @@ dependencies {
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
+    // Curios API — hard dependency. Full jar on both compile and runtime classpath so the charm
+    // can be registered as a curio and worn in a slot.
+    implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
     // The group id is ignored when searching -- in this case, it is "blank"
@@ -197,3 +206,5 @@ idea {
         downloadJavadoc = true
     }
 }
+
+apply from: 'print_methods.gradle'

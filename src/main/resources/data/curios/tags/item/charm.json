@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "solenoid:magnet_charm",
+    "solenoid:repulsor"
+  ]
+}
