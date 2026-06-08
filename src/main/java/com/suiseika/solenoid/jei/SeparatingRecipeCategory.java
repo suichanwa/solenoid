@@ -59,26 +59,27 @@ public class SeparatingRecipeCategory implements IRecipeCategory<SeparatingRecip
     public void setRecipe(IRecipeLayoutBuilder builder, SeparatingRecipe recipe, IFocusGroup focuses) {
         builder.addInputSlot(4, 22)
                 .setStandardSlotBackground()
-                .addIngredients(recipe.ingredient());
+                .addIngredients(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, 
+                        recipe.ingredient().items().map(net.minecraft.world.item.ItemStack::new).toList());
 
         // Column 1
         if (recipe.outputs().size() >= 1) {
             builder.addOutputSlot(66, 8)
                     .setOutputSlotBackground()
-                    .addItemStack(recipe.outputs().get(0).create());
+                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.outputs().get(0).create());
         }
 
         if (recipe.outputs().size() >= 2) {
             builder.addOutputSlot(66, 36)
                     .setStandardSlotBackground()
-                    .addItemStack(recipe.outputs().get(1).create());
+                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.outputs().get(1).create());
         }
 
         // Column 2
         if (recipe.outputs().size() >= 3) {
             builder.addOutputSlot(94, 22)
                     .setStandardSlotBackground()
-                    .addItemStack(recipe.outputs().get(2).create());
+                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.outputs().get(2).create());
         }
     }
 

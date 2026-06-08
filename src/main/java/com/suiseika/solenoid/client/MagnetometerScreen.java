@@ -1,10 +1,8 @@
 package com.suiseika.solenoid.client;
 
 import com.suiseika.solenoid.MagnetometerItem;
-import com.suiseika.solenoid.MagnetometerItems;
 import com.suiseika.solenoid.SolenoidDataComponents;
 import com.suiseika.solenoid.SolenoidTags;
-import com.suiseika.solenoid.MagnetiteItems;
 import com.suiseika.solenoid.InductionSurveyorItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

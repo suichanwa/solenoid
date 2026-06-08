@@ -36,10 +36,8 @@ import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-@EventBusSubscriber(modid = Solenoid.MODID)
 public class SolenoidDataGenerator {
 
-    @SubscribeEvent
     public static void gatherData(GatherDataEvent.Client event) {
         var gen = event.getGenerator();
         var output = gen.getPackOutput();
@@ -135,6 +133,20 @@ public class SolenoidDataGenerator {
             addItem(MagnetiteItems.NEODYMIUM_INGOT, "Neodymium Ingot");
             addItem(MagnetiteItems.THORIUM_INGOT, "Thorium Ingot");
 
+            addItem(MagnetiteItems.MACHINE_FRAME, "Machines Frame");
+            addItem(MagnetiteItems.SCREW, "Screw");
+            addItem(MagnetiteItems.MAGNET_CHARM, "Magnet Charm");
+            addItem(MagnetiteItems.REPULSOR, "Repulsor");
+
+            // Monazite processing line intermediates
+            addItem(MagnetiteItems.SAWDUST, "Sawdust");
+            addItem(MagnetiteItems.LYE, "Lye");
+            addItem(MagnetiteItems.CRUSHED_MONAZITE, "Crushed Monazite");
+            addItem(MagnetiteItems.MONAZITE_CONCENTRATE, "Monazite Concentrate");
+            addItem(MagnetiteItems.RARE_EARTH_CAKE, "Rare Earth Cake");
+            addItem(MagnetiteItems.THORIUM_SLUDGE, "Thorium Sludge");
+            addItem(MagnetiteItems.PHOSPHATE, "Phosphate");
+
             // Ore processing items
             for (ProcessedOre ore : ProcessedOre.values()) {
                 String oreName = ore.getName().substring(0, 1).toUpperCase() + ore.getName().substring(1);
@@ -155,10 +167,14 @@ public class SolenoidDataGenerator {
             addBlock(com.suiseika.solenoid.energy.EmfBlocks.EMF_SOURCE, "Creative EMF Source");
             addBlock(com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE, "Copper Cable");
             addBlock(com.suiseika.solenoid.energy.EmfBlocks.EMF_SINK, "EMF Sink");
-            addBlock(com.suiseika.solenoid.energy.EmfBlocks.CRUSHER, "Crusher");
+            addBlock(com.suiseika.solenoid.energy.EmfBlocks.CRUSHER, "Electromagnetic Crusher");
             addBlock(com.suiseika.solenoid.energy.EmfBlocks.SEPARATOR, "Electromagnetic Separator");
             addBlock(com.suiseika.solenoid.energy.EmfBlocks.INDUCTION_FURNACE, "Induction Furnace");
-            addBlock(com.suiseika.solenoid.energy.EmfBlocks.CAPACITOR, "Capacitor");
+            addBlock(com.suiseika.solenoid.energy.EmfBlocks.CAPACITOR, "Electromagnetic Capacitor");
+            addBlock(com.suiseika.solenoid.energy.EmfBlocks.CHEMICAL_REACTOR, "Electromagnetic Chemical Reactor");
+            addBlock(com.suiseika.solenoid.energy.EmfBlocks.DIGESTER, "Electromagnetic Digester");
+            addBlock(com.suiseika.solenoid.energy.EmfBlocks.CENTRIFUGE, "Electromagnetic Centrifuge");
+
             // EMF tooltips (role + sink capacity)
             add("tooltip.solenoid.hand_crank_generator", "Generates EMF when cranked.");
             add("tooltip.solenoid.hand_crank_generator.capacity", "Stores up to 50,000 EMF.");
@@ -169,6 +185,9 @@ public class SolenoidDataGenerator {
             add("tooltip.solenoid.crusher", "Crushes ores into dust");
             add("tooltip.solenoid.separator", "Separates ore dust into slag and product");
             add("tooltip.solenoid.induction_furnace", "Smelts items using EMF, no fuel needed");
+            add("tooltip.solenoid.chemical_reactor", "Reacts materials using EMF");
+            add("tooltip.solenoid.digester", "Digests materials using EMF");
+            add("tooltip.solenoid.centrifuge", "Centrifuges materials using EMF");
             add("item.solenoid.magnetometer", "Solenoid Magnetometer");
             add("item.solenoid.wrench", "Solenoid Wrench");
             add("item.solenoid.multimeter", "Multimeter");
@@ -185,10 +204,13 @@ public class SolenoidDataGenerator {
             add("tooltip.solenoid.capacitor", "Stores EMF and powers adjacent machines");
             add("tooltip.solenoid.capacitor.capacity", "Capacity: 100,000 EMF");
             // Machine GUI container titles
-            add("container.solenoid.crusher", "Crusher");
+            add("container.solenoid.crusher", "Electromagnetic Crusher");
             add("container.solenoid.separator", "Electromagnetic Separator");
             add("container.solenoid.induction_furnace", "Induction Furnace");
-            add("container.solenoid.capacitor", "Capacitor");
+            add("container.solenoid.capacitor", "Electromagnetic Capacitor");
+            add("container.solenoid.chemical_reactor", "Electromagnetic Chemical Reactor");
+            add("container.solenoid.digester", "Electromagnetic Digester");
+            add("container.solenoid.centrifuge", "Electromagnetic Centrifuge");
             // JEI recipe categories
             add("gui.solenoid.category.crushing", "Crushing");
             add("gui.solenoid.category.separating", "Electromagnetic Separation");
@@ -260,8 +282,9 @@ public class SolenoidDataGenerator {
 
     private static class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         public ModBlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup) {
-            super(output, Registries.BLOCK, lookup, block -> BuiltInRegistries.BLOCK.getResourceKey(block).orElseThrow());
+            super(output, Registries.BLOCK, lookup, block -> BuiltInRegistries.BLOCK.getResourceKey(block).orElseThrow(), Solenoid.MODID);
         }
+
 
         @Override
         protected void addTags(HolderLookup.Provider lookup) {

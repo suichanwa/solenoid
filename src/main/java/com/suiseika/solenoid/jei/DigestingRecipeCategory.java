@@ -60,25 +60,27 @@ public class DigestingRecipeCategory implements IRecipeCategory<DigestingRecipe>
         // input + reagent stacked on the left
         builder.addInputSlot(4, 8)
                 .setStandardSlotBackground()
-                .addIngredients(recipe.ingredient());
+                .addIngredients(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, 
+                        recipe.ingredient().items().map(net.minecraft.world.item.ItemStack::new).toList());
         builder.addInputSlot(4, 36)
                 .setStandardSlotBackground()
-                .addIngredients(recipe.reagent());
+                .addIngredients(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, 
+                        recipe.reagent().items().map(net.minecraft.world.item.ItemStack::new).toList());
 
         if (recipe.outputs().size() >= 1) {
             builder.addOutputSlot(66, 8)
                     .setOutputSlotBackground()
-                    .addItemStack(recipe.outputs().get(0).create());
+                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.outputs().get(0).create());
         }
         if (recipe.outputs().size() >= 2) {
             builder.addOutputSlot(66, 36)
                     .setStandardSlotBackground()
-                    .addItemStack(recipe.outputs().get(1).create());
+                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.outputs().get(1).create());
         }
         if (recipe.outputs().size() >= 3) {
             builder.addOutputSlot(94, 22)
                     .setStandardSlotBackground()
-                    .addItemStack(recipe.outputs().get(2).create());
+                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.outputs().get(2).create());
         }
     }
 

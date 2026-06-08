@@ -1,0 +1,14 @@
+task printItemMethods {
+    doLast {
+        try {
+            Class<?> itemClass = Class.forName("net.minecraft.world.item.Item")
+            for (java.lang.reflect.Method m : itemClass.getDeclaredMethods()) {
+                if (m.getName().equals("appendHoverText")) {
+                    println m
+                }
+            }
+        } catch (Exception e) {
+            println "Error: " + e.getMessage()
+        }
+    }
+}

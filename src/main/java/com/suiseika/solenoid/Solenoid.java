@@ -129,6 +129,7 @@ public class Solenoid {
         // Register EMF energy blocks, block entities, items, and the energy capability
         EmfBlocks.register(modEventBus);
         modEventBus.addListener(EmfBlocks::registerCapabilities);
+        modEventBus.addListener(SolenoidDataGenerator::gatherData);
 
         // Register ourselves for server and other game events we are interested in.
         NeoForge.EVENT_BUS.register(this);

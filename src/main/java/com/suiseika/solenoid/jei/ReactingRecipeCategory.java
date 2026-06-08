@@ -59,11 +59,12 @@ public class ReactingRecipeCategory implements IRecipeCategory<ReactingRecipe> {
     public void setRecipe(IRecipeLayoutBuilder builder, ReactingRecipe recipe, IFocusGroup focuses) {
         builder.addInputSlot(4, 10)
                 .setStandardSlotBackground()
-                .addIngredients(recipe.ingredient());
+                .addIngredients(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, 
+                        recipe.ingredient().items().map(net.minecraft.world.item.ItemStack::new).toList());
 
         builder.addOutputSlot(66, 9)
                 .setOutputSlotBackground()
-                .addItemStack(recipe.result().create());
+                .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.result().create());
     }
 
     @Override

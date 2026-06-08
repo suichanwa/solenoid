@@ -46,7 +46,6 @@ public class ModularProgressBar {
             // Note: We might need to clip or calculate inner area if frame has borders.
             // For now, assume it fills the whole height.
             int fgX = x;
-            int fgRemaining = fillW;
             
             // We use a lead edge at the very front
             int leadW = 8;

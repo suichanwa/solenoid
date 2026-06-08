@@ -32,8 +32,9 @@ public class WrenchItem extends Item {
             if (!level.isClientSide()) {
                 Rotation rotation = context.getPlayer() != null && context.getPlayer().isSecondaryUseActive()
                         ? Rotation.COUNTERCLOCKWISE_90 : Rotation.CLOCKWISE_90;
-                BlockState rotatedState = state.rotate(rotation);
+                BlockState rotatedState = state.rotate(level, pos, rotation);
                 level.setBlock(pos, rotatedState, 3);
+
                 
                 Direction newFacing = rotatedState.getValue(BlockStateProperties.HORIZONTAL_FACING);
                 if (context.getPlayer() != null) {
