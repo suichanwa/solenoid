@@ -30,4 +30,13 @@ public class MagnetiteBlocks {
     public static final DeferredItem<BlockItem> DEEPSLATE_MAGNETITE_ORE_ITEM = ITEMS.registerSimpleBlockItem(
             DEEPSLATE_MAGNETITE_ORE
     );
+
+    public static final DeferredBlock<Block> MONAZITE_ORE = BLOCKS.registerSimpleBlock(
+            "monazite_ore",
+            p -> p.strength(3.0f, 3.0f).requiresCorrectToolForDrops().sound(SoundType.STONE)
+    );
+
+    public static final DeferredItem<BlockItem> MONAZITE_ORE_ITEM = ITEMS.registerSimpleBlockItem(
+            MONAZITE_ORE
+    );
 }

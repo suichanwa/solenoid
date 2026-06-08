@@ -14,6 +14,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class SolenoidRecipes {
@@ -56,18 +57,26 @@ public class SolenoidRecipes {
     public static final Supplier<RecipeSerializer<SeparatingRecipe>> SEPARATING_SERIALIZER = RECIPE_SERIALIZERS.register("separating", () -> {
         MapCodec<SeparatingRecipe> codec = RecordCodecBuilder.mapCodec(inst -> inst.group(
                 Ingredient.CODEC.fieldOf("ingredient").forGetter(SeparatingRecipe::ingredient),
-                ItemStackTemplate.CODEC.fieldOf("result").forGetter(SeparatingRecipe::result),
-                ItemStackTemplate.CODEC.fieldOf("secondary").forGetter(SeparatingRecipe::secondary),
-                Codec.FLOAT.fieldOf("secondaryChance").forGetter(SeparatingRecipe::secondaryChance),
+                SeparationOutput.CODEC.listOf().optionalFieldOf("outputs", java.util.List.of()).forGetter(SeparatingRecipe::outputs),
                 Codec.INT.fieldOf("energy").forGetter(SeparatingRecipe::energy),
-                Codec.INT.fieldOf("time").forGetter(SeparatingRecipe::time)
-        ).apply(inst, SeparatingRecipe::new));
+                Codec.INT.fieldOf("time").forGetter(SeparatingRecipe::time),
+                // Legacy fields for backward compatibility
+                ItemStackTemplate.CODEC.optionalFieldOf("result").forGetter(r -> Optional.empty()),
+                ItemStackTemplate.CODEC.optionalFieldOf("secondary").forGetter(r -> Optional.empty()),
+                Codec.FLOAT.optionalFieldOf("secondaryChance", 0.0f).forGetter(r -> 0.0f)
+        ).apply(inst, (ing, outputs, energy, time, res, sec, secChance) -> {
+            if (outputs.isEmpty() && res.isPresent()) {
+                java.util.List<SeparationOutput> legacy = new java.util.ArrayList<>();
+                legacy.add(new SeparationOutput(res.get(), 1.0f));
+                sec.ifPresent(s -> legacy.add(new SeparationOutput(s, secChance)));
+                return new SeparatingRecipe(ing, legacy, energy, time);
+            }
+            return new SeparatingRecipe(ing, outputs, energy, time);
+        }));
 
         StreamCodec<RegistryFriendlyByteBuf, SeparatingRecipe> streamCodec = StreamCodec.composite(
                 Ingredient.CONTENTS_STREAM_CODEC, SeparatingRecipe::ingredient,
-                ItemStackTemplate.STREAM_CODEC, SeparatingRecipe::result,
-                ItemStackTemplate.STREAM_CODEC, SeparatingRecipe::secondary,
-                ByteBufCodecs.FLOAT, SeparatingRecipe::secondaryChance,
+                SeparationOutput.STREAM_CODEC.apply(ByteBufCodecs.list()), SeparatingRecipe::outputs,
                 ByteBufCodecs.INT, SeparatingRecipe::energy,
                 ByteBufCodecs.INT, SeparatingRecipe::time,
                 SeparatingRecipe::new

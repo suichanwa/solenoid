@@ -43,9 +43,18 @@ public class Solenoid {
                 // Magnetite ores
                 output.accept(MagnetiteBlocks.MAGNETITE_ORE_ITEM);
                 output.accept(MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE_ITEM);
-                // Magnetite materials
+                output.accept(MagnetiteBlocks.MONAZITE_ORE_ITEM);
+                // Components
                 output.accept(MagnetiteItems.RAW_MAGNETITE);
+                output.accept(MagnetiteItems.RAW_MONAZITE);
                 output.accept(MagnetiteItems.MAGNETITE_INGOT);
+                output.accept(MagnetiteItems.CERIUM_INGOT);
+                output.accept(MagnetiteItems.NEODYMIUM_INGOT);
+                output.accept(MagnetiteItems.THORIUM_INGOT);
+                output.accept(MagnetiteItems.CERIUM_DUST);
+                output.accept(MagnetiteItems.NEODYMIUM_DUST);
+                output.accept(MagnetiteItems.THORIUM_DUST);
+                output.accept(MagnetiteItems.COPPER_CERIUM_BATTERY);
 
                 // Ore processing items (crushed / concentrate / slag, all per-ore)
                 for (ProcessedForm form : ProcessedForm.values()) {

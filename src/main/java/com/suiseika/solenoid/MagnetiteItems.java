@@ -25,4 +25,16 @@ public class MagnetiteItems {
 
     public static final DeferredItem<InductionSurveyorItem> INDUCTION_SURVEYOR =
             ITEMS.registerItem("induction_surveyor", InductionSurveyorItem::new, p -> p.stacksTo(1));
+
+    public static final DeferredItem<Item> RAW_MONAZITE = ITEMS.registerItem("raw_monazite", Item::new);
+
+    public static final DeferredItem<Item> CERIUM_DUST = ITEMS.registerItem("cerium_dust", Item::new);
+    public static final DeferredItem<Item> NEODYMIUM_DUST = ITEMS.registerItem("neodymium_dust", Item::new);
+    public static final DeferredItem<Item> THORIUM_DUST = ITEMS.registerItem("thorium_dust", Item::new);
+
+    public static final DeferredItem<Item> COPPER_CERIUM_BATTERY = ITEMS.registerItem("copper_cerium_battery", Item::new);
+
+    public static final DeferredItem<Item> CERIUM_INGOT = ITEMS.registerItem("cerium_ingot", Item::new);
+    public static final DeferredItem<Item> NEODYMIUM_INGOT = ITEMS.registerItem("neodymium_ingot", Item::new);
+    public static final DeferredItem<Item> THORIUM_INGOT = ITEMS.registerItem("thorium_ingot", Item::new);
 }

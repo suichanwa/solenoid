@@ -120,11 +120,20 @@ public class SolenoidDataGenerator {
         protected void addTranslations() {
             addBlock(MagnetiteBlocks.MAGNETITE_ORE, "Magnetite Ore");
             addBlock(MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE, "Deepslate Magnetite Ore");
+            addBlock(MagnetiteBlocks.MONAZITE_ORE, "Monazite Ore");
             addItem(MagnetiteItems.RAW_MAGNETITE, "Raw Magnetite");
             addItem(MagnetiteItems.MAGNETITE_INGOT, "Magnetite Ingot");
             addItem(MagnetiteItems.MAGNET, "Magnet");
             addItem(MagnetiteItems.COPPER_COIL, "Copper Coil");
             addItem(MagnetiteItems.GRINDING_GEAR, "Grinding Gear");
+            addItem(MagnetiteItems.RAW_MONAZITE, "Raw Monazite");
+            addItem(MagnetiteItems.CERIUM_DUST, "Cerium Dust");
+            addItem(MagnetiteItems.NEODYMIUM_DUST, "Neodymium Dust");
+            addItem(MagnetiteItems.THORIUM_DUST, "Thorium Dust");
+            addItem(MagnetiteItems.COPPER_CERIUM_BATTERY, "Copper-Cerium Battery");
+            addItem(MagnetiteItems.CERIUM_INGOT, "Cerium Ingot");
+            addItem(MagnetiteItems.NEODYMIUM_INGOT, "Neodymium Ingot");
+            addItem(MagnetiteItems.THORIUM_INGOT, "Thorium Ingot");
 
             // Ore processing items
             for (ProcessedOre ore : ProcessedOre.values()) {
@@ -134,7 +143,6 @@ public class SolenoidDataGenerator {
                     String name = switch (form) {
                         case CRUSHED -> "Crushed " + oreName;
                         case CONCENTRATE -> oreName + " Concentrate";
-                        case SLAG -> oreName + " Slag";
                     };
                     add("item." + Solenoid.MODID + "." + id, name);
                 }
@@ -220,6 +228,7 @@ public class SolenoidDataGenerator {
                     createOreDrop(MagnetiteBlocks.MAGNETITE_ORE.get(), MagnetiteItems.RAW_MAGNETITE.get()));
             add(MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get(),
                     createOreDrop(MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get(), MagnetiteItems.RAW_MAGNETITE.get()));
+            dropSelf(MagnetiteBlocks.MONAZITE_ORE.get());
             dropSelf(com.suiseika.solenoid.energy.EmfBlocks.HAND_CRANK_GENERATOR.get());
             dropSelf(com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE.get());
             dropSelf(com.suiseika.solenoid.energy.EmfBlocks.EMF_SOURCE.get());
@@ -235,6 +244,7 @@ public class SolenoidDataGenerator {
             return List.of(
                     MagnetiteBlocks.MAGNETITE_ORE.get(),
                     MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get(),
+                    MagnetiteBlocks.MONAZITE_ORE.get(),
                     com.suiseika.solenoid.energy.EmfBlocks.HAND_CRANK_GENERATOR.get(),
                     com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE.get(),
                     com.suiseika.solenoid.energy.EmfBlocks.EMF_SOURCE.get(),
@@ -258,14 +268,15 @@ public class SolenoidDataGenerator {
             var magOre = MagnetiteBlocks.MAGNETITE_ORE.get();
             var deepOre = MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get();
 
-            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(magOre, deepOre);
-            tag(BlockTags.NEEDS_STONE_TOOL).add(magOre, deepOre);
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(magOre, deepOre, MagnetiteBlocks.MONAZITE_ORE.get());
+            tag(BlockTags.NEEDS_STONE_TOOL).add(magOre, deepOre, MagnetiteBlocks.MONAZITE_ORE.get());
 
-            tag(Tags.Blocks.ORES).add(magOre, deepOre);
-            tag(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores/magnetite")))
-                    .add(magOre, deepOre);
+            tag(Tags.Blocks.ORES).add(magOre, deepOre, MagnetiteBlocks.MONAZITE_ORE.get());
+            tag(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores/monazite")))
+                    .add(MagnetiteBlocks.MONAZITE_ORE.get());
 
             tag(SolenoidTags.Blocks.CONDUCTIVE).add(
+                    MagnetiteBlocks.MONAZITE_ORE.get(),
                     net.minecraft.world.level.block.Blocks.COPPER_ORE,
                     net.minecraft.world.level.block.Blocks.DEEPSLATE_COPPER_ORE,
                     net.minecraft.world.level.block.Blocks.GOLD_ORE,
@@ -298,11 +309,13 @@ public class SolenoidDataGenerator {
         protected void addTags(HolderLookup.Provider lookup) {
             var magOreItem = MagnetiteBlocks.MAGNETITE_ORE_ITEM.get();
             var deepOreItem = MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE_ITEM.get();
+            var monOreItem = MagnetiteBlocks.MONAZITE_ORE_ITEM.get();
             var raw = MagnetiteItems.RAW_MAGNETITE.get();
             var ingot = MagnetiteItems.MAGNETITE_INGOT.get();
 
-            tag(Tags.Items.ORES).add(magOreItem, deepOreItem);
+            tag(Tags.Items.ORES).add(magOreItem, deepOreItem, monOreItem);
             tag(ctag("ores/magnetite")).add(magOreItem, deepOreItem);
+            tag(ctag("ores/monazite")).add(monOreItem);
 
             tag(Tags.Items.RAW_MATERIALS).add(raw);
             tag(ctag("raw_materials/magnetite")).add(raw);
@@ -316,7 +329,6 @@ public class SolenoidDataGenerator {
                     String path = switch (form) {
                         case CRUSHED -> "crushed_ores/";
                         case CONCENTRATE -> "ore_concentrates/";
-                        case SLAG -> "slags/";
                     } + ore.getName();
                     tag(ctag(path)).add(item);
                 }
@@ -355,15 +367,29 @@ public class SolenoidDataGenerator {
                                                                         .defaultBlockState())),
                                                 7,
                                                 0.0f)));
+                        
+                        // Monazite Ore: TIER-2, rarer (3 veins), smaller (4), deeper (triangle -64..0)
+                        bootstrap.register(
+                                ResourceKey.create(Registries.CONFIGURED_FEATURE,
+                                        Identifier.fromNamespaceAndPath(Solenoid.MODID, "monazite_ore")),
+                                new ConfiguredFeature<>(
+                                        Feature.ORE,
+                                        new OreConfiguration(
+                                                List.of(
+                                                        OreConfiguration.target(
+                                                                new TagMatchTest(STONE_ORE_REPLACEABLES),
+                                                                MagnetiteBlocks.MONAZITE_ORE.get().defaultBlockState())),
+                                                4,
+                                                0.0f)));
                     })
                     .add(Registries.PLACED_FEATURE, bootstrap -> {
-                        var cfKey = ResourceKey.create(Registries.CONFIGURED_FEATURE,
+                        var magCfKey = ResourceKey.create(Registries.CONFIGURED_FEATURE,
                                 Identifier.fromNamespaceAndPath(Solenoid.MODID, "magnetite_ore"));
                         bootstrap.register(
                                 ResourceKey.create(Registries.PLACED_FEATURE,
                                         Identifier.fromNamespaceAndPath(Solenoid.MODID, "magnetite_ore")),
                                 new PlacedFeature(
-                                        bootstrap.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(cfKey),
+                                        bootstrap.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(magCfKey),
                                         List.of(
                                                 CountPlacement.of(5),
                                                 InSquarePlacement.spread(),
@@ -371,9 +397,24 @@ public class SolenoidDataGenerator {
                                                         net.minecraft.world.level.levelgen.VerticalAnchor.absolute(-48),
                                                         net.minecraft.world.level.levelgen.VerticalAnchor.absolute(48)),
                                                 BiomeFilter.biome())));
+                        
+                        var monCfKey = ResourceKey.create(Registries.CONFIGURED_FEATURE,
+                                Identifier.fromNamespaceAndPath(Solenoid.MODID, "monazite_ore"));
+                        bootstrap.register(
+                                ResourceKey.create(Registries.PLACED_FEATURE,
+                                        Identifier.fromNamespaceAndPath(Solenoid.MODID, "monazite_ore")),
+                                new PlacedFeature(
+                                        bootstrap.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(monCfKey),
+                                        List.of(
+                                                CountPlacement.of(3), // 3 veins per chunk
+                                                InSquarePlacement.spread(),
+                                                HeightRangePlacement.triangle( // triangle distribution
+                                                        net.minecraft.world.level.levelgen.VerticalAnchor.absolute(-64),
+                                                        net.minecraft.world.level.levelgen.VerticalAnchor.absolute(0)),
+                                                BiomeFilter.biome())));
                     })
                     .add(net.neoforged.neoforge.registries.NeoForgeRegistries.Keys.BIOME_MODIFIERS, bootstrap -> {
-                        var pfKey = ResourceKey.create(Registries.PLACED_FEATURE,
+                        var magPfKey = ResourceKey.create(Registries.PLACED_FEATURE,
                                 Identifier.fromNamespaceAndPath(Solenoid.MODID, "magnetite_ore"));
                         bootstrap.register(
                                 ResourceKey.create(
@@ -383,7 +424,20 @@ public class SolenoidDataGenerator {
                                         bootstrap.lookup(Registries.BIOME)
                                                 .getOrThrow(net.minecraft.tags.BiomeTags.IS_OVERWORLD),
                                         net.minecraft.core.HolderSet.direct(
-                                                bootstrap.lookup(Registries.PLACED_FEATURE).getOrThrow(pfKey)),
+                                                bootstrap.lookup(Registries.PLACED_FEATURE).getOrThrow(magPfKey)),
+                                        net.minecraft.world.level.levelgen.GenerationStep.Decoration.UNDERGROUND_ORES));
+                        
+                        var monPfKey = ResourceKey.create(Registries.PLACED_FEATURE,
+                                Identifier.fromNamespaceAndPath(Solenoid.MODID, "monazite_ore"));
+                        bootstrap.register(
+                                ResourceKey.create(
+                                        net.neoforged.neoforge.registries.NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+                                        Identifier.fromNamespaceAndPath(Solenoid.MODID, "monazite_ore")),
+                                new net.neoforged.neoforge.common.world.BiomeModifiers.AddFeaturesBiomeModifier(
+                                        bootstrap.lookup(Registries.BIOME)
+                                                .getOrThrow(net.minecraft.tags.BiomeTags.IS_OVERWORLD),
+                                        net.minecraft.core.HolderSet.direct(
+                                                bootstrap.lookup(Registries.PLACED_FEATURE).getOrThrow(monPfKey)),
                                         net.minecraft.world.level.levelgen.GenerationStep.Decoration.UNDERGROUND_ORES));
                     }),
                     Set.of(Solenoid.MODID));

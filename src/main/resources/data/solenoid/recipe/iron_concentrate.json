@@ -1,13 +1,13 @@
 {
   "type": "solenoid:separating",
   "ingredient": "solenoid:crushed_iron",
-  "result": {
-    "id": "solenoid:iron_concentrate"
-  },
-  "secondary": {
-    "id": "solenoid:iron_slag"
-  },
-  "secondaryChance": 0.25,
+  "outputs": [
+    {
+      "result": {
+        "id": "solenoid:iron_concentrate"
+      }
+    }
+  ],
   "energy": 2500,
   "time": 120
 }

@@ -1,6 +1,7 @@
 package com.suiseika.solenoid.energy;
 
 import com.suiseika.solenoid.recipe.SeparatingRecipe;
+import com.suiseika.solenoid.recipe.SeparationOutput;
 import com.suiseika.solenoid.recipe.SolenoidRecipes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -186,9 +187,10 @@ public class SeparatorBlockEntity extends AbstractEmfBlockEntity implements Menu
         setChanged();
     }
 
-    /** True if the primary (and, when it rolls, the slag) output has room for this recipe. */
+    /** True if at least the first output has room. */
     private boolean canProcess(SeparatingRecipe recipe) {
-        ItemStack primary = recipe.result().create();
+        if (recipe.outputs().isEmpty()) return true;
+        ItemStack primary = recipe.outputs().get(0).create();
         ItemStack out = itemHandler.getStack(1);
         if (!out.isEmpty()) {
             if (!ItemStack.isSameItemSameComponents(out, primary)) {
@@ -206,26 +208,26 @@ public class SeparatorBlockEntity extends AbstractEmfBlockEntity implements Menu
         input.shrink(1);
         itemHandler.setStack(0, input);
 
-        // Primary output (concentrate).
-        ItemStack primary = recipe.result().create();
-        ItemStack out = itemHandler.getStack(1);
-        if (out.isEmpty()) {
-            itemHandler.setStack(1, primary);
-        } else {
-            out.grow(primary.getCount());
-            itemHandler.setStack(1, out);
-        }
-
-        // Secondary output (slag), produced only on a chance roll and only if it fits.
-        if (level.getRandom().nextFloat() < recipe.secondaryChance()) {
-            ItemStack slag = recipe.secondary().create();
-            ItemStack slagOut = itemHandler.getStack(2);
-            if (slagOut.isEmpty()) {
-                itemHandler.setStack(2, slag);
-            } else if (ItemStack.isSameItemSameComponents(slagOut, slag)
-                    && slagOut.getCount() + slag.getCount() <= slagOut.getMaxStackSize()) {
-                slagOut.grow(slag.getCount());
-                itemHandler.setStack(2, slagOut);
+        for (SeparationOutput output : recipe.outputs()) {
+            if (level.getRandom().nextFloat() <= output.chance()) {
+                ItemStack stack = output.create();
+                // Try to put into slot 1 or 2
+                for (int slot = 1; slot <= 2; slot++) {
+                    ItemStack existing = itemHandler.getStack(slot);
+                    if (existing.isEmpty()) {
+                        itemHandler.setStack(slot, stack);
+                        stack = ItemStack.EMPTY;
+                        break;
+                    } else if (ItemStack.isSameItemSameComponents(existing, stack)) {
+                        int grow = Math.min(stack.getCount(), existing.getMaxStackSize() - existing.getCount());
+                        if (grow > 0) {
+                            existing.grow(grow);
+                            itemHandler.setStack(slot, existing);
+                            stack.shrink(grow);
+                        }
+                    }
+                    if (stack.isEmpty()) break;
+                }
             }
         }
     }

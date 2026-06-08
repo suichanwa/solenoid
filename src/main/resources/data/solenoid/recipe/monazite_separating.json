@@ -1,0 +1,27 @@
+{
+  "type": "solenoid:separating",
+  "ingredient": "solenoid:raw_monazite",
+  "outputs": [
+    {
+      "result": {
+        "id": "solenoid:cerium_dust",
+        "count": 2
+      }
+    },
+    {
+      "result": {
+        "id": "solenoid:neodymium_dust",
+        "count": 1
+      }
+    },
+    {
+      "result": {
+        "id": "solenoid:thorium_dust",
+        "count": 1
+      },
+      "chance": 0.5
+    }
+  ],
+  "energy": 4000,
+  "time": 160
+}

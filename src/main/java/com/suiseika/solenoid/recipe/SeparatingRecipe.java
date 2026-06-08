@@ -1,7 +1,6 @@
 package com.suiseika.solenoid.recipe;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.level.Level;
@@ -9,11 +8,7 @@ import net.minecraft.world.level.Level;
 import java.util.Collections;
 import java.util.List;
 
-// result/secondary are ItemStackTemplate (not ItemStack) so they parse via the plain Item.CODEC,
-// matching the working CrushingRecipe. ItemStack.CODEC requires components to already be bound,
-// which is not the case during recipe loading (binding runs after the reload listeners), producing
-// "Item ... does not have components yet" errors for modded items referenced as recipe results.
-public record SeparatingRecipe(Ingredient ingredient, ItemStackTemplate result, ItemStackTemplate secondary, float secondaryChance, int energy, int time) implements Recipe<SingleRecipeInput> {
+public record SeparatingRecipe(Ingredient ingredient, List<SeparationOutput> outputs, int energy, int time) implements Recipe<SingleRecipeInput> {
     @Override
     public boolean matches(SingleRecipeInput input, Level level) {
         return this.ingredient.test(input.item());
@@ -21,7 +16,7 @@ public record SeparatingRecipe(Ingredient ingredient, ItemStackTemplate result, 
 
     @Override
     public ItemStack assemble(SingleRecipeInput input) {
-        return this.result.create();
+        return outputs.isEmpty() ? ItemStack.EMPTY : outputs.get(0).create();
     }
 
     @Override

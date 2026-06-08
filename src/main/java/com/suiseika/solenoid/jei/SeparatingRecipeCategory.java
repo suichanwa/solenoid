@@ -61,13 +61,25 @@ public class SeparatingRecipeCategory implements IRecipeCategory<SeparatingRecip
                 .setStandardSlotBackground()
                 .addIngredients(recipe.ingredient());
 
-        builder.addOutputSlot(66, 8)
-                .setOutputSlotBackground()
-                .addItemStack(recipe.result().create());
+        // Column 1
+        if (recipe.outputs().size() >= 1) {
+            builder.addOutputSlot(66, 8)
+                    .setOutputSlotBackground()
+                    .addItemStack(recipe.outputs().get(0).create());
+        }
 
-        builder.addOutputSlot(66, 36)
-                .setStandardSlotBackground()
-                .addItemStack(recipe.secondary().create());
+        if (recipe.outputs().size() >= 2) {
+            builder.addOutputSlot(66, 36)
+                    .setStandardSlotBackground()
+                    .addItemStack(recipe.outputs().get(1).create());
+        }
+
+        // Column 2
+        if (recipe.outputs().size() >= 3) {
+            builder.addOutputSlot(94, 22)
+                    .setStandardSlotBackground()
+                    .addItemStack(recipe.outputs().get(2).create());
+        }
     }
 
     @Override
@@ -75,9 +87,24 @@ public class SeparatingRecipeCategory implements IRecipeCategory<SeparatingRecip
         this.arrow.draw(guiGraphics, 30, 23);
 
         Font font = Minecraft.getInstance().font;
-        // Slag chance, drawn next to the secondary (slag) slot.
-        String chance = String.format("%.0f", recipe.secondaryChance() * 100.0f);
-        guiGraphics.text(font, Component.translatable("gui.solenoid.recipe.chance", chance), 90, 40, TEXT_COLOR, false);
+        
+        // Show chance for slot 2
+        if (recipe.outputs().size() >= 2) {
+            float c = recipe.outputs().get(1).chance();
+            if (c < 1.0f) {
+                String chance = String.format("%.0f%%", c * 100.0f);
+                guiGraphics.text(font, chance, 66, 56, TEXT_COLOR, false);
+            }
+        }
+
+        // Show chance for slot 3
+        if (recipe.outputs().size() >= 3) {
+            float c = recipe.outputs().get(2).chance();
+            if (c < 1.0f) {
+                String chance = String.format("%.0f%%", c * 100.0f);
+                guiGraphics.text(font, chance, 94, 42, TEXT_COLOR, false);
+            }
+        }
 
         guiGraphics.text(font, Component.translatable("gui.solenoid.recipe.energy", recipe.energy()), 4, 48, TEXT_COLOR, false);
         guiGraphics.text(font, Component.translatable("gui.solenoid.recipe.time", recipe.time()), 4, 58, TEXT_COLOR, false);
