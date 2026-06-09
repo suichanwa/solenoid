@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SIS",
+    "IRI",
+    "SIS"
+  ],
+  "key": {
+    "S": "solenoid:screw",
+    "I": "solenoid:magnetite_ingot",
+    "R": "minecraft:iron_ingot"
+  },
+  "result": {
+    "id": "solenoid:machine_frame",
+    "count": 1
+  }
+}

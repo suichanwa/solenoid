@@ -23,7 +23,6 @@
   "container.solenoid.induction_furnace": "Induction Furnace",
   "container.solenoid.recharger": "Recharger",
   "container.solenoid.separator": "Electromagnetic Separator",
-  "curios.identifier.repulsor": "Repulsor",
   "gui.solenoid.category.crushing": "Crushing",
   "gui.solenoid.category.separating": "Electromagnetic Separation",
   "gui.solenoid.recipe.chance": "%s%%",

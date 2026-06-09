@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "IFI",
+    "SCS"
+  ],
+  "key": {
+    "G": "minecraft:glass",
+    "I": "minecraft:copper_ingot",
+    "F": "solenoid:machine_frame",
+    "S": "solenoid:screw",
+    "C": "solenoid:copper_coil"
+  },
+  "result": {
+    "id": "solenoid:chemical_reactor",
+    "count": 1
+  }
+}

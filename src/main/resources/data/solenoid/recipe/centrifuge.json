@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SIS",
+    "CFC",
+    "IAI"
+  ],
+  "key": {
+    "S": "solenoid:screw",
+    "I": "solenoid:magnetite_ingot",
+    "C": "solenoid:copper_coil",
+    "F": "solenoid:machine_frame",
+    "A": "solenoid:capacitor"
+  },
+  "result": {
+    "id": "solenoid:centrifuge",
+    "count": 1
+  }
+}

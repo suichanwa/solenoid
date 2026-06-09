@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MCM",
+    "SFS",
+    "IBI"
+  ],
+  "key": {
+    "M": "solenoid:magnet",
+    "C": "solenoid:copper_coil",
+    "S": "solenoid:screen",
+    "F": "solenoid:machine_frame",
+    "I": "solenoid:magnetite_ingot",
+    "B": "solenoid:copper_cable"
+  },
+  "result": {
+    "id": "solenoid:separator",
+    "count": 1
+  }
+}

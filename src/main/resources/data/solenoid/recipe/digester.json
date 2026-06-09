@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IBI",
+    "IFI",
+    "CRC"
+  ],
+  "key": {
+    "I": "minecraft:copper_ingot",
+    "B": "minecraft:bucket",
+    "F": "solenoid:machine_frame",
+    "C": "solenoid:copper_coil",
+    "R": "minecraft:furnace"
+  },
+  "result": {
+    "id": "solenoid:digester",
+    "count": 1
+  }
+}
