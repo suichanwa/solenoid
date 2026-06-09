@@ -3,6 +3,7 @@ package com.suiseika.solenoid;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -28,6 +29,17 @@ public final class SolenoidTags {
 
         private static TagKey<Block> create(String path) {
             return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(Solenoid.MODID, path));
+        }
+    }
+
+    public static final class Items {
+        private Items() {}
+
+        /** Magnet items (handheld or trinket). */
+        public static final TagKey<Item> MAGNETS = create("magnets");
+
+        private static TagKey<Item> create(String path) {
+            return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Solenoid.MODID, path));
         }
     }
 }

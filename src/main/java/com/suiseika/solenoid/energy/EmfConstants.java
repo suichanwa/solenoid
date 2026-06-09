@@ -52,4 +52,23 @@ public final class EmfConstants {
 
     /** Max EMF the Capacitor moves (in or out) per server tick, shared across all faces. */
     public static final int CAPACITOR_TRANSFER = 500;
+
+    // ---- Recharger ----
+
+    /** Total EMF the Recharger buffers. */
+    public static final int RECHARGER_CAPACITY = 50_000;
+
+    /** Max EMF the Recharger accepts from cables per server tick. */
+    public static final int RECHARGER_INPUT = 1_000;
+
+    /** Max EMF the Recharger pumps into the slotted item per server tick. */
+    public static final int RECHARGER_TRANSFER = 200;
+
+    // ---- Thorium RTG ----
+
+    /** EMF trickled out by the Thorium RTG per server tick. */
+    public static final int RTG_OUTPUT = 16;
+
+    /** Total fuel units in a new Thorium RTG. Each unit is roughly 1 EMF. */
+    public static final int RTG_MAX_FUEL = 10_000_000;
 }

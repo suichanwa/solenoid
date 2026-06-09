@@ -30,4 +30,10 @@ public final class SolenoidDataComponents {
             COMPONENTS.registerComponentType("active", builder -> builder
                     .persistent(Codec.BOOL)
                     .networkSynchronized(ByteBufCodecs.BOOL));
+
+    /** Remaining fuel units for the Thorium RTG. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> THORIUM_FUEL =
+            COMPONENTS.registerComponentType("thorium_fuel", builder -> builder
+                    .persistent(Codec.INT)
+                    .networkSynchronized(ByteBufCodecs.INT));
 }

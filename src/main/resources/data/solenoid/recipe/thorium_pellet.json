@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "solenoid:thorium_ingot",
+    "solenoid:thorium_ingot",
+    "solenoid:thorium_ingot"
+  ],
+  "result": {
+    "id": "solenoid:thorium_pellet",
+    "count": 1
+  }
+}

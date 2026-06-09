@@ -11,7 +11,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
@@ -30,17 +29,19 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.common.data.ItemTagsProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+
+import com.suiseika.solenoid.energy.EmfBlocks;
 
 public class SolenoidDataGenerator {
 
     public static void gatherData(GatherDataEvent.Client event) {
-        var gen = event.getGenerator();
-        var output = gen.getPackOutput();
+        var output = event.getGenerator().getPackOutput();
         var lookupProvider = event.getLookupProvider();
 
         // Language
@@ -80,6 +81,7 @@ public class SolenoidDataGenerator {
             for (ProcessedOre ore : ProcessedOre.values()) {
                 for (ProcessedForm form : ProcessedForm.values()) {
                     String id = form.getPrefix() + ore.getName() + form.getSuffix();
+                    
                     com.google.gson.JsonObject json = new com.google.gson.JsonObject();
                     com.google.gson.JsonObject model = new com.google.gson.JsonObject();
                     model.addProperty("type", "minecraft:model");
@@ -97,6 +99,16 @@ public class SolenoidDataGenerator {
                     futures.add(net.minecraft.data.DataProvider.saveStable(cache, json, pathProvider.json(Identifier.fromNamespaceAndPath(Solenoid.MODID, id))));
                 }
             }
+
+            // Simple Items
+            List.of("machine_frame", "screw", "magnet_charm", "repulsor", "thorium_rtg", "thorium_pellet", "recharger").forEach(id -> {
+                com.google.gson.JsonObject json = new com.google.gson.JsonObject();
+                com.google.gson.JsonObject model = new com.google.gson.JsonObject();
+                model.addProperty("type", "minecraft:model");
+                model.addProperty("model", "solenoid:item/" + id);
+                json.add("model", model);
+                futures.add(net.minecraft.data.DataProvider.saveStable(cache, json, pathProvider.json(Identifier.fromNamespaceAndPath(Solenoid.MODID, id))));
+            });
 
             return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
         }
@@ -132,6 +144,7 @@ public class SolenoidDataGenerator {
             addItem(MagnetiteItems.CERIUM_INGOT, "Cerium Ingot");
             addItem(MagnetiteItems.NEODYMIUM_INGOT, "Neodymium Ingot");
             addItem(MagnetiteItems.THORIUM_INGOT, "Thorium Ingot");
+            addItem(MagnetiteItems.THORIUM_PELLET, "Thorium Pellet");
 
             addItem(MagnetiteItems.MACHINE_FRAME, "Machines Frame");
             addItem(MagnetiteItems.SCREW, "Screw");
@@ -163,17 +176,19 @@ public class SolenoidDataGenerator {
             add("itemGroup.solenoid", "Solenoid");
 
             // EMF energy blocks
-            addBlock(com.suiseika.solenoid.energy.EmfBlocks.HAND_CRANK_GENERATOR, "Hand-Crank Generator");
-            addBlock(com.suiseika.solenoid.energy.EmfBlocks.EMF_SOURCE, "Creative EMF Source");
-            addBlock(com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE, "Copper Cable");
-            addBlock(com.suiseika.solenoid.energy.EmfBlocks.EMF_SINK, "EMF Sink");
-            addBlock(com.suiseika.solenoid.energy.EmfBlocks.CRUSHER, "Electromagnetic Crusher");
-            addBlock(com.suiseika.solenoid.energy.EmfBlocks.SEPARATOR, "Electromagnetic Separator");
-            addBlock(com.suiseika.solenoid.energy.EmfBlocks.INDUCTION_FURNACE, "Induction Furnace");
-            addBlock(com.suiseika.solenoid.energy.EmfBlocks.CAPACITOR, "Electromagnetic Capacitor");
-            addBlock(com.suiseika.solenoid.energy.EmfBlocks.CHEMICAL_REACTOR, "Electromagnetic Chemical Reactor");
-            addBlock(com.suiseika.solenoid.energy.EmfBlocks.DIGESTER, "Electromagnetic Digester");
-            addBlock(com.suiseika.solenoid.energy.EmfBlocks.CENTRIFUGE, "Electromagnetic Centrifuge");
+            addBlock(EmfBlocks.HAND_CRANK_GENERATOR, "Hand-Crank Generator");
+            addBlock(EmfBlocks.EMF_SOURCE, "Creative EMF Source");
+            addBlock(EmfBlocks.COPPER_CABLE, "Copper Cable");
+            addBlock(EmfBlocks.EMF_SINK, "EMF Sink");
+            addBlock(EmfBlocks.CRUSHER, "Electromagnetic Crusher");
+            addBlock(EmfBlocks.SEPARATOR, "Electromagnetic Separator");
+            addBlock(EmfBlocks.INDUCTION_FURNACE, "Induction Furnace");
+            addBlock(EmfBlocks.CAPACITOR, "Electromagnetic Capacitor");
+            addBlock(EmfBlocks.CHEMICAL_REACTOR, "Electromagnetic Chemical Reactor");
+            addBlock(EmfBlocks.DIGESTER, "Electromagnetic Digester");
+            addBlock(EmfBlocks.CENTRIFUGE, "Electromagnetic Centrifuge");
+            addBlock(EmfBlocks.THORIUM_RTG, "Thorium RTG");
+            addBlock(EmfBlocks.RECHARGER, "Recharger");
 
             // EMF tooltips (role + sink capacity)
             add("tooltip.solenoid.hand_crank_generator", "Generates EMF when cranked.");
@@ -185,9 +200,14 @@ public class SolenoidDataGenerator {
             add("tooltip.solenoid.crusher", "Crushes ores into dust");
             add("tooltip.solenoid.separator", "Separates ore dust into slag and product");
             add("tooltip.solenoid.induction_furnace", "Smelts items using EMF, no fuel needed");
+            add("tooltip.solenoid.rtg.output", "Output: %d EMF/t");
+            add("tooltip.solenoid.rtg.active", "Active: Decay process ongoing");
+            add("tooltip.solenoid.rtg.depleted", "Depleted: Fuel exhausted");
             add("tooltip.solenoid.chemical_reactor", "Reacts materials using EMF");
             add("tooltip.solenoid.digester", "Digests materials using EMF");
             add("tooltip.solenoid.centrifuge", "Centrifuges materials using EMF");
+            add("tooltip.solenoid.recharger", "Charges energy items from EMF");
+            
             add("item.solenoid.magnetometer", "Solenoid Magnetometer");
             add("item.solenoid.wrench", "Solenoid Wrench");
             add("item.solenoid.multimeter", "Multimeter");
@@ -203,6 +223,9 @@ public class SolenoidDataGenerator {
             
             add("tooltip.solenoid.capacitor", "Stores EMF and powers adjacent machines");
             add("tooltip.solenoid.capacitor.capacity", "Capacity: 100,000 EMF");
+            add("tooltip.solenoid.magnet_charm.state", "State: %s");
+            add("tooltip.solenoid.energy_stored", "Energy: %d / %d EMF");
+            
             // Machine GUI container titles
             add("container.solenoid.crusher", "Electromagnetic Crusher");
             add("container.solenoid.separator", "Electromagnetic Separator");
@@ -211,7 +234,9 @@ public class SolenoidDataGenerator {
             add("container.solenoid.chemical_reactor", "Electromagnetic Chemical Reactor");
             add("container.solenoid.digester", "Electromagnetic Digester");
             add("container.solenoid.centrifuge", "Electromagnetic Centrifuge");
-            // JEI recipe categories
+            add("container.solenoid.recharger", "Recharger");
+
+            // JEI Categories
             add("gui.solenoid.category.crushing", "Crushing");
             add("gui.solenoid.category.separating", "Electromagnetic Separation");
             add("gui.solenoid.recipe.energy", "%s EMF");
@@ -251,40 +276,35 @@ public class SolenoidDataGenerator {
             add(MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get(),
                     createOreDrop(MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get(), MagnetiteItems.RAW_MAGNETITE.get()));
             dropSelf(MagnetiteBlocks.MONAZITE_ORE.get());
-            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.HAND_CRANK_GENERATOR.get());
-            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE.get());
-            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.EMF_SOURCE.get());
-            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.EMF_SINK.get());
-            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.CRUSHER.get());
-            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.SEPARATOR.get());
-            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.INDUCTION_FURNACE.get());
-            dropSelf(com.suiseika.solenoid.energy.EmfBlocks.CAPACITOR.get());
+            dropSelf(EmfBlocks.HAND_CRANK_GENERATOR.get());
+            dropSelf(EmfBlocks.COPPER_CABLE.get());
+            dropSelf(EmfBlocks.EMF_SOURCE.get());
+            dropSelf(EmfBlocks.EMF_SINK.get());
+            dropSelf(EmfBlocks.CRUSHER.get());
+            dropSelf(EmfBlocks.SEPARATOR.get());
+            dropSelf(EmfBlocks.INDUCTION_FURNACE.get());
+            dropSelf(EmfBlocks.CAPACITOR.get());
+            dropSelf(EmfBlocks.CHEMICAL_REACTOR.get());
+            dropSelf(EmfBlocks.DIGESTER.get());
+            dropSelf(EmfBlocks.CENTRIFUGE.get());
+            dropSelf(EmfBlocks.THORIUM_RTG.get());
+            dropSelf(EmfBlocks.RECHARGER.get());
         }
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
-            return List.of(
-                    MagnetiteBlocks.MAGNETITE_ORE.get(),
-                    MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get(),
-                    MagnetiteBlocks.MONAZITE_ORE.get(),
-                    com.suiseika.solenoid.energy.EmfBlocks.HAND_CRANK_GENERATOR.get(),
-                    com.suiseika.solenoid.energy.EmfBlocks.COPPER_CABLE.get(),
-                    com.suiseika.solenoid.energy.EmfBlocks.EMF_SOURCE.get(),
-                    com.suiseika.solenoid.energy.EmfBlocks.EMF_SINK.get(),
-                    com.suiseika.solenoid.energy.EmfBlocks.CRUSHER.get(),
-                    com.suiseika.solenoid.energy.EmfBlocks.SEPARATOR.get(),
-                    com.suiseika.solenoid.energy.EmfBlocks.INDUCTION_FURNACE.get(),
-                    com.suiseika.solenoid.energy.EmfBlocks.CAPACITOR.get());
+            return BuiltInRegistries.BLOCK.stream()
+                    .filter(block -> BuiltInRegistries.BLOCK.getKey(block).getNamespace().equals(Solenoid.MODID))
+                    .toList();
         }
     }
 
     // ---- Block Tags ----
 
-    private static class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
+    private static class ModBlockTagsProvider extends BlockTagsProvider {
         public ModBlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup) {
-            super(output, Registries.BLOCK, lookup, block -> BuiltInRegistries.BLOCK.getResourceKey(block).orElseThrow(), Solenoid.MODID);
+            super(output, lookup, Solenoid.MODID);
         }
-
 
         @Override
         protected void addTags(HolderLookup.Provider lookup) {
@@ -306,26 +326,30 @@ public class SolenoidDataGenerator {
                     net.minecraft.world.level.block.Blocks.DEEPSLATE_GOLD_ORE,
                     net.minecraft.world.level.block.Blocks.LAPIS_ORE,
                     net.minecraft.world.level.block.Blocks.DEEPSLATE_LAPIS_ORE,
-                    net.minecraft.world.level.block.Blocks.REDSTONE_ORE,
-                    net.minecraft.world.level.block.Blocks.DEEPSLATE_REDSTONE_ORE
+                    net.minecraft.world.level.block.Blocks.REDSTONE_ORE
             );
 
             tag(SolenoidTags.Blocks.WRENCHABLE).add(
-                    com.suiseika.solenoid.energy.EmfBlocks.CRUSHER.get(),
-                    com.suiseika.solenoid.energy.EmfBlocks.SEPARATOR.get(),
-                    com.suiseika.solenoid.energy.EmfBlocks.INDUCTION_FURNACE.get(),
-                    com.suiseika.solenoid.energy.EmfBlocks.CAPACITOR.get(),
-                    com.suiseika.solenoid.energy.EmfBlocks.HAND_CRANK_GENERATOR.get()
+                    EmfBlocks.CRUSHER.get(),
+                    EmfBlocks.SEPARATOR.get(),
+                    EmfBlocks.INDUCTION_FURNACE.get(),
+                    EmfBlocks.CAPACITOR.get(),
+                    EmfBlocks.HAND_CRANK_GENERATOR.get(),
+                    EmfBlocks.CHEMICAL_REACTOR.get(),
+                    EmfBlocks.DIGESTER.get(),
+                    EmfBlocks.CENTRIFUGE.get(),
+                    EmfBlocks.THORIUM_RTG.get(),
+                    EmfBlocks.RECHARGER.get()
             );
         }
     }
 
     // ---- Item Tags ----
 
-    private static class ModItemTagsProvider extends IntrinsicHolderTagsProvider<Item> {
+    private static class ModItemTagsProvider extends ItemTagsProvider {
         public ModItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup,
                                     CompletableFuture<TagLookup<Block>> blockTags) {
-            super(output, Registries.ITEM, lookup, item -> BuiltInRegistries.ITEM.getResourceKey(item).orElseThrow());
+            super(output, lookup, Solenoid.MODID);
         }
 
         @Override
@@ -356,6 +380,8 @@ public class SolenoidDataGenerator {
                     tag(ctag(path)).add(item);
                 }
             }
+
+            tag(SolenoidTags.Items.MAGNETS).add(MagnetiteItems.MAGNET.get(), MagnetiteItems.MAGNET_CHARM.get(), MagnetiteItems.REPULSOR.get());
         }
 
         private static TagKey<Item> ctag(String path) {
@@ -391,7 +417,6 @@ public class SolenoidDataGenerator {
                                                 7,
                                                 0.0f)));
                         
-                        // Monazite Ore: TIER-2, rarer (3 veins), smaller (4), deeper (triangle -64..0)
                         bootstrap.register(
                                 ResourceKey.create(Registries.CONFIGURED_FEATURE,
                                         Identifier.fromNamespaceAndPath(Solenoid.MODID, "monazite_ore")),
@@ -429,9 +454,9 @@ public class SolenoidDataGenerator {
                                 new PlacedFeature(
                                         bootstrap.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(monCfKey),
                                         List.of(
-                                                CountPlacement.of(3), // 3 veins per chunk
+                                                CountPlacement.of(3),
                                                 InSquarePlacement.spread(),
-                                                HeightRangePlacement.triangle( // triangle distribution
+                                                HeightRangePlacement.triangle(
                                                         net.minecraft.world.level.levelgen.VerticalAnchor.absolute(-64),
                                                         net.minecraft.world.level.levelgen.VerticalAnchor.absolute(0)),
                                                 BiomeFilter.biome())));

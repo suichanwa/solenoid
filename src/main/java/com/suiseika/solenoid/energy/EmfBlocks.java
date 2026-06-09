@@ -85,6 +85,16 @@ public final class EmfBlocks {
             CentrifugeBlock::new,
             p -> p.strength(3.5f).sound(SoundType.METAL).requiresCorrectToolForDrops());
 
+    public static final DeferredBlock<ThoriumRtgBlock> THORIUM_RTG = BLOCKS.registerBlock(
+            "thorium_rtg",
+            ThoriumRtgBlock::new,
+            p -> p.strength(3.0f).sound(SoundType.METAL).requiresCorrectToolForDrops());
+
+    public static final DeferredBlock<RechargerBlock> RECHARGER = BLOCKS.registerBlock(
+            "recharger",
+            RechargerBlock::new,
+            p -> p.strength(3.0f).sound(SoundType.METAL).requiresCorrectToolForDrops());
+
     // ---- Block items (with EMF role tooltips) ----
 
     public static final DeferredItem<BlockItem> EMF_SOURCE_ITEM = ITEMS.registerItem(
@@ -145,6 +155,16 @@ public final class EmfBlocks {
             props -> new EmfBlockItem(CENTRIFUGE.get(), props, "tooltip.solenoid.centrifuge"),
             p -> p.useBlockDescriptionPrefix());
 
+    public static final DeferredItem<BlockItem> THORIUM_RTG_ITEM = ITEMS.registerItem(
+            "thorium_rtg",
+            props -> new EmfBlockItem(THORIUM_RTG.get(), props, "tooltip.solenoid.rtg.output"),
+            p -> p.useBlockDescriptionPrefix());
+
+    public static final DeferredItem<BlockItem> RECHARGER_ITEM = ITEMS.registerItem(
+            "recharger",
+            props -> new EmfBlockItem(RECHARGER.get(), props, "tooltip.solenoid.recharger"),
+            p -> p.useBlockDescriptionPrefix());
+
     // ---- Block entity types ----
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EmfSourceBlockEntity>> EMF_SOURCE_BE =
@@ -191,6 +211,14 @@ public final class EmfBlocks {
             BLOCK_ENTITIES.register("centrifuge",
                     () -> new BlockEntityType<>(CentrifugeBlockEntity::new, CENTRIFUGE.get()));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ThoriumRtgBlockEntity>> THORIUM_RTG_BE =
+            BLOCK_ENTITIES.register("thorium_rtg",
+                    () -> new BlockEntityType<>(ThoriumRtgBlockEntity::new, THORIUM_RTG.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RechargerBlockEntity>> RECHARGER_BE =
+            BLOCK_ENTITIES.register("recharger",
+                    () -> new BlockEntityType<>(RechargerBlockEntity::new, RECHARGER.get()));
+
     /** Wire the deferred registers to the mod event bus. Called from the main mod constructor. */
     public static void register(net.neoforged.bus.api.IEventBus modEventBus) {
         BLOCKS.register(modEventBus);
@@ -225,6 +253,10 @@ public final class EmfBlocks {
                 (be, side) -> be.getEnergyHandler(side));
         event.registerBlockEntity(Capabilities.Energy.BLOCK, CENTRIFUGE_BE.get(),
                 (be, side) -> be.getEnergyHandler(side));
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, THORIUM_RTG_BE.get(),
+                (be, side) -> be.getEnergyHandler(side));
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, RECHARGER_BE.get(),
+                (be, side) -> be.getEnergyHandler(side));
 
         event.registerBlockEntity(Capabilities.Item.BLOCK, CRUSHER_BE.get(),
                 (be, side) -> be.getItemHandler(side));
@@ -237,6 +269,8 @@ public final class EmfBlocks {
         event.registerBlockEntity(Capabilities.Item.BLOCK, DIGESTER_BE.get(),
                 (be, side) -> be.getItemHandler(side));
         event.registerBlockEntity(Capabilities.Item.BLOCK, CENTRIFUGE_BE.get(),
+                (be, side) -> be.getItemHandler(side));
+        event.registerBlockEntity(Capabilities.Item.BLOCK, RECHARGER_BE.get(),
                 (be, side) -> be.getItemHandler(side));
     }
 }

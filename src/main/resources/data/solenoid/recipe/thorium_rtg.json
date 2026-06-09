@@ -1,0 +1,18 @@
+{
+  "_comment": "STARTER recipe - tunable. I=iron_ingot (machine_frame also available), C=copper_coil, P=thorium_pellet",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "CPC",
+    "III"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "C": "solenoid:copper_coil",
+    "P": "solenoid:thorium_pellet"
+  },
+  "result": {
+    "id": "solenoid:thorium_rtg",
+    "count": 1
+  }
+}

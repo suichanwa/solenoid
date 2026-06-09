@@ -47,6 +47,8 @@ public class MagnetiteItems {
     public static final DeferredItem<Item> NEODYMIUM_INGOT = ITEMS.registerItem("neodymium_ingot", Item::new);
     public static final DeferredItem<Item> THORIUM_INGOT = ITEMS.registerItem("thorium_ingot", Item::new);
 
+    public static final DeferredItem<Item> THORIUM_PELLET = ITEMS.registerItem("thorium_pellet", Item::new);
+
     public static final DeferredItem<Item> MACHINE_FRAME = ITEMS.registerItem("machine_frame", Item::new);
     public static final DeferredItem<Item> SCREW = ITEMS.registerItem("screw", Item::new);
 

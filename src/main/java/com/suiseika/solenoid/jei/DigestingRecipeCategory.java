@@ -70,17 +70,17 @@ public class DigestingRecipeCategory implements IRecipeCategory<DigestingRecipe>
         if (recipe.outputs().size() >= 1) {
             builder.addOutputSlot(66, 8)
                     .setOutputSlotBackground()
-                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.outputs().get(0).create());
+                    .add(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.outputs().get(0).create());
         }
         if (recipe.outputs().size() >= 2) {
             builder.addOutputSlot(66, 36)
                     .setStandardSlotBackground()
-                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.outputs().get(1).create());
+                    .addIngredients(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, java.util.List.of(recipe.outputs().get(1).create()));
         }
         if (recipe.outputs().size() >= 3) {
             builder.addOutputSlot(94, 22)
                     .setStandardSlotBackground()
-                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.outputs().get(2).create());
+                    .add(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.outputs().get(2).create());
         }
     }
 

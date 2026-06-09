@@ -6,7 +6,9 @@ import com.suiseika.solenoid.energy.ChemicalReactorScreen;
 import com.suiseika.solenoid.energy.CrusherScreen;
 import com.suiseika.solenoid.energy.DigesterScreen;
 import com.suiseika.solenoid.energy.InductionFurnaceScreen;
+import com.suiseika.solenoid.energy.RechargerScreen;
 import com.suiseika.solenoid.energy.SeparatorScreen;
+import com.suiseika.solenoid.energy.ThoriumRtgScreen;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -46,5 +48,7 @@ public class SolenoidClient {
         event.register(SolenoidMenus.CHEMICAL_REACTOR_MENU.get(), ChemicalReactorScreen::new);
         event.register(SolenoidMenus.DIGESTER_MENU.get(), DigesterScreen::new);
         event.register(SolenoidMenus.CENTRIFUGE_MENU.get(), CentrifugeScreen::new);
+        event.register(SolenoidMenus.THORIUM_RTG_MENU.get(), ThoriumRtgScreen::new);
+        event.register(SolenoidMenus.RECHARGER_MENU.get(), RechargerScreen::new);
     }
 }

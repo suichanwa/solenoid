@@ -1,0 +1,18 @@
+{
+  "_comment": "STARTER recipe - tunable. K=copper_coil x2, C=capacitor, L=copper_cable x2, F=machine_frame",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "KCK",
+    "LFL"
+  ],
+  "key": {
+    "K": "solenoid:copper_coil",
+    "C": "solenoid:capacitor",
+    "L": "solenoid:copper_cable",
+    "F": "solenoid:machine_frame"
+  },
+  "result": {
+    "id": "solenoid:recharger",
+    "count": 1
+  }
+}

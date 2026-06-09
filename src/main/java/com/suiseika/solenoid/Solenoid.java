@@ -93,6 +93,7 @@ public class Solenoid {
                 output.accept(EmfBlocks.CHEMICAL_REACTOR_ITEM);
                 output.accept(EmfBlocks.DIGESTER_ITEM);
                 output.accept(EmfBlocks.CENTRIFUGE_ITEM);
+                output.accept(EmfBlocks.THORIUM_RTG_ITEM);
                 output.accept(EmfBlocks.EMF_SOURCE_ITEM);
                 output.accept(EmfBlocks.COPPER_CABLE_ITEM);
                 output.accept(EmfBlocks.EMF_SINK_ITEM);

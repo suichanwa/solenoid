@@ -6,7 +6,9 @@ import com.suiseika.solenoid.energy.ChemicalReactorMenu;
 import com.suiseika.solenoid.energy.CrusherMenu;
 import com.suiseika.solenoid.energy.DigesterMenu;
 import com.suiseika.solenoid.energy.InductionFurnaceMenu;
+import com.suiseika.solenoid.energy.RechargerMenu;
 import com.suiseika.solenoid.energy.SeparatorMenu;
+import com.suiseika.solenoid.energy.ThoriumRtgMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
@@ -36,4 +38,10 @@ public class SolenoidMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<CentrifugeMenu>> CENTRIFUGE_MENU =
             MENUS.register("centrifuge", () -> IMenuTypeExtension.create(CentrifugeMenu::new));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<ThoriumRtgMenu>> THORIUM_RTG_MENU =
+            MENUS.register("thorium_rtg", () -> IMenuTypeExtension.create(ThoriumRtgMenu::new));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<RechargerMenu>> RECHARGER_MENU =
+            MENUS.register("recharger", () -> IMenuTypeExtension.create(RechargerMenu::new));
 }

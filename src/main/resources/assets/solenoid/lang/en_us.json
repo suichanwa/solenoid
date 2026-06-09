@@ -22,6 +22,7 @@
   "item.solenoid.machine_frame": "Machines Frame",
   "item.solenoid.screw": "Screw",
   "item.solenoid.magnet_charm": "Magnet Charm",
+  "item.solenoid.thorium_rtg": "Thorium RTG",
   "item.solenoid.repulsor": "Repulsor",
   "item.solenoid.sawdust": "Sawdust",
   "item.solenoid.lye": "Lye",
@@ -55,6 +56,9 @@
   "tooltip.solenoid.hand_crank_generator.capacity": "Stores up to 50,000 EMF.",
   "tooltip.solenoid.induction_furnace": "Smelts items using EMF, no fuel needed",
   "tooltip.solenoid.separator": "Separates ore dust into slag and product",
+  "tooltip.solenoid.rtg.output": "Output: %d EMF/t",
+  "tooltip.solenoid.rtg.active": "Active: Decay process ongoing",
+  "tooltip.solenoid.rtg.depleted": "Depleted: Fuel exhausted",
   
   "container.solenoid.crusher": "Electromagnetic Crusher",
   "container.solenoid.separator": "Electromagnetic Separator",
@@ -63,6 +67,7 @@
   "container.solenoid.chemical_reactor": "Electromagnetic Chemical Reactor",
   "container.solenoid.digester": "Electromagnetic Digester",
   "container.solenoid.centrifuge": "Electromagnetic Centrifuge",
+  "container.solenoid.thorium_rtg": "Thorium RTG",
 
   "solenoid.configuration.title": "Solenoid Configs",
   "solenoid.configuration.section.solenoid.common.toml": "Solenoid Configs",

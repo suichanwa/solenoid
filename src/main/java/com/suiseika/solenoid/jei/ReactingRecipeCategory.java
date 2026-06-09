@@ -64,7 +64,7 @@ public class ReactingRecipeCategory implements IRecipeCategory<ReactingRecipe> {
 
         builder.addOutputSlot(66, 9)
                 .setOutputSlotBackground()
-                .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.result().create());
+                .addIngredients(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, java.util.List.of(recipe.result().create()));
     }
 
     @Override

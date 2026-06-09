@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "solenoid:block/recharger" },
+    "facing=south": { "model": "solenoid:block/recharger", "y": 180 },
+    "facing=east": { "model": "solenoid:block/recharger", "y": 90 },
+    "facing=west": { "model": "solenoid:block/recharger", "y": 270 }
+  }
+}

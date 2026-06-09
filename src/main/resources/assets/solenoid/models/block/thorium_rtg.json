@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "particle": "solenoid:block/thorium_rtg_side",
+    "top": "solenoid:block/thorium_rtg_side",
+    "front": "solenoid:block/thorium_rtg_front",
+    "side": "solenoid:block/thorium_rtg_side"
+  }
+}

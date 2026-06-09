@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "solenoid:block/thorium_rtg"
+    },
+    "facing=south": {
+      "model": "solenoid:block/thorium_rtg",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "solenoid:block/thorium_rtg",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "solenoid:block/thorium_rtg",
+      "y": 90
+    }
+  }
+}
