@@ -11,7 +11,7 @@ public class MagnetiteItems {
 
     public static final DeferredItem<Item> MAGNETITE_INGOT = ITEMS.registerItem("magnetite_ingot", Item::new);
 
-    public static final DeferredItem<Item> MAGNET = ITEMS.registerItem("magnet", Item::new);
+    public static final DeferredItem<MagnetItem> MAGNET = ITEMS.registerItem("magnet", MagnetItem::new, p -> p.stacksTo(1));
 
     public static final DeferredItem<Item> COPPER_COIL = ITEMS.registerItem("copper_coil", Item::new);
 

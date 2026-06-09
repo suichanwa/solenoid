@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "solenoid:magnet_charm",
-    "solenoid:repulsor"
+    "solenoid:repulsor",
+    "solenoid:magnet"
   ]
 }

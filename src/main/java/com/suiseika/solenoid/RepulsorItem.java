@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
@@ -17,9 +18,14 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.transfer.energy.ItemAccessEnergyHandler;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.function.Consumer;
@@ -36,6 +42,7 @@ import java.util.function.Consumer;
  * server-authoritatively -- {@link #use} only mutates state when the player is on the server.
  * Also wearable in a Curios {@code charm} slot.
  */
+@EventBusSubscriber(modid = Solenoid.MODID)
 public class RepulsorItem extends EmfPoweredItem implements ICurioItem {
     public static final int CAPACITY = 30_000;
     public static final int MAX_TRANSFER = 1_000;
@@ -43,6 +50,8 @@ public class RepulsorItem extends EmfPoweredItem implements ICurioItem {
     public static final double STRENGTH = 1.8;
     public static final double DEFLECT_SPEED = 1.5;
     public static final int PULSE_COST = 500;
+    public static final int PASSIVE_CREEPER_COST = 100;
+    public static final int PASSIVE_DEFLECT_COST = 50;
     public static final int COOLDOWN = 40;
 
     public RepulsorItem(Properties properties) {
@@ -120,6 +129,90 @@ public class RepulsorItem extends EmfPoweredItem implements ICurioItem {
     @Override
     public boolean hasCurioCapability(ItemStack stack) {
         return true;
+    }
+
+    @Override
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        if (slotContext.entity().level().isClientSide() || !(slotContext.entity() instanceof Player player)) {
+            return;
+        }
+
+        ServerLevel level = (ServerLevel) player.level();
+        int energy = getEnergy(stack);
+        boolean activated = false;
+
+        Vec3 center = player.position();
+        AABB area = player.getBoundingBox().inflate(RADIUS);
+
+        // 1. Deflect projectiles (75% chance, evaluate once per projectile)
+        for (Projectile projectile : level.getEntitiesOfClass(Projectile.class, area,
+                e -> e.isAlive() && e.getOwner() != player)) {
+            
+            if (energy >= PASSIVE_DEFLECT_COST) {
+                // Use deterministic UUID hash for ~75% chance to avoid re-evaluating the same projectile
+                if ((projectile.getUUID().hashCode() & 0xFF) < 192) {
+                    Vec3 diff = projectile.position().subtract(center);
+                    if (diff.lengthSqr() >= 1.0e-4) {
+                        projectile.setDeltaMovement(diff.normalize().scale(DEFLECT_SPEED));
+                    }
+                    projectile.setOwner(player);
+                    projectile.hurtMarked = true;
+
+                    energy -= PASSIVE_DEFLECT_COST;
+                    activated = true;
+                    level.sendParticles(ParticleTypes.ELECTRIC_SPARK, projectile.getX(), projectile.getY(), projectile.getZ(), 10, 0.2, 0.2, 0.2, 0.1);
+                }
+            }
+        }
+
+        if (activated) {
+            setEnergy(stack, energy);
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BEACON_DEACTIVATE, SoundSource.PLAYERS, 0.4f, 1.2f);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onIncomingDamage(LivingIncomingDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        // Ensure damage comes from a creeper
+        if (!(event.getSource().getEntity() instanceof Creeper)) {
+            return;
+        }
+
+        ItemStack repulsorStack = ItemStack.EMPTY;
+
+        if (player.getMainHandItem().is(MagnetiteItems.REPULSOR.get())) {
+            repulsorStack = player.getMainHandItem();
+        } else if (player.getOffhandItem().is(MagnetiteItems.REPULSOR.get())) {
+            repulsorStack = player.getOffhandItem();
+        } else {
+            var opt = CuriosApi.getCuriosInventory(player)
+                    .flatMap(inv -> inv.findFirstCurio(MagnetiteItems.REPULSOR.get()));
+            if (opt.isPresent()) {
+                repulsorStack = opt.get().stack();
+            }
+        }
+
+        if (repulsorStack.isEmpty() || !(repulsorStack.getItem() instanceof RepulsorItem repulsor)) {
+            return;
+        }
+
+        int energy = repulsor.getEnergy(repulsorStack);
+        if (energy >= PASSIVE_CREEPER_COST) {
+            float originalDamage = event.getAmount();
+            // Negate 75% of the damage
+            event.setAmount(originalDamage * 0.25f);
+            
+            repulsor.setEnergy(repulsorStack, energy - PASSIVE_CREEPER_COST);
+
+            if (player.level() instanceof ServerLevel sl) {
+                sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, player.getX(), player.getY() + 1.0, player.getZ(), 20, 0.3, 0.3, 0.3, 0.1);
+                sl.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1.0f, 0.8f);
+            }
+        }
     }
 
     @Override
