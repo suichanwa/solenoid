@@ -110,36 +110,40 @@ public class CapacitorBlockEntity extends AbstractEmfBlockEntity implements Menu
 
     /**
      * Pushes up to {@link EmfConstants#CAPACITOR_TRANSFER} EMF total this tick, split fairly among the
-     * adjacent pure consumers. Producers/storage (anything that will give energy back) are skipped.
+     * adjacent consumers and cables.
      */
     private void pushToConsumers(ServerLevel level, BlockPos pos) {
-        if (handler.getAmountAsInt() <= 0) {
+        int mine = handler.getAmountAsInt();
+        if (mine <= 0) {
             return;
         }
 
-        List<EnergyHandler> consumers = new ArrayList<>(Direction.values().length);
+        List<EnergyHandler> targets = new ArrayList<>(Direction.values().length);
         for (Direction dir : Direction.values()) {
             EnergyHandler neighbour = neighbourHandler(level, pos, dir);
             if (neighbour == null || neighbour == handler) {
                 continue;
             }
-            if (!canExtract(neighbour)) {
-                consumers.add(neighbour);
+
+            // Always push into pure consumers (machines).
+            // For extractable neighbours (cables, other batteries), only push if we have more energy (flow downhill).
+            if (!canExtract(neighbour) || neighbour.getAmountAsInt() < mine) {
+                targets.add(neighbour);
             }
         }
-        if (consumers.isEmpty()) {
+        if (targets.isEmpty()) {
             return;
         }
 
         int budget = EmfConstants.CAPACITOR_TRANSFER;
-        int remaining = consumers.size();
-        for (EnergyHandler consumer : consumers) {
+        int remaining = targets.size();
+        for (EnergyHandler target : targets) {
             if (budget <= 0) {
                 break;
             }
-            // Even share of the remaining budget across the remaining consumers.
+            // Even share of the remaining budget across the remaining targets.
             int share = Math.max(1, budget / remaining);
-            int moved = EnergyHandlerUtil.move(handler, consumer, share, null);
+            int moved = EnergyHandlerUtil.move(handler, target, share, null);
             budget -= moved;
             remaining--;
         }

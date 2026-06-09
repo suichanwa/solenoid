@@ -49,7 +49,7 @@ public class CrusherBlockEntity extends AbstractEmfBlockEntity implements MenuPr
 
     private final CrusherItemHandler itemHandler;
 
-    private final SimpleEnergyHandler energyHandler = new SimpleEnergyHandler(10000, 1000, 1000) {
+    private final SimpleEnergyHandler energyHandler = new SimpleEnergyHandler(10000, 1000, 0) {
         @Override
         protected void onEnergyChanged(int previousAmount) {
             setChanged();

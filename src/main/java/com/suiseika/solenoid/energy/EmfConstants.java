@@ -22,6 +22,9 @@ public final class EmfConstants {
     /** Small internal buffer of an EMF Cable, so it has somewhere to hold in-flight EMF. */
     public static final int CABLE_BUFFER = 2_000;
 
+    /** Small internal buffer of a Copper Cable. */
+    public static final int COPPER_CABLE_BUFFER = 400;
+
     /** Max EMF the EMF Sink accepts per server tick. */
     public static final int SINK_INPUT = 256;
 

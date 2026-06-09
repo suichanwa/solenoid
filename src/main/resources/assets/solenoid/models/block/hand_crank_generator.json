@@ -1,6 +1,9 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/orientable",
   "textures": {
-    "all": "solenoid:block/hand_crank_generator_face"
+    "particle": "solenoid:block/machine_side",
+    "top": "solenoid:block/machine_side",
+    "front": "solenoid:block/hand_crank_generator_front",
+    "side": "solenoid:block/machine_side"
   }
 }

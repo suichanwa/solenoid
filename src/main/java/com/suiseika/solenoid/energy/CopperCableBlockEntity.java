@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 public class CopperCableBlockEntity extends AbstractEmfBlockEntity {
     private final boolean[] forcedDisconnected = new boolean[6];
     private final SimpleEnergyHandler handler = new SimpleEnergyHandler(
-            EmfConstants.CABLE_BUFFER, EmfConstants.COPPER_CABLE_TRANSFER) {
+            EmfConstants.COPPER_CABLE_BUFFER, EmfConstants.COPPER_CABLE_TRANSFER) {
         @Override
         protected void onEnergyChanged(int previousAmount) {
             setChanged();
@@ -52,36 +52,49 @@ public class CopperCableBlockEntity extends AbstractEmfBlockEntity {
     protected void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         int transfer = EmfConstants.COPPER_CABLE_TRANSFER;
 
-        for (Direction dir : Direction.values()) {
-            if (isForcedDisconnected(dir)) {
-                continue;
-            }
+        // 1. Identify neighbors: separate into Producers, Consumers (Machines), and other Cables
+        java.util.List<EnergyHandler> producers = new java.util.ArrayList<>();
+        java.util.List<EnergyHandler> consumers = new java.util.ArrayList<>();
+        java.util.List<EnergyHandler> otherCables = new java.util.ArrayList<>();
 
+        for (Direction dir : Direction.values()) {
+            if (isForcedDisconnected(dir)) continue;
             EnergyHandler neighbour = neighbourHandler(level, pos, dir);
-            if (neighbour == null || neighbour == handler) {
-                continue;
-            }
+            if (neighbour == null || neighbour == handler) continue;
 
             if (level.getBlockEntity(pos.relative(dir)) instanceof CopperCableBlockEntity) {
-                // Cable -> cable: equalise charge, but only ever flow DOWNHILL (toward the lower
-                // buffer) and move just half the difference. This drains a multi-cable run toward
-                // whichever end a machine is pulling from, instead of two cables shoving the same
-                // packet back and forth each tick (which left the far machine unpowered).
-                int mine = handler.getAmountAsInt();
-                int theirs = neighbour.getAmountAsInt();
-                if (mine > theirs) {
-                    int amount = Math.min(transfer, (mine - theirs + 1) / 2);
-                    EnergyHandlerUtil.move(handler, neighbour, amount, null);
-                }
+                otherCables.add(neighbour);
+            } else if (canExtract(neighbour)) {
+                producers.add(neighbour);
             } else {
-                // Pull from anything that will give (sources, generators, foreign FE producers).
-                EnergyHandlerUtil.move(neighbour, handler, transfer, null);
-                // Only push into pure consumers (machines, sink). Never push into something that can
-                // extract — that would just dump our charge back into a source/generator/battery and
-                // ping-pong with it.
-                if (!canExtract(neighbour)) {
-                    EnergyHandlerUtil.move(handler, neighbour, transfer, null);
-                }
+                consumers.add(neighbour);
+            }
+        }
+
+        // 2. Direct flow: move from producers directly to consumers, bypassing our buffer
+        for (EnergyHandler p : producers) {
+            for (EnergyHandler c : consumers) {
+                EnergyHandlerUtil.move(p, c, transfer, null);
+            }
+        }
+
+        // 3. Fill our buffer from producers (if consumers are full or missing)
+        for (EnergyHandler p : producers) {
+            EnergyHandlerUtil.move(p, handler, transfer, null);
+        }
+
+        // 4. Drain our buffer into consumers
+        for (EnergyHandler c : consumers) {
+            EnergyHandlerUtil.move(handler, c, transfer, null);
+        }
+
+        // 5. Cable-to-cable equalization (downhill only)
+        for (EnergyHandler cable : otherCables) {
+            int mine = handler.getAmountAsInt();
+            int theirs = cable.getAmountAsInt();
+            if (mine > theirs) {
+                int amount = Math.min(transfer, (mine - theirs + 1) / 2);
+                EnergyHandlerUtil.move(handler, cable, amount, null);
             }
         }
     }

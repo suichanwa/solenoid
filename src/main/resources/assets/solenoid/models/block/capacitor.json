@@ -1,9 +1,9 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
-    "particle": "solenoid:block/caapcitory_side",
-    "top": "solenoid:block/caapcitory_side",
-    "front": "solenoid:block/capacitory_face",
-    "side": "solenoid:block/caapcitory_side"
+    "particle": "solenoid:block/machine_side",
+    "top": "solenoid:block/machine_side",
+    "front": "solenoid:block/capacitor_face",
+    "side": "solenoid:block/machine_side"
   }
 }
