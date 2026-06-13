@@ -24,6 +24,7 @@
   "item.solenoid.magnet_charm": "Magnet Charm",
   "item.solenoid.thorium_rtg": "Thorium RTG",
   "item.solenoid.repulsor": "Repulsor",
+  "item.solenoid.force_field_generator": "Force Field Generator",
   "item.solenoid.sawdust": "Sawdust",
   "item.solenoid.lye": "Lye",
   "item.solenoid.crushed_monazite": "Crushed Monazite",
@@ -34,6 +35,9 @@
 
   "message.solenoid.on": "ON",
   "message.solenoid.off": "OFF",
+  "message.solenoid.force_field.toggle": "Force field: %s",
+  "message.solenoid.force_field.depleted": "Force field depleted!",
+  "tooltip.solenoid.force_field.state": "Shield: %s",
 
   "message.solenoid.wrench.facing": "Facing: %s",
   "message.solenoid.wrench.cable": "Cable %s: %s",

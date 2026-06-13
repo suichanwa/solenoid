@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "solenoid:item/force_field_generator"
+  }
+}

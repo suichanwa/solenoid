@@ -3,6 +3,7 @@
   "values": [
     "solenoid:magnet_charm",
     "solenoid:repulsor",
-    "solenoid:magnet"
+    "solenoid:magnet",
+    "solenoid:force_field_generator"
   ]
 }

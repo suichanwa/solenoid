@@ -57,4 +57,7 @@ public class MagnetiteItems {
 
     public static final DeferredItem<RepulsorItem> REPULSOR =
             ITEMS.registerItem("repulsor", RepulsorItem::new, p -> p.stacksTo(1));
+
+    public static final DeferredItem<ForceFieldGeneratorItem> FORCE_FIELD_GENERATOR =
+            ITEMS.registerItem("force_field_generator", ForceFieldGeneratorItem::new, p -> p.stacksTo(1));
 }

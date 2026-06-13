@@ -43,6 +43,11 @@ repositories {
         name = "Illuseon"
         url = "https://maven.theillusivec4.top/"
     }
+    // Pipez (dev-only pipe mod).
+    maven {
+        name = "maxhenkel"
+        url = "https://maven.maxhenkel.de/repository/public"
+    }
 }
 
 base {
@@ -141,6 +146,10 @@ dependencies {
     // Curios API — hard dependency. Full jar on both compile and runtime classpath so the charm
     // can be registered as a curio and worn in a slot.
     implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+
+    // Pipez — dev-only. Not required at runtime.
+    compileOnly "de.maxhenkel.pipez:pipez-neoforge-${minecraft_version}:${pipez_version}"
+    localRuntime "de.maxhenkel.pipez:pipez-neoforge-${minecraft_version}:${pipez_version}"
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar

@@ -150,6 +150,7 @@ public class SolenoidDataGenerator {
             addItem(MagnetiteItems.SCREW, "Screw");
             addItem(MagnetiteItems.MAGNET_CHARM, "Magnet Charm");
             addItem(MagnetiteItems.REPULSOR, "Repulsor");
+            addItem(MagnetiteItems.FORCE_FIELD_GENERATOR, "Force Field Generator");
 
             // Monazite processing line intermediates
             addItem(MagnetiteItems.SAWDUST, "Sawdust");
@@ -224,6 +225,9 @@ public class SolenoidDataGenerator {
             add("tooltip.solenoid.capacitor", "Stores EMF and powers adjacent machines");
             add("tooltip.solenoid.capacitor.capacity", "Capacity: 100,000 EMF");
             add("tooltip.solenoid.magnet_charm.state", "State: %s");
+            add("tooltip.solenoid.force_field.state", "Shield: %s");
+            add("message.solenoid.force_field.toggle", "Force field: %s");
+            add("message.solenoid.force_field.depleted", "Force field depleted!");
             add("tooltip.solenoid.energy_stored", "Energy: %d / %d EMF");
             
             // Machine GUI container titles
@@ -454,11 +458,11 @@ public class SolenoidDataGenerator {
                                 new PlacedFeature(
                                         bootstrap.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(monCfKey),
                                         List.of(
-                                                CountPlacement.of(3),
+                                                CountPlacement.of(net.minecraft.util.valueproviders.UniformInt.of(3, 16)),
                                                 InSquarePlacement.spread(),
                                                 HeightRangePlacement.triangle(
-                                                        net.minecraft.world.level.levelgen.VerticalAnchor.absolute(-64),
-                                                        net.minecraft.world.level.levelgen.VerticalAnchor.absolute(0)),
+                                                        net.minecraft.world.level.levelgen.VerticalAnchor.absolute(0),
+                                                        net.minecraft.world.level.levelgen.VerticalAnchor.absolute(128)),
                                                 BiomeFilter.biome())));
                     })
                     .add(net.neoforged.neoforge.registries.NeoForgeRegistries.Keys.BIOME_MODIFIERS, bootstrap -> {

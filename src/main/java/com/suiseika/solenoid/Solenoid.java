@@ -84,6 +84,7 @@ public class Solenoid {
                 output.accept(MagnetiteItems.SCREW);
                 output.accept(MagnetiteItems.MAGNET_CHARM);
                 output.accept(MagnetiteItems.REPULSOR);
+                output.accept(MagnetiteItems.FORCE_FIELD_GENERATOR);
                 // EMF energy blocks
                 output.accept(EmfBlocks.HAND_CRANK_GENERATOR_ITEM);
                 output.accept(EmfBlocks.CRUSHER_ITEM);
@@ -123,6 +124,7 @@ public class Solenoid {
         modEventBus.addListener(InductionSurveyorItem::registerCapabilities);
         modEventBus.addListener(MagnetCharmItem::registerCapabilities);
         modEventBus.addListener(RepulsorItem::registerCapabilities);
+        modEventBus.addListener(ForceFieldGeneratorItem::registerCapabilities);
 
         // Register recipes
         SolenoidRecipes.RECIPE_TYPES.register(modEventBus);
