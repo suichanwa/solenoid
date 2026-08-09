@@ -19,8 +19,12 @@ import net.minecraft.network.chat.Component;
 
 public class DigestingRecipeCategory implements IRecipeCategory<DigestingRecipe> {
     private static final int WIDTH = 120;
-    private static final int HEIGHT = 68;
+    // Taller than the sibling categories: the Digester stacks input + reagent down the left column,
+    // so the reagent slot runs to y=53 and the energy/time lines need a clear row beneath it.
+    private static final int HEIGHT = 80;
     private static final int TEXT_COLOR = 0xFF404040;
+    /** First text row, clear of the reagent slot's 18px background (which ends at y=53). */
+    private static final int INFO_X = 4, INFO_ENERGY_Y = 58, INFO_TIME_Y = 68;
 
     private final IDrawable icon;
     private final IDrawableStatic arrow;
@@ -102,7 +106,9 @@ public class DigestingRecipeCategory implements IRecipeCategory<DigestingRecipe>
             }
         }
 
-        guiGraphics.text(font, Component.translatable("gui.solenoid.recipe.energy", recipe.energy()), 4, 48, TEXT_COLOR, false);
-        guiGraphics.text(font, Component.translatable("gui.solenoid.recipe.time", recipe.time()), 4, 58, TEXT_COLOR, false);
+        guiGraphics.text(font, Component.translatable("gui.solenoid.recipe.energy", recipe.energy()),
+                INFO_X, INFO_ENERGY_Y, TEXT_COLOR, false);
+        guiGraphics.text(font, Component.translatable("gui.solenoid.recipe.time", recipe.time()),
+                INFO_X, INFO_TIME_Y, TEXT_COLOR, false);
     }
 }

@@ -1,5 +1,6 @@
 package com.suiseika.solenoid.energy;
 
+import com.suiseika.solenoid.client.JeiBridge;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -18,10 +19,20 @@ public class ChemicalReactorScreen extends AbstractContainerScreen<ChemicalReact
     private static final int BAR_FRAME = 0xFF373737;
     private static final int BAR_EMPTY = 0xFF555555;
     private static final int BAR_FILL = 0xFF6ADf6A;
-    private static final int ARROW_X = 80, ARROW_Y = 34, ARROW_W = 24, ARROW_H = 16;
+    /** Public so the JEI plugin can hang its recipe click area on the exact same rectangle. */
+    public static final int ARROW_X = 80, ARROW_Y = 34, ARROW_W = 24, ARROW_H = 16;
+    // "Show recipes" button, tucked into the free top-right corner of the panel.
+    private static final int JEI_BUTTON_X = 152, JEI_BUTTON_Y = 4;
 
     public ChemicalReactorScreen(ChemicalReactorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        JeiBridge.recipeButton(this.leftPos + JEI_BUTTON_X, this.topPos + JEI_BUTTON_Y, getClass())
+                .ifPresent(this::addRenderableWidget);
     }
 
     @Override

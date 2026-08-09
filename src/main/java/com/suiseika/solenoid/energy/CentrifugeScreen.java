@@ -1,5 +1,6 @@
 package com.suiseika.solenoid.energy;
 
+import com.suiseika.solenoid.client.JeiBridge;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -20,10 +21,20 @@ public class CentrifugeScreen extends AbstractContainerScreen<CentrifugeMenu> {
     private static final int BAR_FILL = 0xFFE0C84A;
     // Arrow centered between the input (right edge x66) and the output column (left edge x112),
     // on the same y-band as the centred input slot.
-    private static final int ARROW_X = 78, ARROW_Y = 44, ARROW_W = 24, ARROW_H = 16;
+    // Public so the JEI plugin can hang its recipe click area on the exact same rectangle.
+    public static final int ARROW_X = 78, ARROW_Y = 44, ARROW_W = 24, ARROW_H = 16;
+    // "Show recipes" button, tucked into the free top-right corner of the panel.
+    private static final int JEI_BUTTON_X = 152, JEI_BUTTON_Y = 4;
 
     public CentrifugeScreen(CentrifugeMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        JeiBridge.recipeButton(this.leftPos + JEI_BUTTON_X, this.topPos + JEI_BUTTON_Y, getClass())
+                .ifPresent(this::addRenderableWidget);
     }
 
     @Override

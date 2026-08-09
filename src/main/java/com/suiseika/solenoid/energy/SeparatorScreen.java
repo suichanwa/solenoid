@@ -1,11 +1,13 @@
 package com.suiseika.solenoid.energy;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.suiseika.solenoid.client.JeiBridge;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 
+/** Code-drawn Separator GUI (no texture sheet). */
 public class SeparatorScreen extends AbstractContainerScreen<SeparatorMenu> {
     private static final int PANEL_FILL = 0xFFC6C6C6;
     private static final int PANEL_LIGHT = 0xFFFFFFFF;
@@ -17,17 +19,28 @@ public class SeparatorScreen extends AbstractContainerScreen<SeparatorMenu> {
     private static final int BAR_FRAME = 0xFF373737;
     private static final int BAR_EMPTY = 0xFF555555;
     private static final int BAR_FILL = 0xFF3AA6FF;
-    private static final int ARROW_X = 70, ARROW_Y = 34, ARROW_W = 24, ARROW_H = 16;
+    /** Public so the JEI plugin can hang its recipe click area on the exact same rectangle. */
+    public static final int ARROW_X = 70, ARROW_Y = 34, ARROW_W = 24, ARROW_H = 16;
     private static final int FIELD_X = 150, FIELD_Y = 16, FIELD_SIZE = 10;
     private static final int FIELD_ON = 0xFF3AA6FF;
     private static final int FIELD_OFF = 0xFF552020;
+    // Sits below the magnetic-field indicator, which already occupies the top-right corner.
+    private static final int JEI_BUTTON_X = 150, JEI_BUTTON_Y = 30;
 
     public SeparatorScreen(SeparatorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
     }
 
     @Override
-    protected void renderBg(GuiGraphics g, float partialTick, int mouseX, int mouseY) {
+    protected void init() {
+        super.init();
+        JeiBridge.recipeButton(this.leftPos + JEI_BUTTON_X, this.topPos + JEI_BUTTON_Y, getClass())
+                .ifPresent(this::addRenderableWidget);
+    }
+
+    @Override
+    public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float a) {
+        super.extractBackground(g, mouseX, mouseY, a);
         int x = this.leftPos, y = this.topPos, w = this.imageWidth, h = this.imageHeight;
 
         g.fill(x, y, x + w, y + h, PANEL_FILL);
@@ -66,23 +79,11 @@ public class SeparatorScreen extends AbstractContainerScreen<SeparatorMenu> {
         int fx = x + FIELD_X, fy = y + FIELD_Y;
         g.fill(fx - 1, fy - 1, fx + FIELD_SIZE + 1, fy + FIELD_SIZE + 1, SLOT_DARK);
         g.fill(fx, fy, fx + FIELD_SIZE, fy + FIELD_SIZE, fieldActive ? FIELD_ON : FIELD_OFF);
-    }
-
-    @Override
-    public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
-        super.render(g, mouseX, mouseY, partialTick);
-
-        int x = this.leftPos, y = this.topPos;
-        int bx = x + BAR_X, by = y + BAR_Y;
-        int fx = x + FIELD_X, fy = y + FIELD_Y;
 
         if (mouseX >= bx && mouseX < bx + BAR_W && mouseY >= by && mouseY < by + BAR_H) {
-            int stored = this.menu.getEnergyStored();
-            int max = this.menu.getEnergyMax();
-            g.renderTooltip(this.font, Component.literal(stored + " / " + max + " EMF"), mouseX, mouseY);
+            g.setTooltipForNextFrame(Component.literal(stored + " / " + max + " EMF"), mouseX, mouseY);
         } else if (mouseX >= fx && mouseX < fx + FIELD_SIZE && mouseY >= fy && mouseY < fy + FIELD_SIZE) {
-            boolean fieldActive = this.menu.isFieldActive();
-            g.renderTooltip(this.font,
+            g.setTooltipForNextFrame(
                     Component.literal("Magnetic field: " + (fieldActive ? "active" : "inactive")), mouseX, mouseY);
         }
     }

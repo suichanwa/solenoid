@@ -243,6 +243,10 @@ public class SolenoidDataGenerator {
             // JEI Categories
             add("gui.solenoid.category.crushing", "Crushing");
             add("gui.solenoid.category.separating", "Electromagnetic Separation");
+            add("gui.solenoid.category.reacting", "Chemical Reaction");
+            add("gui.solenoid.category.digesting", "Digestion");
+            add("gui.solenoid.category.centrifuging", "Centrifuging");
+            add("gui.solenoid.show_recipes", "Show Recipes");
             add("gui.solenoid.recipe.energy", "%s EMF");
             add("gui.solenoid.recipe.time", "%s ticks");
             add("gui.solenoid.recipe.chance", "%s%%");

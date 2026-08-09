@@ -147,9 +147,11 @@ dependencies {
     // can be registered as a curio and worn in a slot.
     implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
 
-    // Pipez — dev-only. Not required at runtime.
-    compileOnly "de.maxhenkel.pipez:pipez-neoforge-${minecraft_version}:${pipez_version}"
-    localRuntime "de.maxhenkel.pipez:pipez-neoforge-${minecraft_version}:${pipez_version}"
+    // Pipez — dev-only. Disabled: no 26.1.2 build is published and pipez_version is still the
+    // PIPEZ_VERSION_HERE placeholder, which fails compileClasspath resolution for the whole project.
+    // Nothing in src/ references it. Re-enable once a real 26.1.2 version exists.
+    // compileOnly "de.maxhenkel.pipez:pipez-neoforge-${minecraft_version}:${pipez_version}"
+    // localRuntime "de.maxhenkel.pipez:pipez-neoforge-${minecraft_version}:${pipez_version}"
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
