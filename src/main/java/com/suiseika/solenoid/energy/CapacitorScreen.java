@@ -1,72 +1,70 @@
 package com.suiseika.solenoid.energy;
 
+import com.suiseika.solenoid.client.ui.MachineScreen;
+import com.suiseika.solenoid.client.ui.MachineStatus;
+import com.suiseika.solenoid.client.ui.Painter;
+import com.suiseika.solenoid.client.ui.Theme;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
+
+import java.util.Optional;
 
 /**
- * Fully code-drawn Capacitor GUI, following the {@link CrusherScreen} pattern. No machine slots: a
- * single wide horizontal EMF bar shows the stored charge, with a hover tooltip giving exact numbers.
- * Panel and player-inventory slot recesses are painted with {@link GuiGraphicsExtractor#fill}; the
- * title and "Inventory" label are drawn by {@link AbstractContainerScreen}'s vanilla label pass.
+ * Capacitor console. No machine slots, so the whole well becomes a charge readout: a wide
+ * horizontal gauge with the exact figures beneath it.
  */
-public class CapacitorScreen extends AbstractContainerScreen<CapacitorMenu> {
-    // Panel bevel
-    private static final int PANEL_FILL = 0xFFC6C6C6;
-    private static final int PANEL_LIGHT = 0xFFFFFFFF;
-    private static final int PANEL_DARK = 0xFF555555;
-    // Slot recess
-    private static final int SLOT_INNER = 0xFF8B8B8B;
-    private static final int SLOT_DARK = 0xFF373737;
-    private static final int SLOT_LIGHT = 0xFFFFFFFF;
-    // Energy bar (wide, horizontal, fills left -> right)
-    private static final int BAR_X = 16, BAR_Y = 22, BAR_W = 144, BAR_H = 18;
-    private static final int BAR_FRAME = 0xFF373737;
-    private static final int BAR_EMPTY = 0xFF555555;
-    private static final int BAR_FILL = 0xFF3AA6FF;
+public class CapacitorScreen extends MachineScreen<CapacitorMenu> {
+    private static final int BAR_X = 16, BAR_Y = 40, BAR_W = 144, BAR_H = 14;
 
     public CapacitorScreen(CapacitorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float a) {
-        super.extractBackground(g, mouseX, mouseY, a);
-        int x = this.leftPos, y = this.topPos, w = this.imageWidth, h = this.imageHeight;
+    protected int energyStored() {
+        return this.menu.getEnergyStored();
+    }
 
-        // Beveled panel
-        g.fill(x, y, x + w, y + h, PANEL_FILL);
-        g.fill(x, y, x + w, y + 1, PANEL_LIGHT);
-        g.fill(x, y, x + 1, y + h, PANEL_LIGHT);
-        g.fill(x, y + h - 1, x + w, y + h, PANEL_DARK);
-        g.fill(x + w - 1, y, x + w, y + h, PANEL_DARK);
+    @Override
+    protected int energyMax() {
+        return this.menu.getEnergyMax();
+    }
 
-        // Slot recesses (auto-aligned to every real slot -- player inventory only)
-        for (Slot slot : this.menu.slots) {
-            int sx = x + slot.x - 1, sy = y + slot.y - 1;
-            g.fill(sx, sy, sx + 18, sy + 18, SLOT_INNER);
-            g.fill(sx, sy, sx + 18, sy + 1, SLOT_DARK);
-            g.fill(sx, sy, sx + 1, sy + 18, SLOT_DARK);
-            g.fill(sx, sy + 17, sx + 18, sy + 18, SLOT_LIGHT);
-            g.fill(sx + 17, sy, sx + 18, sy + 18, SLOT_LIGHT);
-        }
+    /** The wide horizontal gauge replaces the standard vertical one. */
+    @Override
+    protected boolean showsEnergyBar() {
+        return false;
+    }
 
-        // Energy bar (fills left -> right)
-        int bx = x + BAR_X, by = y + BAR_Y;
-        g.fill(bx - 1, by - 1, bx + BAR_W + 1, by + BAR_H + 1, BAR_FRAME);
-        g.fill(bx, by, bx + BAR_W, by + BAR_H, BAR_EMPTY);
-        int stored = this.menu.getEnergyStored();
-        int max = this.menu.getEnergyMax();
-        if (max > 0 && stored > 0) {
-            int fillW = (int) ((long) BAR_W * stored / max);
-            g.fill(bx, by, bx + fillW, by + BAR_H, BAR_FILL);
-        }
+    /** No recipes to show. */
+    @Override
+    protected Optional<Class<?>> recipeScreenKey() {
+        return Optional.empty();
+    }
 
-        // Energy bar hover tooltip
-        if (mouseX >= bx && mouseX < bx + BAR_W && mouseY >= by && mouseY < by + BAR_H) {
-            g.setTooltipForNextFrame(Component.literal(stored + " / " + max + " EMF"), mouseX, mouseY);
+    @Override
+    protected void drawMachine(GuiGraphicsExtractor g, int x, int y, int mouseX, int mouseY) {
+        int stored = energyStored();
+        int max = energyMax();
+
+        g.text(this.font, Component.translatable("gui.solenoid.capacitor.charge"),
+                x + BAR_X, y + 28, Theme.TEXT_DIM, false);
+        Painter.textRight(g, this.font, Painter.percent(stored, max) + "%",
+                x + BAR_X + BAR_W, y + 28, Theme.EMF);
+
+        Painter.barHorizontal(g, x + BAR_X, y + BAR_Y, BAR_W, BAR_H,
+                stored, max, Theme.EMF, Theme.EMF_BRIGHT, Theme.EMF_TRACK);
+
+        g.text(this.font, Painter.number(stored) + " EMF", x + BAR_X, y + 60, Theme.TEXT, false);
+        Painter.textRight(g, this.font, Painter.number(max) + " EMF",
+                x + BAR_X + BAR_W, y + 60, Theme.TEXT_FAINT);
+
+        (stored > 0 ? MachineStatus.CHARGED : MachineStatus.IDLE)
+                .draw(g, this.font, x, y, mouseX, mouseY);
+
+        if (Painter.hovering(mouseX, mouseY, x + BAR_X, y + BAR_Y, BAR_W, BAR_H)) {
+            energyTooltip(g, mouseX, mouseY);
         }
     }
 }

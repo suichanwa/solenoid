@@ -230,15 +230,23 @@ public class SolenoidDataGenerator {
             add("message.solenoid.force_field.depleted", "Force field depleted!");
             add("tooltip.solenoid.energy_stored", "Energy: %d / %d EMF");
             
-            // Machine GUI container titles
-            add("container.solenoid.crusher", "Electromagnetic Crusher");
-            add("container.solenoid.separator", "Electromagnetic Separator");
+            // Machine GUI container titles. Shorter than the block names on purpose: the console
+            // header only has room up to the status lamp, and the block already says which machine
+            // this is. Longer titles still render, clipped with an ellipsis.
+            add("container.solenoid.crusher", "Crusher");
+            add("container.solenoid.separator", "Separator");
             add("container.solenoid.induction_furnace", "Induction Furnace");
-            add("container.solenoid.capacitor", "Electromagnetic Capacitor");
-            add("container.solenoid.chemical_reactor", "Electromagnetic Chemical Reactor");
-            add("container.solenoid.digester", "Electromagnetic Digester");
-            add("container.solenoid.centrifuge", "Electromagnetic Centrifuge");
+            add("container.solenoid.capacitor", "Capacitor");
+            add("container.solenoid.chemical_reactor", "Chemical Reactor");
+            add("container.solenoid.digester", "Digester");
+            add("container.solenoid.centrifuge", "Centrifuge");
             add("container.solenoid.recharger", "Recharger");
+            // These four lived only in the hand-written en_us.json, which the generated file shadows
+            // in the built jar — so they were reaching the game as raw keys.
+            add("container.solenoid.thorium_rtg", "Thorium RTG");
+            add("item.solenoid.thorium_rtg", "Thorium RTG");
+            add("message.solenoid.on", "ON");
+            add("message.solenoid.off", "OFF");
 
             // JEI Categories
             add("gui.solenoid.category.crushing", "Crushing");
@@ -247,6 +255,27 @@ public class SolenoidDataGenerator {
             add("gui.solenoid.category.digesting", "Digestion");
             add("gui.solenoid.category.centrifuging", "Centrifuging");
             add("gui.solenoid.show_recipes", "Show Recipes");
+
+            // Machine console UI
+            add("gui.solenoid.energy", "Energy Buffer");
+            add("gui.solenoid.status.no_power", "No power");
+            add("gui.solenoid.status.running", "Running");
+            add("gui.solenoid.status.idle", "Idle");
+            add("gui.solenoid.status.charged", "Charged");
+            add("gui.solenoid.status.generating", "Generating");
+            add("gui.solenoid.status.depleted", "Fuel depleted");
+            add("gui.solenoid.separator.field", "Field");
+            add("gui.solenoid.separator.field.active", "Magnetic field active");
+            add("gui.solenoid.separator.field.inactive", "Magnetic field inactive");
+            add("gui.solenoid.digester.feed", "Feed");
+            add("gui.solenoid.digester.reagent", "Reagent");
+            add("gui.solenoid.capacitor.charge", "Charge");
+            add("gui.solenoid.recharger.slot", "Insert item");
+            add("gui.solenoid.recharger.charging", "Charging");
+            add("gui.solenoid.recharger.idle", "Nothing to charge");
+            add("gui.solenoid.rtg.output", "Output");
+            add("gui.solenoid.rtg.buffer", "Buffer");
+            add("gui.solenoid.rtg.fuel", "Fuel");
             add("gui.solenoid.recipe.energy", "%s EMF");
             add("gui.solenoid.recipe.time", "%s ticks");
             add("gui.solenoid.recipe.chance", "%s%%");
