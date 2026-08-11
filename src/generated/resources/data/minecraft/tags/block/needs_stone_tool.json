@@ -2,6 +2,7 @@
   "values": [
     "solenoid:magnetite_ore",
     "solenoid:deepslate_magnetite_ore",
-    "solenoid:monazite_ore"
+    "solenoid:monazite_ore",
+    "solenoid:mob_magnet"
   ]
 }

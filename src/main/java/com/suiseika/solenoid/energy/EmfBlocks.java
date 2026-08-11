@@ -95,6 +95,11 @@ public final class EmfBlocks {
             RechargerBlock::new,
             p -> p.strength(3.0f).sound(SoundType.METAL).requiresCorrectToolForDrops());
 
+    public static final DeferredBlock<MobMagnetBlock> MOB_MAGNET = BLOCKS.registerBlock(
+            "mob_magnet",
+            MobMagnetBlock::new,
+            p -> p.strength(3.5f).sound(SoundType.METAL).requiresCorrectToolForDrops());
+
     // ---- Block items (with EMF role tooltips) ----
 
     public static final DeferredItem<BlockItem> EMF_SOURCE_ITEM = ITEMS.registerItem(
@@ -165,6 +170,11 @@ public final class EmfBlocks {
             props -> new EmfBlockItem(RECHARGER.get(), props, "tooltip.solenoid.recharger"),
             p -> p.useBlockDescriptionPrefix());
 
+    public static final DeferredItem<BlockItem> MOB_MAGNET_ITEM = ITEMS.registerItem(
+            "mob_magnet",
+            props -> new EmfBlockItem(MOB_MAGNET.get(), props, "tooltip.solenoid.mob_magnet"),
+            p -> p.useBlockDescriptionPrefix());
+
     // ---- Block entity types ----
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EmfSourceBlockEntity>> EMF_SOURCE_BE =
@@ -219,6 +229,10 @@ public final class EmfBlocks {
             BLOCK_ENTITIES.register("recharger",
                     () -> new BlockEntityType<>(RechargerBlockEntity::new, RECHARGER.get()));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MobMagnetBlockEntity>> MOB_MAGNET_BE =
+            BLOCK_ENTITIES.register("mob_magnet",
+                    () -> new BlockEntityType<>(MobMagnetBlockEntity::new, MOB_MAGNET.get()));
+
     /** Wire the deferred registers to the mod event bus. Called from the main mod constructor. */
     public static void register(net.neoforged.bus.api.IEventBus modEventBus) {
         BLOCKS.register(modEventBus);
@@ -257,6 +271,8 @@ public final class EmfBlocks {
                 (be, side) -> be.getEnergyHandler(side));
         event.registerBlockEntity(Capabilities.Energy.BLOCK, RECHARGER_BE.get(),
                 (be, side) -> be.getEnergyHandler(side));
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, MOB_MAGNET_BE.get(),
+                (be, side) -> be.getEnergyHandler());
 
         event.registerBlockEntity(Capabilities.Item.BLOCK, CRUSHER_BE.get(),
                 (be, side) -> be.getItemHandler(side));

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "solenoid:block/mob_magnet" },
+    "facing=south": { "model": "solenoid:block/mob_magnet", "y": 180 },
+    "facing=east": { "model": "solenoid:block/mob_magnet", "y": 90 },
+    "facing=west": { "model": "solenoid:block/mob_magnet", "y": 270 }
+  }
+}

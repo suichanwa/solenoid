@@ -6,6 +6,7 @@ import com.suiseika.solenoid.energy.ChemicalReactorMenu;
 import com.suiseika.solenoid.energy.CrusherMenu;
 import com.suiseika.solenoid.energy.DigesterMenu;
 import com.suiseika.solenoid.energy.InductionFurnaceMenu;
+import com.suiseika.solenoid.energy.MobMagnetMenu;
 import com.suiseika.solenoid.energy.RechargerMenu;
 import com.suiseika.solenoid.energy.SeparatorMenu;
 import com.suiseika.solenoid.energy.ThoriumRtgMenu;
@@ -44,4 +45,7 @@ public class SolenoidMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<RechargerMenu>> RECHARGER_MENU =
             MENUS.register("recharger", () -> IMenuTypeExtension.create(RechargerMenu::new));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<MobMagnetMenu>> MOB_MAGNET_MENU =
+            MENUS.register("mob_magnet", () -> IMenuTypeExtension.create(MobMagnetMenu::new));
 }

@@ -9,6 +9,7 @@
     "solenoid:digester",
     "solenoid:centrifuge",
     "solenoid:thorium_rtg",
-    "solenoid:recharger"
+    "solenoid:recharger",
+    "solenoid:mob_magnet"
   ]
 }

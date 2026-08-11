@@ -100,12 +100,22 @@ public class SolenoidDataGenerator {
                 }
             }
 
-            // Simple Items
-            List.of("machine_frame", "screw", "magnet_charm", "repulsor", "thorium_rtg", "thorium_pellet", "recharger").forEach(id -> {
+            // Simple 2D Items
+            List.of("machine_frame", "screw", "magnet_charm", "repulsor", "thorium_pellet").forEach(id -> {
                 com.google.gson.JsonObject json = new com.google.gson.JsonObject();
                 com.google.gson.JsonObject model = new com.google.gson.JsonObject();
                 model.addProperty("type", "minecraft:model");
                 model.addProperty("model", "solenoid:item/" + id);
+                json.add("model", model);
+                futures.add(net.minecraft.data.DataProvider.saveStable(cache, json, pathProvider.json(Identifier.fromNamespaceAndPath(Solenoid.MODID, id))));
+            });
+
+            // Block Items (3D block in hand)
+            List.of("crusher", "separator", "induction_furnace", "capacitor", "chemical_reactor", "digester", "centrifuge", "thorium_rtg", "recharger", "mob_magnet").forEach(id -> {
+                com.google.gson.JsonObject json = new com.google.gson.JsonObject();
+                com.google.gson.JsonObject model = new com.google.gson.JsonObject();
+                model.addProperty("type", "minecraft:model");
+                model.addProperty("model", "solenoid:block/" + id);
                 json.add("model", model);
                 futures.add(net.minecraft.data.DataProvider.saveStable(cache, json, pathProvider.json(Identifier.fromNamespaceAndPath(Solenoid.MODID, id))));
             });
@@ -190,6 +200,7 @@ public class SolenoidDataGenerator {
             addBlock(EmfBlocks.CENTRIFUGE, "Electromagnetic Centrifuge");
             addBlock(EmfBlocks.THORIUM_RTG, "Thorium RTG");
             addBlock(EmfBlocks.RECHARGER, "Recharger");
+            addBlock(EmfBlocks.MOB_MAGNET, "Mob Magnet");
 
             // EMF tooltips (role + sink capacity)
             add("tooltip.solenoid.hand_crank_generator", "Generates EMF when cranked.");
@@ -201,13 +212,14 @@ public class SolenoidDataGenerator {
             add("tooltip.solenoid.crusher", "Crushes ores into dust");
             add("tooltip.solenoid.separator", "Separates ore dust into slag and product");
             add("tooltip.solenoid.induction_furnace", "Smelts items using EMF, no fuel needed");
-            add("tooltip.solenoid.rtg.output", "Output: %d EMF/t");
+            add("tooltip.solenoid.rtg.output", "Passively generates 8 EMF/t.");
             add("tooltip.solenoid.rtg.active", "Active: Decay process ongoing");
             add("tooltip.solenoid.rtg.depleted", "Depleted: Fuel exhausted");
             add("tooltip.solenoid.chemical_reactor", "Reacts materials using EMF");
             add("tooltip.solenoid.digester", "Digests materials using EMF");
             add("tooltip.solenoid.centrifuge", "Centrifuges materials using EMF");
-            add("tooltip.solenoid.recharger", "Charges energy items from EMF");
+            add("tooltip.solenoid.recharger", "Charges held EMF items at 200 EMF/t.");
+            add("tooltip.solenoid.mob_magnet", "Pulls nearby entities into farms using magnetic attraction.");
             
             add("item.solenoid.magnetometer", "Solenoid Magnetometer");
             add("item.solenoid.wrench", "Solenoid Wrench");
@@ -276,6 +288,8 @@ public class SolenoidDataGenerator {
             add("gui.solenoid.rtg.output", "Output");
             add("gui.solenoid.rtg.buffer", "Buffer");
             add("gui.solenoid.rtg.fuel", "Fuel");
+            add("gui.solenoid.mob_magnet.radius", "Field Range: %d Blocks");
+            add("gui.solenoid.mob_magnet.cost", "Drain: %d EMF/t");
             add("gui.solenoid.recipe.energy", "%s EMF");
             add("gui.solenoid.recipe.rate", "%s EMF/t");
             add("gui.solenoid.recipe.energy_rate", "%s EMF (%s EMF/t)");
@@ -328,6 +342,7 @@ public class SolenoidDataGenerator {
             dropSelf(EmfBlocks.CENTRIFUGE.get());
             dropSelf(EmfBlocks.THORIUM_RTG.get());
             dropSelf(EmfBlocks.RECHARGER.get());
+            dropSelf(EmfBlocks.MOB_MAGNET.get());
         }
 
         @Override
@@ -350,8 +365,8 @@ public class SolenoidDataGenerator {
             var magOre = MagnetiteBlocks.MAGNETITE_ORE.get();
             var deepOre = MagnetiteBlocks.DEEPSLATE_MAGNETITE_ORE.get();
 
-            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(magOre, deepOre, MagnetiteBlocks.MONAZITE_ORE.get());
-            tag(BlockTags.NEEDS_STONE_TOOL).add(magOre, deepOre, MagnetiteBlocks.MONAZITE_ORE.get());
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(magOre, deepOre, MagnetiteBlocks.MONAZITE_ORE.get(), EmfBlocks.MOB_MAGNET.get());
+            tag(BlockTags.NEEDS_STONE_TOOL).add(magOre, deepOre, MagnetiteBlocks.MONAZITE_ORE.get(), EmfBlocks.MOB_MAGNET.get());
 
             tag(Tags.Blocks.ORES).add(magOre, deepOre, MagnetiteBlocks.MONAZITE_ORE.get());
             tag(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores/monazite")))
@@ -378,7 +393,8 @@ public class SolenoidDataGenerator {
                     EmfBlocks.DIGESTER.get(),
                     EmfBlocks.CENTRIFUGE.get(),
                     EmfBlocks.THORIUM_RTG.get(),
-                    EmfBlocks.RECHARGER.get()
+                    EmfBlocks.RECHARGER.get(),
+                    EmfBlocks.MOB_MAGNET.get()
             );
         }
     }
