@@ -38,6 +38,8 @@
   "gui.solenoid.recharger.slot": "Insert item",
   "gui.solenoid.recipe.chance": "%s%%",
   "gui.solenoid.recipe.energy": "%s EMF",
+  "gui.solenoid.recipe.energy_rate": "%s EMF (%s EMF/t)",
+  "gui.solenoid.recipe.rate": "%s EMF/t",
   "gui.solenoid.recipe.time": "%s ticks",
   "gui.solenoid.rtg.buffer": "Buffer",
   "gui.solenoid.rtg.fuel": "Fuel",

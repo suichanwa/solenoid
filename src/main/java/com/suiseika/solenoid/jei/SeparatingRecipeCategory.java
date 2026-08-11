@@ -4,55 +4,19 @@ import com.suiseika.solenoid.energy.EmfBlocks;
 import com.suiseika.solenoid.recipe.SeparatingRecipe;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
-import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
-import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
-public class SeparatingRecipeCategory implements IRecipeCategory<SeparatingRecipe> {
-    private static final int WIDTH = 120;
-    private static final int HEIGHT = 68;
-    private static final int TEXT_COLOR = 0xFF404040;
-
-    private final IDrawable icon;
-    private final IDrawableStatic arrow;
+public class SeparatingRecipeCategory extends AbstractSolenoidRecipeCategory<SeparatingRecipe> {
 
     public SeparatingRecipeCategory(IGuiHelper guiHelper) {
-        this.icon = guiHelper.createDrawableItemLike(EmfBlocks.SEPARATOR_ITEM.get());
-        this.arrow = guiHelper.getRecipeArrow();
-    }
-
-    @Override
-    public RecipeType<SeparatingRecipe> getRecipeType() {
-        return SolenoidJeiPlugin.SEPARATING;
-    }
-
-    @Override
-    public Component getTitle() {
-        return Component.translatable("gui.solenoid.category.separating");
-    }
-
-    @Override
-    public int getWidth() {
-        return WIDTH;
-    }
-
-    @Override
-    public int getHeight() {
-        return HEIGHT;
-    }
-
-    @Override
-    public IDrawable getIcon() {
-        return icon;
+        super(guiHelper, SolenoidJeiPlugin.SEPARATING,
+                Component.translatable("gui.solenoid.category.separating"),
+                EmfBlocks.SEPARATOR_ITEM.get(), DEFAULT_WIDTH, 68);
     }
 
     @Override
@@ -62,52 +26,13 @@ public class SeparatingRecipeCategory implements IRecipeCategory<SeparatingRecip
                 .addIngredients(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, 
                         recipe.ingredient().items().map(net.minecraft.world.item.ItemStack::new).toList());
 
-        // Column 1
-        if (recipe.outputs().size() >= 1) {
-            builder.addOutputSlot(66, 8)
-                    .setOutputSlotBackground()
-                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.outputs().get(0).create());
-        }
-
-        if (recipe.outputs().size() >= 2) {
-            builder.addOutputSlot(66, 36)
-                    .setStandardSlotBackground()
-                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.outputs().get(1).create());
-        }
-
-        // Column 2
-        if (recipe.outputs().size() >= 3) {
-            builder.addOutputSlot(94, 22)
-                    .setStandardSlotBackground()
-                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, recipe.outputs().get(2).create());
-        }
+        layoutSeparationOutputs(builder, recipe.outputs());
     }
 
     @Override
     public void draw(SeparatingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         this.arrow.draw(guiGraphics, 30, 23);
-
-        Font font = Minecraft.getInstance().font;
-        
-        // Show chance for slot 2
-        if (recipe.outputs().size() >= 2) {
-            float c = recipe.outputs().get(1).chance();
-            if (c < 1.0f) {
-                String chance = String.format("%.0f%%", c * 100.0f);
-                guiGraphics.text(font, chance, 66, 56, TEXT_COLOR, false);
-            }
-        }
-
-        // Show chance for slot 3
-        if (recipe.outputs().size() >= 3) {
-            float c = recipe.outputs().get(2).chance();
-            if (c < 1.0f) {
-                String chance = String.format("%.0f%%", c * 100.0f);
-                guiGraphics.text(font, chance, 94, 42, TEXT_COLOR, false);
-            }
-        }
-
-        guiGraphics.text(font, Component.translatable("gui.solenoid.recipe.energy", recipe.energy()), 4, 48, TEXT_COLOR, false);
-        guiGraphics.text(font, Component.translatable("gui.solenoid.recipe.time", recipe.time()), 4, 58, TEXT_COLOR, false);
+        drawSeparationChances(guiGraphics, recipe.outputs());
+        drawStats(guiGraphics, recipe.energy(), recipe.time(), 4, 48, 58);
     }
 }

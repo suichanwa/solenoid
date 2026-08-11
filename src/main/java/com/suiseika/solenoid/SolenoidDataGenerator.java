@@ -277,6 +277,8 @@ public class SolenoidDataGenerator {
             add("gui.solenoid.rtg.buffer", "Buffer");
             add("gui.solenoid.rtg.fuel", "Fuel");
             add("gui.solenoid.recipe.energy", "%s EMF");
+            add("gui.solenoid.recipe.rate", "%s EMF/t");
+            add("gui.solenoid.recipe.energy_rate", "%s EMF (%s EMF/t)");
             add("gui.solenoid.recipe.time", "%s ticks");
             add("gui.solenoid.recipe.chance", "%s%%");
 

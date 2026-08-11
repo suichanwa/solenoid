@@ -88,9 +88,10 @@ public final class Painter {
         }
     }
 
-    /** Vertical EMF gauge in the standard cyan. */
+    /** Vertical EMF gauge in the standard cyan with animated bright cap. */
     public static void energyBar(GuiGraphicsExtractor g, int x, int y, int w, int h, int stored, int max) {
-        barVertical(g, x, y, w, h, stored, max, Theme.EMF, Theme.EMF_BRIGHT, Theme.EMF_TRACK);
+        int animatedBright = pulseColor(Theme.EMF_BRIGHT, 1500);
+        barVertical(g, x, y, w, h, stored, max, Theme.EMF, animatedBright, Theme.EMF_TRACK);
     }
 
     /** Horizontal gauge filling left-to-right, with a bright leading edge. */
@@ -129,25 +130,26 @@ public final class Painter {
         if (filled <= 0) {
             return;
         }
+        int animatedBright = pulseColor(Theme.PROGRESS_BRIGHT, 1000);
         int shaftFill = Math.min(filled, shaftW);
         if (shaftFill > 0) {
             g.fill(x, shaftY, x + shaftFill, shaftY + shaftH, Theme.PROGRESS);
-            g.fill(x + shaftFill - 1, shaftY, x + shaftFill, shaftY + shaftH, Theme.PROGRESS_BRIGHT);
+            g.fill(x + shaftFill - 1, shaftY, x + shaftFill, shaftY + shaftH, animatedBright);
         }
         if (filled > shaftW) {
             // Head fills in proportion once the shaft is full.
             int headFill = filled - shaftW;
-            chevronPartial(g, x + shaftW, y, headW, h, headFill, Theme.PROGRESS);
+            chevronPartial(g, x + shaftW, y, headW, h, headFill, Theme.PROGRESS, animatedBright);
         }
     }
 
     /** Solid right-pointing chevron head, drawn as a stack of centred rows. */
     private static void chevron(GuiGraphicsExtractor g, int x, int y, int w, int h, int color) {
-        chevronPartial(g, x, y, w, h, w, color);
+        chevronPartial(g, x, y, w, h, w, color, color);
     }
 
     /** Chevron head clipped to its first {@code columns} columns. */
-    private static void chevronPartial(GuiGraphicsExtractor g, int x, int y, int w, int h, int columns, int color) {
+    private static void chevronPartial(GuiGraphicsExtractor g, int x, int y, int w, int h, int columns, int color, int brightColor) {
         int limit = Math.min(columns, w);
         for (int c = 0; c < limit; c++) {
             // Taper symmetrically toward the tip.
@@ -157,8 +159,26 @@ public final class Painter {
             if (bottom <= top) {
                 continue;
             }
-            g.fill(x + c, top, x + c + 1, bottom, color);
+            int colColor = (c == limit - 1) ? brightColor : color;
+            g.fill(x + c, top, x + c + 1, bottom, colColor);
         }
+    }
+
+    /**
+     * Modulates the RGB components of an ARGB color with a sine wave pulse.
+     *
+     * @param color original ARGB color
+     * @param periodMs pulse cycle duration in milliseconds
+     * @return animated ARGB color
+     */
+    public static int pulseColor(int color, long periodMs) {
+        double phase = (System.currentTimeMillis() % periodMs) / (double) periodMs;
+        double factor = 0.70 + 0.30 * Math.sin(phase * 2.0 * Math.PI);
+        int a = (color >> 24) & 0xFF;
+        int r = (int) (((color >> 16) & 0xFF) * factor);
+        int g = (int) (((color >> 8) & 0xFF) * factor);
+        int b = (int) ((color & 0xFF) * factor);
+        return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
     // ---- Indicators ----------------------------------------------------------------------------
