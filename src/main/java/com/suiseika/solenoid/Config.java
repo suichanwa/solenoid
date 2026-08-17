@@ -1,36 +1,93 @@
 package com.suiseika.solenoid;
 
-import java.util.List;
-
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-// An example config class. This is not required, but it's a good idea to have one to keep your config organized.
-// Demonstrates how to use Neo's config APIs
+/**
+ * Solenoid Mod Configuration.
+ * Creates the `config/solenoid-common.toml` file automatically.
+ */
 public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    public static final ModConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER
-            .comment("Whether to log the dirt block on common setup")
-            .define("logDirtBlock", true);
+    // ==========================================
+    // Vacuum Tube Configuration
+    // ==========================================
+    public static final ModConfigSpec.IntValue TUBE_EXTRACT_AMOUNT;
+    public static final ModConfigSpec.IntValue TUBE_EXTRACT_INTERVAL_TICKS;
+    public static final ModConfigSpec.DoubleValue TUBE_UNPOWERED_SPEED;
+    public static final ModConfigSpec.DoubleValue TUBE_POWERED_SPEED;
+    public static final ModConfigSpec.IntValue TUBE_ENERGY_PER_EXTRACT;
+    public static final ModConfigSpec.IntValue TUBE_ENERGY_PER_TRANSIT;
 
-    public static final ModConfigSpec.IntValue MAGIC_NUMBER = BUILDER
-            .comment("A magic number")
-            .defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
+    // ==========================================
+    // Magnetic Crane Configuration
+    // ==========================================
+    public static final ModConfigSpec.IntValue CRANE_RADIUS;
+    public static final ModConfigSpec.IntValue CRANE_INTERVAL_TICKS;
+    public static final ModConfigSpec.IntValue CRANE_ENERGY_PER_PULL;
 
-    public static final ModConfigSpec.ConfigValue<String> MAGIC_NUMBER_INTRODUCTION = BUILDER
-            .comment("What you want the introduction message to be for the magic number")
-            .define("magicNumberIntroduction", "The magic number is... ");
+    // ==========================================
+    // Mob Magnet Configuration
+    // ==========================================
+    public static final ModConfigSpec.IntValue MOB_MAGNET_RADIUS;
+    public static final ModConfigSpec.DoubleValue MOB_MAGNET_STRENGTH;
+    public static final ModConfigSpec.IntValue MOB_MAGNET_ENERGY_USAGE;
 
-    // a list of strings that are treated as resource locations for items
-    public static final ModConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER
-            .comment("A list of items to log on common setup.")
-            .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), () -> "", Config::validateItemName);
+    static {
+        BUILDER.push("vacuum_tubes");
+        TUBE_EXTRACT_AMOUNT = BUILDER
+                .comment("Amount of items extracted per operation from connected containers.")
+                .defineInRange("extractAmount", 1, 1, 64);
 
-    static final ModConfigSpec SPEC = BUILDER.build();
+        TUBE_EXTRACT_INTERVAL_TICKS = BUILDER
+                .comment("Time in ticks between extractions (20 ticks = 1 second, 4 ticks = 5 transfers/sec).")
+                .defineInRange("extractIntervalTicks", 4, 1, 200);
 
-    private static boolean validateItemName(final Object obj) {
-        return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(Identifier.parse(itemName));
+        TUBE_UNPOWERED_SPEED = BUILDER
+                .comment("Transit speed of items through unpowered vacuum tubes (progress per tick, 0.125 = 8 ticks/block).")
+                .defineInRange("unpoweredSpeed", 0.125, 0.01, 1.0);
+
+        TUBE_POWERED_SPEED = BUILDER
+                .comment("Transit speed of items through EMF-powered vacuum tubes (progress per tick, 0.25 = 4 ticks/block).")
+                .defineInRange("poweredSpeed", 0.25, 0.01, 1.0);
+
+        TUBE_ENERGY_PER_EXTRACT = BUILDER
+                .comment("EMF energy consumed per extraction (if available).")
+                .defineInRange("energyPerExtract", 1, 0, 1000);
+
+        TUBE_ENERGY_PER_TRANSIT = BUILDER
+                .comment("EMF energy consumed per tick per moving item to maintain high speed.")
+                .defineInRange("energyPerTransit", 1, 0, 1000);
+        BUILDER.pop();
+
+        BUILDER.push("magnetic_crane");
+        CRANE_RADIUS = BUILDER
+                .comment("Block radius within which the Magnetic Crane pulls ground items.")
+                .defineInRange("radius", 6, 1, 32);
+
+        CRANE_INTERVAL_TICKS = BUILDER
+                .comment("Interval in ticks between crane collection scans.")
+                .defineInRange("intervalTicks", 4, 1, 100);
+
+        CRANE_ENERGY_PER_PULL = BUILDER
+                .comment("EMF energy consumed per vacuum operation.")
+                .defineInRange("energyPerPull", 2, 0, 1000);
+        BUILDER.pop();
+
+        BUILDER.push("mob_magnet");
+        MOB_MAGNET_RADIUS = BUILDER
+                .comment("Block radius within which the Mob Magnet attracts entities.")
+                .defineInRange("radius", 8, 1, 32);
+
+        MOB_MAGNET_STRENGTH = BUILDER
+                .comment("Pull force multiplier applied to entities.")
+                .defineInRange("strength", 0.08, 0.01, 1.0);
+
+        MOB_MAGNET_ENERGY_USAGE = BUILDER
+                .comment("EMF consumed per tick while the Mob Magnet is active.")
+                .defineInRange("energyUsage", 16, 0, 1000);
+        BUILDER.pop();
     }
+
+    public static final ModConfigSpec SPEC = BUILDER.build();
 }

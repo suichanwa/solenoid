@@ -2,7 +2,13 @@
 
 ## 🟢 Implemented & Confirmed (Build Passed)
 
-* **Status:** Clean compilation, 175 valid JSONs generated, `runData` passes cleanly, Curios loads correctly.
+* **Status:** Clean compilation, 176 valid JSONs generated, `runData` passes cleanly, Curios loads correctly, JEI integrated for dev inspection.
+* **Electromagnetic Capacitor Sided I/O GUI:**
+  * Added `SidedEnergyHandler` for per-face energy filtering (INPUT, OUTPUT, BOTH, DISABLED).
+  * Capacitor GUI now features the Side Configuration button ("⇄") allowing players to configure energy flow per side and toggle auto-push.
+* **Monazite Ore Loot Table:**
+  * Mining `monazite_ore` without Silk Touch drops 1-4 `raw_monazite` by default, scaled with the `Fortune` enchantment (`minecraft:ore_drops` formula).
+  * Silk Touch drops the `monazite_ore` block.
 * **Magnet Charm (`magnet_charm`):**
   * Curios item made of neodymium.
   * Vacuums nearby drops while worn (`curioTick`) or held in the inventory.

@@ -48,6 +48,7 @@ repositories {
         name = "maxhenkel"
         url = "https://maven.maxhenkel.de/repository/public"
     }
+
 }
 
 base {

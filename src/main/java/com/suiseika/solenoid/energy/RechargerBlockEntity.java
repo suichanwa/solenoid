@@ -117,8 +117,16 @@ public class RechargerBlockEntity extends AbstractEmfBlockEntity implements Menu
         return new RechargerMenu(containerId, playerInventory, this, dataAccess);
     }
 
+    private int lastTransfer = 0;
+
+    @Override
+    public int getEnergyUsage() {
+        return lastTransfer;
+    }
+
     @Override
     protected void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
+        lastTransfer = 0;
         int stored = energyHandler.getAmountAsInt();
         if (stored <= 0) {
             return;
@@ -143,6 +151,7 @@ public class RechargerBlockEntity extends AbstractEmfBlockEntity implements Menu
             if (inserted > 0) {
                 transaction.commit();
                 energyHandler.set(stored - inserted);
+                lastTransfer = inserted;
                 setChanged();
             }
         }

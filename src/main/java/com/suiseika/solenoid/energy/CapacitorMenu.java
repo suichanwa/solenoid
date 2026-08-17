@@ -12,19 +12,18 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Storage-only menu for the Capacitor. Holds no machine slots -- the player inventory is shown purely
- * for context. The synced {@link ContainerData} carries the stored/max EMF, each split across two
- * 16-bit slots (low/high) because the container-data wire format is a signed short; the halves are
- * reassembled as unsigned here so values above 32767 read correctly.
+ * Storage and side-configuration menu for the Capacitor. Holds no machine slots -- the player inventory
+ * is shown purely for context. The synced {@link ContainerData} carries the stored/max EMF, side modes,
+ * and auto-push configuration.
  */
-public class CapacitorMenu extends AbstractContainerMenu {
+public class CapacitorMenu extends AbstractContainerMenu implements ISidedMachineMenu {
     private final CapacitorBlockEntity blockEntity;
     private final ContainerData data;
 
     public CapacitorMenu(int containerId, Inventory playerInventory, FriendlyByteBuf buffer) {
         this(containerId, playerInventory,
                 (CapacitorBlockEntity) playerInventory.player.level().getBlockEntity(buffer.readBlockPos()),
-                new SimpleContainerData(4));
+                new SimpleContainerData(11));
     }
 
     public CapacitorMenu(int containerId, Inventory playerInventory, CapacitorBlockEntity blockEntity, ContainerData data) {
@@ -48,6 +47,29 @@ public class CapacitorMenu extends AbstractContainerMenu {
 
     public int getEnergyMax() {
         return combine(2, 3);
+    }
+
+    @Override
+    public MachineSideMode getSideMode(RelativeSide side) {
+        int ordinal = data.get(4 + side.ordinal());
+        return MachineSideMode.values()[Math.min(Math.max(0, ordinal), MachineSideMode.values().length - 1)];
+    }
+
+    @Override
+    public boolean isAutoEject() {
+        return data.get(10) == 1;
+    }
+
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (id >= 0 && id < 6) {
+            blockEntity.cycleSideMode(RelativeSide.values()[id]);
+            return true;
+        } else if (id == 6) {
+            blockEntity.toggleAutoEject();
+            return true;
+        }
+        return false;
     }
 
     private void addPlayerInventory(Inventory playerInventory) {

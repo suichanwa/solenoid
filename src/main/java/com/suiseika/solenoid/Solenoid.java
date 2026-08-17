@@ -62,6 +62,7 @@ public class Solenoid {
                 output.accept(MagnetiteItems.CERIUM_DUST);
                 output.accept(MagnetiteItems.NEODYMIUM_DUST);
                 output.accept(MagnetiteItems.THORIUM_DUST);
+                output.accept(MagnetiteItems.THORIUM_PELLET);
                 output.accept(MagnetiteItems.COPPER_CERIUM_BATTERY);
 
                 // Ore processing items (crushed / concentrate / slag, all per-ore)
@@ -97,6 +98,8 @@ public class Solenoid {
                 output.accept(EmfBlocks.THORIUM_RTG_ITEM);
                 output.accept(EmfBlocks.RECHARGER_ITEM);
                 output.accept(EmfBlocks.MOB_MAGNET_ITEM);
+                output.accept(EmfBlocks.MAGNETIC_CRANE_ITEM);
+                output.accept(EmfBlocks.VACUUM_TUBE_ITEM);
                 output.accept(EmfBlocks.EMF_SOURCE_ITEM);
                 output.accept(EmfBlocks.COPPER_CABLE_ITEM);
                 output.accept(EmfBlocks.EMF_SINK_ITEM);
@@ -144,23 +147,7 @@ public class Solenoid {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        // Some common setup code
-        LOGGER.info("HELLO FROM COMMON SETUP");
-
-        for (java.lang.reflect.Method m : net.minecraft.world.level.storage.ValueOutput.class.getMethods()) {
-            LOGGER.info("ValueOutput method: {} args: {}", m.getName(), java.util.Arrays.toString(m.getParameterTypes()));
-        }
-        for (java.lang.reflect.Method m : net.minecraft.world.level.storage.ValueInput.class.getMethods()) {
-            LOGGER.info("ValueInput method: {} args: {}", m.getName(), java.util.Arrays.toString(m.getParameterTypes()));
-        }
-
-        if (Config.LOG_DIRT_BLOCK.getAsBoolean()) {
-            LOGGER.info("DIRT BLOCK >> {}", BuiltInRegistries.BLOCK.getKey(Blocks.DIRT));
-        }
-
-        LOGGER.info("{}{}", Config.MAGIC_NUMBER_INTRODUCTION.get(), Config.MAGIC_NUMBER.getAsInt());
-
-        Config.ITEM_STRINGS.get().forEach((item) -> LOGGER.info("ITEM >> {}", item));
+        LOGGER.info("Solenoid mod initialized.");
     }
 
     @SubscribeEvent

@@ -1,0 +1,22 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "particle": "solenoid:block/vacuum_tube",
+    "texture": "solenoid:block/vacuum_tube"
+  },
+  "elements": [
+    {
+      "from": [ 4.5, 4.5, 4.5 ],
+      "to": [ 11.5, 11.5, 11.5 ],
+      "faces": {
+        "north": { "texture": "#texture", "uv": [ 4.5, 4.5, 11.5, 11.5 ] },
+        "east":  { "texture": "#texture", "uv": [ 4.5, 4.5, 11.5, 11.5 ] },
+        "south": { "texture": "#texture", "uv": [ 4.5, 4.5, 11.5, 11.5 ] },
+        "west":  { "texture": "#texture", "uv": [ 4.5, 4.5, 11.5, 11.5 ] },
+        "up":    { "texture": "#texture", "uv": [ 4.5, 4.5, 11.5, 11.5 ] },
+        "down":  { "texture": "#texture", "uv": [ 4.5, 4.5, 11.5, 11.5 ] }
+      }
+    }
+  ]
+}

@@ -71,6 +71,6 @@ public class MobMagnetBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide() ? null : createTickerHelper(type, EmfBlocks.MOB_MAGNET_BE.get(), MobMagnetBlockEntity::serverTick);
+        return level.isClientSide() ? null : createTickerHelper(type, EmfBlocks.MOB_MAGNET_BE.get(), AbstractEmfBlockEntity::serverTick);
     }
 }

@@ -12,7 +12,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
-public class DigesterMenu extends AbstractContainerMenu {
+public class DigesterMenu extends AbstractContainerMenu implements ISidedMachineMenu {
     private final DigesterBlockEntity blockEntity;
     private final ContainerData data;
 
@@ -21,7 +21,7 @@ public class DigesterMenu extends AbstractContainerMenu {
     public DigesterMenu(int containerId, Inventory playerInventory, FriendlyByteBuf buffer) {
         this(containerId, playerInventory,
                 (DigesterBlockEntity) playerInventory.player.level().getBlockEntity(buffer.readBlockPos()),
-                new SimpleContainerData(7));
+                new SimpleContainerData(14));
     }
 
     public DigesterMenu(int containerId, Inventory playerInventory, DigesterBlockEntity blockEntity, ContainerData data) {
@@ -64,6 +64,29 @@ public class DigesterMenu extends AbstractContainerMenu {
 
     public boolean isWorking() {
         return data.get(6) != 0;
+    }
+
+    @Override
+    public MachineSideMode getSideMode(RelativeSide side) {
+        int ordinal = data.get(7 + side.ordinal());
+        return MachineSideMode.values()[Math.min(Math.max(0, ordinal), MachineSideMode.values().length - 1)];
+    }
+
+    @Override
+    public boolean isAutoEject() {
+        return data.get(13) == 1;
+    }
+
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (id >= 0 && id < 6) {
+            blockEntity.cycleSideMode(RelativeSide.values()[id]);
+            return true;
+        } else if (id == 6) {
+            blockEntity.toggleAutoEject();
+            return true;
+        }
+        return false;
     }
 
     private void addPlayerInventory(Inventory playerInventory) {

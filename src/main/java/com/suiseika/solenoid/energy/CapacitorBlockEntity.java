@@ -22,15 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Large EMF storage block. Receives EMF on every face into a
- * {@link EmfConstants#CAPACITOR_CAPACITY} buffer, and each tick pushes up to
- * {@link EmfConstants#CAPACITOR_TRANSFER} EMF (shared fairly across all sides) into adjacent
- * Forge-Energy consumers — i.e. handlers that cannot themselves be extracted from, so we never
- * ping-pong charge back into generators, cables or other batteries. NBT-persisted; exposes a
- * comparator analog signal scaled to fill via {@link CapacitorBlock}.
+ * Large EMF storage block with configurable sided I/O. Receives EMF into a
+ * {@link EmfConstants#CAPACITOR_CAPACITY} buffer based on configured side modes (INPUT, OUTPUT, BOTH, DISABLED),
+ * and each tick pushes up to {@link EmfConstants#CAPACITOR_TRANSFER} EMF (shared fairly across all output sides)
+ * into adjacent Forge-Energy consumers.
  */
 public class CapacitorBlockEntity extends AbstractEmfBlockEntity implements MenuProvider {
-    // Receive and extract on all sides; extraction is used by our own outward push.
     private final SimpleEnergyHandler handler = new SimpleEnergyHandler(
             EmfConstants.CAPACITOR_CAPACITY, EmfConstants.CAPACITOR_TRANSFER, EmfConstants.CAPACITOR_TRANSFER) {
         @Override
@@ -39,46 +36,63 @@ public class CapacitorBlockEntity extends AbstractEmfBlockEntity implements Menu
         }
     };
 
+    private final EnergyHandler[] sidedHandlers = new EnergyHandler[6];
+
     /** Stored amount at the end of the previous tick, used to refresh comparators only on change. */
     private int lastEnergy;
 
     /**
-     * Server-authoritative view of the stored/max EMF the client GUI needs. Each large int is split
-     * across two 16-bit data slots because the container-data wire format is a signed short; the
-     * client menu reassembles the halves as unsigned.
+     * Server-authoritative view of the stored/max EMF and side configuration.
      */
     private final ContainerData dataAccess = new ContainerData() {
         @Override
         public int get(int index) {
             int energy = handler.getAmountAsInt();
             int capacity = handler.getCapacityAsInt();
-            return switch (index) {
-                case 0 -> energy & 0xFFFF;
-                case 1 -> (energy >>> 16) & 0xFFFF;
-                case 2 -> capacity & 0xFFFF;
-                case 3 -> (capacity >>> 16) & 0xFFFF;
-                default -> 0;
-            };
+            if (index == 0) return energy & 0xFFFF;
+            if (index == 1) return (energy >>> 16) & 0xFFFF;
+            if (index == 2) return capacity & 0xFFFF;
+            if (index == 3) return (capacity >>> 16) & 0xFFFF;
+            if (index >= 4 && index <= 9) return sideModes[index - 4].ordinal();
+            if (index == 10) return autoEject ? 1 : 0;
+            return 0;
         }
 
         @Override
         public void set(int index, int value) {
-            // Server reads from the block entity; the synced copy lives client-side in the menu.
+            if (index >= 4 && index <= 9) {
+                sideModes[index - 4] = MachineSideMode.values()[Math.min(Math.max(0, value), MachineSideMode.values().length - 1)];
+            } else if (index == 10) {
+                autoEject = value == 1;
+            }
         }
 
         @Override
         public int getCount() {
-            return 4;
+            return 11;
         }
     };
 
     public CapacitorBlockEntity(BlockPos pos, BlockState state) {
         super(EmfBlocks.CAPACITOR_BE.get(), pos, state);
+        for (int i = 0; i < 6; i++) {
+            sideModes[i] = MachineSideMode.BOTH;
+            final int index = i;
+            sidedHandlers[i] = new SidedEnergyHandler(handler, () -> sideModes[index]);
+        }
     }
 
     @Override
     public @Nullable EnergyHandler getEnergyHandler(@Nullable Direction side) {
-        return handler;
+        if (side == null) {
+            return handler;
+        }
+        RelativeSide relSide = RelativeSide.fromDirection(side, getFacing());
+        MachineSideMode mode = getSideMode(relSide);
+        if (mode == MachineSideMode.DISABLED) {
+            return null;
+        }
+        return sidedHandlers[relSide.ordinal()];
     }
 
     @Override
@@ -110,16 +124,26 @@ public class CapacitorBlockEntity extends AbstractEmfBlockEntity implements Menu
 
     /**
      * Pushes up to {@link EmfConstants#CAPACITOR_TRANSFER} EMF total this tick, split fairly among the
-     * adjacent consumers and cables.
+     * adjacent consumers and cables on sides configured for OUTPUT or BOTH.
      */
     private void pushToConsumers(ServerLevel level, BlockPos pos) {
+        if (!autoEject) {
+            return;
+        }
         int mine = handler.getAmountAsInt();
         if (mine <= 0) {
             return;
         }
 
+        Direction facing = getFacing();
         List<EnergyHandler> targets = new ArrayList<>(Direction.values().length);
         for (Direction dir : Direction.values()) {
+            RelativeSide relSide = RelativeSide.fromDirection(dir, facing);
+            MachineSideMode mode = getSideMode(relSide);
+            if (mode != MachineSideMode.OUTPUT && mode != MachineSideMode.BOTH) {
+                continue;
+            }
+
             EnergyHandler neighbour = neighbourHandler(level, pos, dir);
             if (neighbour == null || neighbour == handler) {
                 continue;

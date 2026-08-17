@@ -2,6 +2,8 @@ package com.suiseika.solenoid;
 
 import com.suiseika.solenoid.energy.CopperCableBlock;
 import com.suiseika.solenoid.energy.CopperCableBlockEntity;
+import com.suiseika.solenoid.energy.VacuumTubeBlock;
+import com.suiseika.solenoid.energy.VacuumTubeBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -28,34 +30,45 @@ public class WrenchItem extends Item {
         BlockState state = level.getBlockState(pos);
         Direction face = context.getClickedFace();
 
-        if (state.is(SolenoidTags.Blocks.WRENCHABLE)) {
+        // 1. Vacuum Tubes (Cycle side modes: NORMAL -> EXTRACT -> DISCONNECTED)
+        if (state.getBlock() instanceof VacuumTubeBlock) {
             if (!level.isClientSide()) {
-                Rotation rotation = context.getPlayer() != null && context.getPlayer().isSecondaryUseActive()
-                        ? Rotation.COUNTERCLOCKWISE_90 : Rotation.CLOCKWISE_90;
-                BlockState rotatedState = state.rotate(level, pos, rotation);
-                level.setBlock(pos, rotatedState, 3);
+                BlockEntity be = level.getBlockEntity(pos);
+                if (be instanceof VacuumTubeBlockEntity tubeBe) {
+                    net.minecraft.world.phys.Vec3 hit = context.getClickLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
+                    Direction targetDir = face;
+                    if (hit.x < 0.35) targetDir = Direction.WEST;
+                    else if (hit.x > 0.65) targetDir = Direction.EAST;
+                    else if (hit.y < 0.35) targetDir = Direction.DOWN;
+                    else if (hit.y > 0.65) targetDir = Direction.UP;
+                    else if (hit.z < 0.35) targetDir = Direction.NORTH;
+                    else if (hit.z > 0.65) targetDir = Direction.SOUTH;
 
-                
-                Direction newFacing = rotatedState.getValue(BlockStateProperties.HORIZONTAL_FACING);
-                if (context.getPlayer() != null) {
-                    context.getPlayer().sendSystemMessage(
-                            Component.translatable("message.solenoid.wrench.facing", newFacing.name().toUpperCase()));
+                    var mode = tubeBe.cycleSideMode(targetDir);
+
+                    level.sendBlockUpdated(pos, state, state, 3);
+                    level.updateNeighborsAt(pos, state.getBlock());
+                    level.updateNeighborsAt(pos.relative(targetDir), state.getBlock());
+
+                    if (context.getPlayer() != null) {
+                        context.getPlayer().sendSystemMessage(
+                                Component.translatable("message.solenoid.wrench.tube_mode", targetDir.name().toUpperCase(), mode.name()));
+                    }
+
+                    level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 1.0f, 1.0f);
                 }
-                
-                level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 1.0f, 1.0f);
             }
             return InteractionResult.SUCCESS;
         }
 
+        // 2. Copper Cables (Toggle side connections)
         if (state.getBlock() instanceof CopperCableBlock) {
             if (!level.isClientSide()) {
                 BlockEntity be = level.getBlockEntity(pos);
                 if (be instanceof CopperCableBlockEntity cableBe) {
                     boolean disconnected = cableBe.toggleSide(face);
-                    
-                    // Force a block update to re-calculate connections and sync to client
+
                     level.sendBlockUpdated(pos, state, state, 3);
-                    // Notify neighbors so they also update their connections to us
                     level.updateNeighborsAt(pos, state.getBlock());
                     level.updateNeighborsAt(pos.relative(face), state.getBlock());
 
@@ -64,9 +77,28 @@ public class WrenchItem extends Item {
                         context.getPlayer().sendSystemMessage(
                                 Component.translatable("message.solenoid.wrench.cable", face.name().toLowerCase(), status));
                     }
-                    
+
                     level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 1.0f, 1.0f);
                 }
+            }
+            return InteractionResult.SUCCESS;
+        }
+
+        // 3. Wrenchable machines with HORIZONTAL_FACING
+        if (state.is(SolenoidTags.Blocks.WRENCHABLE) && state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+            if (!level.isClientSide()) {
+                Rotation rotation = context.getPlayer() != null && context.getPlayer().isSecondaryUseActive()
+                        ? Rotation.COUNTERCLOCKWISE_90 : Rotation.CLOCKWISE_90;
+                BlockState rotatedState = state.rotate(level, pos, rotation);
+                level.setBlock(pos, rotatedState, 3);
+
+                Direction newFacing = rotatedState.getValue(BlockStateProperties.HORIZONTAL_FACING);
+                if (context.getPlayer() != null) {
+                    context.getPlayer().sendSystemMessage(
+                            Component.translatable("message.solenoid.wrench.facing", newFacing.name().toUpperCase()));
+                }
+
+                level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 1.0f, 1.0f);
             }
             return InteractionResult.SUCCESS;
         }

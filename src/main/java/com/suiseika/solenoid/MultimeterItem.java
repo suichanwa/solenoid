@@ -1,9 +1,6 @@
 package com.suiseika.solenoid;
 
 import com.suiseika.solenoid.energy.AbstractEmfBlockEntity;
-import com.suiseika.solenoid.energy.CrusherBlockEntity;
-import com.suiseika.solenoid.energy.InductionFurnaceBlockEntity;
-import com.suiseika.solenoid.energy.SeparatorBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -53,27 +50,21 @@ public class MultimeterItem extends Item {
                     .withStyle(ChatFormatting.AQUA));
 
             BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof AbstractEmfBlockEntity) {
-                // Try to find progress if it's a known mod machine
-                int progress = -1;
-                int maxProgress = -1;
-
-                if (be instanceof CrusherBlockEntity machine) {
-                    progress = machine.getDataAccess().get(4);
-                    maxProgress = machine.getDataAccess().get(5);
-                } else if (be instanceof SeparatorBlockEntity machine) {
-                    progress = machine.getDataAccess().get(4);
-                    maxProgress = machine.getDataAccess().get(5);
-                } else if (be instanceof InductionFurnaceBlockEntity machine) {
-                    progress = machine.getDataAccess().get(4);
-                    maxProgress = machine.getDataAccess().get(5);
-                }
+            if (be instanceof AbstractEmfBlockEntity emfBe) {
+                int progress = emfBe.getProgress();
+                int maxProgress = emfBe.getMaxProgress();
 
                 if (maxProgress > 0) {
                     int progPct = (progress * 100 / maxProgress);
                     String status = progress > 0 ? "Running" : "Idle";
                     player.sendSystemMessage(Component.translatable("message.solenoid.multimeter.progress", 
                             progPct, status).withStyle(ChatFormatting.YELLOW));
+                }
+
+                int usage = emfBe.getEnergyUsage();
+                if (usage > 0) {
+                    player.sendSystemMessage(Component.translatable("message.solenoid.multimeter.usage", 
+                            String.format("%,d", usage)).withStyle(ChatFormatting.GREEN));
                 }
             }
             return InteractionResult.SUCCESS;

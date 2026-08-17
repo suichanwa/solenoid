@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Inventory;
  */
 public class InductionFurnaceScreen extends MachineScreen<InductionFurnaceMenu> {
     /** Public so the JEI plugin can hang its recipe click area on the exact same rectangle. */
-    public static final int ARROW_X = 79, ARROW_Y = 34, ARROW_W = 24, ARROW_H = 16;
+    public static final int ARROW_X = 82, ARROW_Y = 44, ARROW_W = 24, ARROW_H = 16;
 
     public InductionFurnaceScreen(InductionFurnaceMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);

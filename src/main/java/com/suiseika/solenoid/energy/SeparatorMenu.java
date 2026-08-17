@@ -12,14 +12,14 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
-public class SeparatorMenu extends AbstractContainerMenu {
+public class SeparatorMenu extends AbstractContainerMenu implements ISidedMachineMenu {
     private final SeparatorBlockEntity blockEntity;
     private final ContainerData data;
 
     public SeparatorMenu(int containerId, Inventory playerInventory, FriendlyByteBuf buffer) {
         this(containerId, playerInventory,
                 (SeparatorBlockEntity) playerInventory.player.level().getBlockEntity(buffer.readBlockPos()),
-                new SimpleContainerData(7));
+                new SimpleContainerData(13));
     }
 
     public SeparatorMenu(int containerId, Inventory playerInventory, SeparatorBlockEntity blockEntity, ContainerData data) {
@@ -28,7 +28,7 @@ public class SeparatorMenu extends AbstractContainerMenu {
         this.data = data;
 
         var handler = blockEntity.getItemHandler();
-        this.addSlot(new ResourceHandlerSlot(handler, handler::set, 0, 56, 35));
+        this.addSlot(new ResourceHandlerSlot(handler, handler::set, 0, 56, 44));
         this.addSlot(new ResourceHandlerSlot(handler, handler::set, 1, 116, 35));
         this.addSlot(new ResourceHandlerSlot(handler, handler::set, 2, 116, 53));
 
@@ -59,8 +59,27 @@ public class SeparatorMenu extends AbstractContainerMenu {
         return max <= 0 ? 1 : max;
     }
 
-    public boolean isFieldActive() {
-        return data.get(6) != 0;
+    @Override
+    public MachineSideMode getSideMode(RelativeSide side) {
+        int ordinal = data.get(6 + side.ordinal());
+        return MachineSideMode.values()[Math.min(Math.max(0, ordinal), MachineSideMode.values().length - 1)];
+    }
+
+    @Override
+    public boolean isAutoEject() {
+        return data.get(12) == 1;
+    }
+
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (id >= 0 && id < 6) {
+            blockEntity.cycleSideMode(RelativeSide.values()[id]);
+            return true;
+        } else if (id == 6) {
+            blockEntity.toggleAutoEject();
+            return true;
+        }
+        return false;
     }
 
     private void addPlayerInventory(Inventory playerInventory) {

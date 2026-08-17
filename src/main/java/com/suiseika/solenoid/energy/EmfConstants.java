@@ -59,7 +59,7 @@ public final class EmfConstants {
     // ---- Recharger ----
 
     /** Total EMF the Recharger buffers. */
-    public static final int RECHARGER_CAPACITY = 50_000;
+    public static final int RECHARGER_CAPACITY = 100_000;
 
     /** Max EMF the Recharger accepts from cables per server tick. */
     public static final int RECHARGER_INPUT = 1_000;
@@ -73,5 +73,5 @@ public final class EmfConstants {
     public static final int RTG_OUTPUT = 16;
 
     /** Total fuel units in a new Thorium RTG. Each unit is roughly 1 EMF. */
-    public static final int RTG_MAX_FUEL = 10_000_000;
+    public static final int RTG_MAX_FUEL = 1_000_000;
 }

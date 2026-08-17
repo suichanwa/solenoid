@@ -10,6 +10,7 @@
     "solenoid:centrifuge",
     "solenoid:thorium_rtg",
     "solenoid:recharger",
-    "solenoid:mob_magnet"
+    "solenoid:mob_magnet",
+    "solenoid:magnetic_crane"
   ]
 }

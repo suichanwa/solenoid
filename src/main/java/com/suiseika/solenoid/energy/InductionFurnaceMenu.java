@@ -12,14 +12,14 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
-public class InductionFurnaceMenu extends AbstractContainerMenu {
+public class InductionFurnaceMenu extends AbstractContainerMenu implements ISidedMachineMenu {
     private final InductionFurnaceBlockEntity blockEntity;
     private final ContainerData data;
 
     public InductionFurnaceMenu(int containerId, Inventory playerInventory, FriendlyByteBuf buffer) {
         this(containerId, playerInventory,
                 (InductionFurnaceBlockEntity) playerInventory.player.level().getBlockEntity(buffer.readBlockPos()),
-                new SimpleContainerData(6));
+                new SimpleContainerData(13));
     }
 
     public InductionFurnaceMenu(int containerId, Inventory playerInventory, InductionFurnaceBlockEntity blockEntity, ContainerData data) {
@@ -28,8 +28,8 @@ public class InductionFurnaceMenu extends AbstractContainerMenu {
         this.data = data;
 
         var handler = blockEntity.getItemHandler();
-        this.addSlot(new ResourceHandlerSlot(handler, handler::set, 0, 56, 35));
-        this.addSlot(new ResourceHandlerSlot(handler, handler::set, 1, 116, 35));
+        this.addSlot(new ResourceHandlerSlot(handler, (slot, resource, amount) -> handler.set(slot, resource, amount), 0, 56, 44));
+        this.addSlot(new ResourceHandlerSlot(handler, (slot, resource, amount) -> handler.set(slot, resource, amount), 1, 116, 44));
 
         addPlayerInventory(playerInventory);
         addDataSlots(data);
@@ -56,6 +56,29 @@ public class InductionFurnaceMenu extends AbstractContainerMenu {
     public int getMaxProgress() {
         int max = data.get(5);
         return max <= 0 ? 1 : max;
+    }
+
+    @Override
+    public MachineSideMode getSideMode(RelativeSide side) {
+        int ordinal = data.get(6 + side.ordinal());
+        return MachineSideMode.values()[Math.min(Math.max(0, ordinal), MachineSideMode.values().length - 1)];
+    }
+
+    @Override
+    public boolean isAutoEject() {
+        return data.get(12) == 1;
+    }
+
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (id >= 0 && id < 6) {
+            blockEntity.cycleSideMode(RelativeSide.values()[id]);
+            return true;
+        } else if (id == 6) {
+            blockEntity.toggleAutoEject();
+            return true;
+        }
+        return false;
     }
 
     private void addPlayerInventory(Inventory playerInventory) {

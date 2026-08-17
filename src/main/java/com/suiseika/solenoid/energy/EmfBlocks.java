@@ -100,6 +100,16 @@ public final class EmfBlocks {
             MobMagnetBlock::new,
             p -> p.strength(3.5f).sound(SoundType.METAL).requiresCorrectToolForDrops());
 
+    public static final DeferredBlock<MagneticCraneBlock> MAGNETIC_CRANE = BLOCKS.registerBlock(
+            "magnetic_crane",
+            MagneticCraneBlock::new,
+            p -> p.strength(3.5f).sound(SoundType.METAL).requiresCorrectToolForDrops());
+
+    public static final DeferredBlock<VacuumTubeBlock> VACUUM_TUBE = BLOCKS.registerBlock(
+            "vacuum_tube",
+            VacuumTubeBlock::new,
+            p -> p.strength(1.5f).sound(SoundType.GLASS).noOcclusion());
+
     // ---- Block items (with EMF role tooltips) ----
 
     public static final DeferredItem<BlockItem> EMF_SOURCE_ITEM = ITEMS.registerItem(
@@ -175,6 +185,16 @@ public final class EmfBlocks {
             props -> new EmfBlockItem(MOB_MAGNET.get(), props, "tooltip.solenoid.mob_magnet"),
             p -> p.useBlockDescriptionPrefix());
 
+    public static final DeferredItem<BlockItem> MAGNETIC_CRANE_ITEM = ITEMS.registerItem(
+            "magnetic_crane",
+            props -> new EmfBlockItem(MAGNETIC_CRANE.get(), props, "tooltip.solenoid.magnetic_crane"),
+            p -> p.useBlockDescriptionPrefix());
+
+    public static final DeferredItem<BlockItem> VACUUM_TUBE_ITEM = ITEMS.registerItem(
+            "vacuum_tube",
+            props -> new EmfBlockItem(VACUUM_TUBE.get(), props, "tooltip.solenoid.vacuum_tube"),
+            p -> p.useBlockDescriptionPrefix());
+
     // ---- Block entity types ----
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EmfSourceBlockEntity>> EMF_SOURCE_BE =
@@ -233,6 +253,14 @@ public final class EmfBlocks {
             BLOCK_ENTITIES.register("mob_magnet",
                     () -> new BlockEntityType<>(MobMagnetBlockEntity::new, MOB_MAGNET.get()));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MagneticCraneBlockEntity>> MAGNETIC_CRANE_BE =
+            BLOCK_ENTITIES.register("magnetic_crane",
+                    () -> new BlockEntityType<>(MagneticCraneBlockEntity::new, MAGNETIC_CRANE.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<VacuumTubeBlockEntity>> VACUUM_TUBE_BE =
+            BLOCK_ENTITIES.register("vacuum_tube",
+                    () -> new BlockEntityType<>(VacuumTubeBlockEntity::new, VACUUM_TUBE.get()));
+
     /** Wire the deferred registers to the mod event bus. Called from the main mod constructor. */
     public static void register(net.neoforged.bus.api.IEventBus modEventBus) {
         BLOCKS.register(modEventBus);
@@ -273,6 +301,10 @@ public final class EmfBlocks {
                 (be, side) -> be.getEnergyHandler(side));
         event.registerBlockEntity(Capabilities.Energy.BLOCK, MOB_MAGNET_BE.get(),
                 (be, side) -> be.getEnergyHandler());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, MAGNETIC_CRANE_BE.get(),
+                (be, side) -> be.getEnergyHandler(side));
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, VACUUM_TUBE_BE.get(),
+                (be, side) -> be.getEnergyHandler(side));
 
         event.registerBlockEntity(Capabilities.Item.BLOCK, CRUSHER_BE.get(),
                 (be, side) -> be.getItemHandler(side));
@@ -287,6 +319,10 @@ public final class EmfBlocks {
         event.registerBlockEntity(Capabilities.Item.BLOCK, CENTRIFUGE_BE.get(),
                 (be, side) -> be.getItemHandler(side));
         event.registerBlockEntity(Capabilities.Item.BLOCK, RECHARGER_BE.get(),
+                (be, side) -> be.getItemHandler(side));
+        event.registerBlockEntity(Capabilities.Item.BLOCK, MAGNETIC_CRANE_BE.get(),
+                (be, side) -> be.getItemHandler(side));
+        event.registerBlockEntity(Capabilities.Item.BLOCK, VACUUM_TUBE_BE.get(),
                 (be, side) -> be.getItemHandler(side));
     }
 }

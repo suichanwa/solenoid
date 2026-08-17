@@ -103,9 +103,12 @@ public final class Theme {
     /** Square "show recipes" button, tucked into the header's right edge. */
     public static final int RECIPE_BUTTON_X = 156, RECIPE_BUTTON_Y = 3, RECIPE_BUTTON_SIZE = 14;
 
+    /** Square "side configuration" button, sitting immediately left of the recipe button. */
+    public static final int IO_BUTTON_X = 140, IO_BUTTON_Y = 3, IO_BUTTON_SIZE = 14;
+
     /**
-     * Status lamp, sitting in the header just left of the recipe button. The header is the one strip
+     * Status lamp, sitting in the header just left of the IO button. The header is the one strip
      * every machine keeps free regardless of its slot layout, so the lamp never collides.
      */
-    public static final int STATUS_X = 145, STATUS_Y = 7, STATUS_SIZE = 6;
+    public static final int STATUS_X = 129, STATUS_Y = 7, STATUS_SIZE = 6;
 }

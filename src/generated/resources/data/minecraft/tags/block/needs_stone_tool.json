@@ -3,6 +3,8 @@
     "solenoid:magnetite_ore",
     "solenoid:deepslate_magnetite_ore",
     "solenoid:monazite_ore",
-    "solenoid:mob_magnet"
+    "solenoid:mob_magnet",
+    "solenoid:magnetic_crane",
+    "solenoid:vacuum_tube"
   ]
 }

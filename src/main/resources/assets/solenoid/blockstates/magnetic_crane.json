@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "solenoid:block/magnetic_crane" },
+    "facing=south": { "model": "solenoid:block/magnetic_crane", "y": 180 },
+    "facing=east": { "model": "solenoid:block/magnetic_crane", "y": 90 },
+    "facing=west": { "model": "solenoid:block/magnetic_crane", "y": 270 }
+  }
+}

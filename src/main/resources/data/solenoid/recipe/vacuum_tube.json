@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "G G",
+    "GCG",
+    "G G"
+  ],
+  "key": {
+    "G": "minecraft:glass_pane",
+    "C": "solenoid:copper_coil"
+  },
+  "result": {
+    "id": "solenoid:vacuum_tube",
+    "count": 8
+  }
+}

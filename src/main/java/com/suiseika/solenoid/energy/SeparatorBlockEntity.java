@@ -60,8 +60,7 @@ public class SeparatorBlockEntity extends AbstractEmfBlockEntity implements Menu
     /** Server-side processing progress (synced to the client for the progress arrow). */
     private int progress = 0;
     private int maxProgress = 200;
-    /** Whether the separator currently sits in an active magnetic field (synced for the indicator). */
-    private boolean fieldActive = false;
+    private int currentEnergyUsage = 0;
 
     /**
      * Server-authoritative view of the values the client GUI needs. Large ints (energy, capacity) are
@@ -81,24 +80,39 @@ public class SeparatorBlockEntity extends AbstractEmfBlockEntity implements Menu
                 case 3 -> (capacity >>> 16) & 0xFFFF;
                 case 4 -> progress;
                 case 5 -> maxProgress;
-                case 6 -> fieldActive ? 1 : 0;
+                case 6 -> sideModes[0].ordinal();
+                case 7 -> sideModes[1].ordinal();
+                case 8 -> sideModes[2].ordinal();
+                case 9 -> sideModes[3].ordinal();
+                case 10 -> sideModes[4].ordinal();
+                case 11 -> sideModes[5].ordinal();
+                case 12 -> autoEject ? 1 : 0;
                 default -> 0;
             };
         }
 
         @Override
         public void set(int index, int value) {
-            // Server reads from the block entity; the synced copy lives client-side in the menu.
         }
 
         @Override
         public int getCount() {
-            return 7;
+            return 13;
         }
     };
 
     public SeparatorBlockEntity(BlockPos pos, BlockState state) {
         super(EmfBlocks.SEPARATOR_BE.get(), pos, state);
+    }
+
+    @Override
+    public int[] getInputSlots() {
+        return new int[]{0};
+    }
+
+    @Override
+    public int[] getOutputSlots() {
+        return new int[]{1, 2};
     }
 
     @Override
@@ -116,6 +130,7 @@ public class SeparatorBlockEntity extends AbstractEmfBlockEntity implements Menu
         return new SeparatorMenu(containerId, playerInventory, this, dataAccess);
     }
 
+    @Override
     public ItemStacksResourceHandler getItemHandler() {
         return itemHandler;
     }
@@ -125,15 +140,12 @@ public class SeparatorBlockEntity extends AbstractEmfBlockEntity implements Menu
         return energyHandler;
     }
 
-    public ItemStacksResourceHandler getItemHandler(@Nullable Direction side) {
-        return itemHandler;
-    }
-
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         itemHandler.serialize(output.child("inventory"));
         energyHandler.serialize(output.child("energy"));
+        saveSideConfig(output);
     }
 
     @Override
@@ -141,13 +153,14 @@ public class SeparatorBlockEntity extends AbstractEmfBlockEntity implements Menu
         super.loadAdditional(input);
         itemHandler.deserialize(input.childOrEmpty("inventory"));
         energyHandler.deserialize(input.childOrEmpty("energy"));
+        loadSideConfig(input);
     }
 
     @Override
     protected void serverTick(net.minecraft.server.level.ServerLevel level, BlockPos pos, BlockState state) {
+        autoEjectOutputs(level, pos);
         ItemStack input = itemHandler.getStack(0);
         if (input.isEmpty()) {
-            setFieldActive(false);
             resetProgress();
             return;
         }
@@ -157,27 +170,23 @@ public class SeparatorBlockEntity extends AbstractEmfBlockEntity implements Menu
                 level.recipeAccess().getRecipeFor(SolenoidRecipes.SEPARATING_TYPE.get(), recipeInput, level);
 
         if (recipeOptional.isEmpty()) {
-            setFieldActive(false);
             resetProgress();
             return;
         }
 
         SeparatingRecipe recipe = recipeOptional.get().value();
         if (!canProcess(recipe)) {
-            setFieldActive(false);
             resetProgress();
             return;
         }
 
-        // Powered + valid recipe -> the separator sits in an active magnetic field.
         this.maxProgress = recipe.time();
         int energyPerTick = Math.max(1, recipe.energy() / recipe.time());
+        this.currentEnergyUsage = energyPerTick;
         if (energyHandler.getAmountAsInt() < energyPerTick) {
-            setFieldActive(false);
             return;
         }
 
-        setFieldActive(true);
         energyHandler.set(energyHandler.getAmountAsInt() - energyPerTick);
         progress++;
         if (progress >= maxProgress) {
@@ -233,16 +242,25 @@ public class SeparatorBlockEntity extends AbstractEmfBlockEntity implements Menu
     }
 
     private void resetProgress() {
+        this.currentEnergyUsage = 0;
         if (progress > 0) {
             progress = 0;
             setChanged();
         }
     }
 
-    private void setFieldActive(boolean active) {
-        if (fieldActive != active) {
-            fieldActive = active;
-            setChanged();
-        }
+    @Override
+    public int getEnergyUsage() {
+        return progress > 0 ? currentEnergyUsage : 0;
+    }
+
+    @Override
+    public int getProgress() {
+        return progress;
+    }
+
+    @Override
+    public int getMaxProgress() {
+        return maxProgress;
     }
 }

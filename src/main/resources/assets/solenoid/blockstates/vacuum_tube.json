@@ -1,0 +1,55 @@
+{
+  "multipart": [
+    {
+      "apply": { "model": "solenoid:block/vacuum_tube_core" }
+    },
+    {
+      "when": { "north": "insert" },
+      "apply": { "model": "solenoid:block/vacuum_tube_arm" }
+    },
+    {
+      "when": { "north": "extract" },
+      "apply": { "model": "solenoid:block/vacuum_tube_arm_extract" }
+    },
+    {
+      "when": { "east": "insert" },
+      "apply": { "model": "solenoid:block/vacuum_tube_arm", "y": 90 }
+    },
+    {
+      "when": { "east": "extract" },
+      "apply": { "model": "solenoid:block/vacuum_tube_arm_extract", "y": 90 }
+    },
+    {
+      "when": { "south": "insert" },
+      "apply": { "model": "solenoid:block/vacuum_tube_arm", "y": 180 }
+    },
+    {
+      "when": { "south": "extract" },
+      "apply": { "model": "solenoid:block/vacuum_tube_arm_extract", "y": 180 }
+    },
+    {
+      "when": { "west": "insert" },
+      "apply": { "model": "solenoid:block/vacuum_tube_arm", "y": 270 }
+    },
+    {
+      "when": { "west": "extract" },
+      "apply": { "model": "solenoid:block/vacuum_tube_arm_extract", "y": 270 }
+    },
+    {
+      "when": { "up": "insert" },
+      "apply": { "model": "solenoid:block/vacuum_tube_arm", "x": 270 }
+    },
+    {
+      "when": { "up": "extract" },
+      "apply": { "model": "solenoid:block/vacuum_tube_arm_extract", "x": 270 }
+    },
+    {
+      "when": { "down": "insert" },
+      "apply": { "model": "solenoid:block/vacuum_tube_arm", "x": 90 }
+    },
+    {
+      "when": { "down": "extract" },
+      "apply": { "model": "solenoid:block/vacuum_tube_arm_extract", "x": 90 }
+    }
+  ]
+}

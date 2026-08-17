@@ -68,6 +68,7 @@ public class DigesterBlockEntity extends AbstractEmfBlockEntity implements MenuP
 
     private int progress = 0;
     private int maxProgress = 200;
+    private int currentEnergyUsage = 0;
     private boolean working = false;
 
     private final ContainerData dataAccess = new ContainerData() {
@@ -83,6 +84,13 @@ public class DigesterBlockEntity extends AbstractEmfBlockEntity implements MenuP
                 case 4 -> progress;
                 case 5 -> maxProgress;
                 case 6 -> working ? 1 : 0;
+                case 7 -> sideModes[0].ordinal();
+                case 8 -> sideModes[1].ordinal();
+                case 9 -> sideModes[2].ordinal();
+                case 10 -> sideModes[3].ordinal();
+                case 11 -> sideModes[4].ordinal();
+                case 12 -> sideModes[5].ordinal();
+                case 13 -> autoEject ? 1 : 0;
                 default -> 0;
             };
         }
@@ -93,12 +101,22 @@ public class DigesterBlockEntity extends AbstractEmfBlockEntity implements MenuP
 
         @Override
         public int getCount() {
-            return 7;
+            return 14;
         }
     };
 
     public DigesterBlockEntity(BlockPos pos, BlockState state) {
         super(EmfBlocks.DIGESTER_BE.get(), pos, state);
+    }
+
+    @Override
+    public int[] getInputSlots() {
+        return new int[]{INPUT, REAGENT};
+    }
+
+    @Override
+    public int[] getOutputSlots() {
+        return new int[]{OUT_FIRST, OUT_FIRST + 1, OUT_LAST};
     }
 
     @Override
@@ -116,6 +134,7 @@ public class DigesterBlockEntity extends AbstractEmfBlockEntity implements MenuP
         return new DigesterMenu(containerId, playerInventory, this, dataAccess);
     }
 
+    @Override
     public ItemStacksResourceHandler getItemHandler() {
         return itemHandler;
     }
@@ -125,15 +144,12 @@ public class DigesterBlockEntity extends AbstractEmfBlockEntity implements MenuP
         return energyHandler;
     }
 
-    public ItemStacksResourceHandler getItemHandler(@Nullable Direction side) {
-        return itemHandler;
-    }
-
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         itemHandler.serialize(output.child("inventory"));
         energyHandler.serialize(output.child("energy"));
+        saveSideConfig(output);
     }
 
     @Override
@@ -141,10 +157,12 @@ public class DigesterBlockEntity extends AbstractEmfBlockEntity implements MenuP
         super.loadAdditional(input);
         itemHandler.deserialize(input.childOrEmpty("inventory"));
         energyHandler.deserialize(input.childOrEmpty("energy"));
+        loadSideConfig(input);
     }
 
     @Override
     protected void serverTick(net.minecraft.server.level.ServerLevel level, BlockPos pos, BlockState state) {
+        autoEjectOutputs(level, pos);
         ItemStack input = itemHandler.getStack(INPUT);
         ItemStack reagent = itemHandler.getStack(REAGENT);
         if (input.isEmpty() || reagent.isEmpty()) {
@@ -172,6 +190,7 @@ public class DigesterBlockEntity extends AbstractEmfBlockEntity implements MenuP
 
         this.maxProgress = recipe.time();
         int energyPerTick = Math.max(1, recipe.energy() / recipe.time());
+        this.currentEnergyUsage = energyPerTick;
         if (energyHandler.getAmountAsInt() < energyPerTick) {
             setWorking(false);
             return;
@@ -239,6 +258,7 @@ public class DigesterBlockEntity extends AbstractEmfBlockEntity implements MenuP
     }
 
     private void resetProgress() {
+        this.currentEnergyUsage = 0;
         if (progress > 0) {
             progress = 0;
             setChanged();
@@ -250,5 +270,20 @@ public class DigesterBlockEntity extends AbstractEmfBlockEntity implements MenuP
             working = value;
             setChanged();
         }
+    }
+
+    @Override
+    public int getEnergyUsage() {
+        return progress > 0 ? currentEnergyUsage : 0;
+    }
+
+    @Override
+    public int getProgress() {
+        return progress;
+    }
+
+    @Override
+    public int getMaxProgress() {
+        return maxProgress;
     }
 }

@@ -59,6 +59,7 @@ public class ChemicalReactorBlockEntity extends AbstractEmfBlockEntity implement
 
     private int progress = 0;
     private int maxProgress = 120;
+    private int currentEnergyUsage = 0;
     private boolean working = false;
 
     private final ContainerData dataAccess = new ContainerData() {
@@ -74,6 +75,13 @@ public class ChemicalReactorBlockEntity extends AbstractEmfBlockEntity implement
                 case 4 -> progress;
                 case 5 -> maxProgress;
                 case 6 -> working ? 1 : 0;
+                case 7 -> sideModes[0].ordinal();
+                case 8 -> sideModes[1].ordinal();
+                case 9 -> sideModes[2].ordinal();
+                case 10 -> sideModes[3].ordinal();
+                case 11 -> sideModes[4].ordinal();
+                case 12 -> sideModes[5].ordinal();
+                case 13 -> autoEject ? 1 : 0;
                 default -> 0;
             };
         }
@@ -84,12 +92,22 @@ public class ChemicalReactorBlockEntity extends AbstractEmfBlockEntity implement
 
         @Override
         public int getCount() {
-            return 7;
+            return 14;
         }
     };
 
     public ChemicalReactorBlockEntity(BlockPos pos, BlockState state) {
         super(EmfBlocks.CHEMICAL_REACTOR_BE.get(), pos, state);
+    }
+
+    @Override
+    public int[] getInputSlots() {
+        return new int[]{0};
+    }
+
+    @Override
+    public int[] getOutputSlots() {
+        return new int[]{1};
     }
 
     @Override
@@ -107,6 +125,7 @@ public class ChemicalReactorBlockEntity extends AbstractEmfBlockEntity implement
         return new ChemicalReactorMenu(containerId, playerInventory, this, dataAccess);
     }
 
+    @Override
     public ItemStacksResourceHandler getItemHandler() {
         return itemHandler;
     }
@@ -116,15 +135,12 @@ public class ChemicalReactorBlockEntity extends AbstractEmfBlockEntity implement
         return energyHandler;
     }
 
-    public ItemStacksResourceHandler getItemHandler(@Nullable Direction side) {
-        return itemHandler;
-    }
-
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         itemHandler.serialize(output.child("inventory"));
         energyHandler.serialize(output.child("energy"));
+        saveSideConfig(output);
     }
 
     @Override
@@ -132,10 +148,12 @@ public class ChemicalReactorBlockEntity extends AbstractEmfBlockEntity implement
         super.loadAdditional(input);
         itemHandler.deserialize(input.childOrEmpty("inventory"));
         energyHandler.deserialize(input.childOrEmpty("energy"));
+        loadSideConfig(input);
     }
 
     @Override
     protected void serverTick(net.minecraft.server.level.ServerLevel level, BlockPos pos, BlockState state) {
+        autoEjectOutputs(level, pos);
         ItemStack input = itemHandler.getStack(0);
         if (input.isEmpty()) {
             setWorking(false);
@@ -162,6 +180,7 @@ public class ChemicalReactorBlockEntity extends AbstractEmfBlockEntity implement
 
         this.maxProgress = recipe.time();
         int energyPerTick = Math.max(1, recipe.energy() / recipe.time());
+        this.currentEnergyUsage = energyPerTick;
         if (energyHandler.getAmountAsInt() < energyPerTick) {
             setWorking(false);
             return;
@@ -205,6 +224,7 @@ public class ChemicalReactorBlockEntity extends AbstractEmfBlockEntity implement
     }
 
     private void resetProgress() {
+        this.currentEnergyUsage = 0;
         if (progress > 0) {
             progress = 0;
             setChanged();
@@ -216,5 +236,20 @@ public class ChemicalReactorBlockEntity extends AbstractEmfBlockEntity implement
             working = value;
             setChanged();
         }
+    }
+
+    @Override
+    public int getEnergyUsage() {
+        return progress > 0 ? currentEnergyUsage : 0;
+    }
+
+    @Override
+    public int getProgress() {
+        return progress;
+    }
+
+    @Override
+    public int getMaxProgress() {
+        return maxProgress;
     }
 }

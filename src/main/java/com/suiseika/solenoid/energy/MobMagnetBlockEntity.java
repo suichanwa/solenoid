@@ -3,14 +3,13 @@ package com.suiseika.solenoid.energy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -22,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MobMagnetBlockEntity extends BlockEntity implements MenuProvider {
+public class MobMagnetBlockEntity extends AbstractEmfBlockEntity implements MenuProvider {
     public static final int PULL_COST_PER_TICK = 20;
     public static final double RADIUS = 8.0;
 
@@ -64,12 +63,18 @@ public class MobMagnetBlockEntity extends BlockEntity implements MenuProvider {
         super(EmfBlocks.MOB_MAGNET_BE.get(), pos, state);
     }
 
+    @Override
     public @Nullable EnergyHandler getEnergyHandler(@Nullable Direction side) {
         return energyHandler;
     }
 
     public @Nullable EnergyHandler getEnergyHandler() {
         return energyHandler;
+    }
+
+    @Override
+    public int getEnergyUsage() {
+        return active ? com.suiseika.solenoid.Config.MOB_MAGNET_ENERGY_USAGE.getAsInt() : 0;
     }
 
     @Override
@@ -83,14 +88,15 @@ public class MobMagnetBlockEntity extends BlockEntity implements MenuProvider {
         return new MobMagnetMenu(containerId, playerInventory, this, this.dataAccess);
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, MobMagnetBlockEntity be) {
-        if (level == null || level.isClientSide()) {
-            return;
-        }
+    @Override
+    protected void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
+        this.active = false;
+        int pullCost = com.suiseika.solenoid.Config.MOB_MAGNET_ENERGY_USAGE.getAsInt();
+        int radius = com.suiseika.solenoid.Config.MOB_MAGNET_RADIUS.getAsInt();
+        double strength = com.suiseika.solenoid.Config.MOB_MAGNET_STRENGTH.getAsDouble();
 
-        be.active = false;
-        if (be.energyHandler.getAmountAsInt() >= PULL_COST_PER_TICK) {
-            AABB area = new AABB(pos).inflate(RADIUS);
+        if (energyHandler.getAmountAsInt() >= pullCost) {
+            AABB area = new AABB(pos).inflate(radius);
             List<LivingEntity> mobs = level.getEntitiesOfClass(LivingEntity.class, area,
                     e -> !(e instanceof Player) && !e.isSpectator() && e.isAlive());
 
@@ -100,20 +106,19 @@ public class MobMagnetBlockEntity extends BlockEntity implements MenuProvider {
                     Vec3 mobPos = mob.position();
                     Vec3 diff = target.subtract(mobPos);
                     double dist = diff.length();
-                    if (dist > 0.5 && dist <= RADIUS) {
+                    if (dist > 0.5 && dist <= radius) {
                         Vec3 dir = diff.normalize();
-                        double speed = 0.25;
-                        mob.setDeltaMovement(mob.getDeltaMovement().add(dir.x * speed, 0.05, dir.z * speed));
+                        mob.setDeltaMovement(mob.getDeltaMovement().add(dir.x * strength, 0.05, dir.z * strength));
                         mob.hurtMarked = true;
                     }
                 }
-                be.energyHandler.set(be.energyHandler.getAmountAsInt() - PULL_COST_PER_TICK);
-                be.active = true;
+                energyHandler.set(energyHandler.getAmountAsInt() - pullCost);
+                this.active = true;
             }
         }
 
-        if (state.getValue(MobMagnetBlock.LIT) != be.active) {
-            level.setBlock(pos, state.setValue(MobMagnetBlock.LIT, be.active), 3);
+        if (state.getValue(MobMagnetBlock.LIT) != this.active) {
+            level.setBlock(pos, state.setValue(MobMagnetBlock.LIT, this.active), 3);
         }
     }
 

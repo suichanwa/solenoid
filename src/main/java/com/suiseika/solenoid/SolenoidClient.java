@@ -6,6 +6,7 @@ import com.suiseika.solenoid.energy.ChemicalReactorScreen;
 import com.suiseika.solenoid.energy.CrusherScreen;
 import com.suiseika.solenoid.energy.DigesterScreen;
 import com.suiseika.solenoid.energy.InductionFurnaceScreen;
+import com.suiseika.solenoid.energy.MagneticCraneScreen;
 import com.suiseika.solenoid.energy.MobMagnetScreen;
 import com.suiseika.solenoid.energy.RechargerScreen;
 import com.suiseika.solenoid.energy.SeparatorScreen;
@@ -52,5 +53,12 @@ public class SolenoidClient {
         event.register(SolenoidMenus.THORIUM_RTG_MENU.get(), ThoriumRtgScreen::new);
         event.register(SolenoidMenus.RECHARGER_MENU.get(), RechargerScreen::new);
         event.register(SolenoidMenus.MOB_MAGNET_MENU.get(), MobMagnetScreen::new);
+        event.register(SolenoidMenus.MAGNETIC_CRANE_MENU.get(), MagneticCraneScreen::new);
+    }
+
+    @SubscribeEvent
+    static void registerRenderers(net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(com.suiseika.solenoid.energy.EmfBlocks.VACUUM_TUBE_BE.get(),
+                com.suiseika.solenoid.client.renderer.VacuumTubeRenderer::new);
     }
 }
