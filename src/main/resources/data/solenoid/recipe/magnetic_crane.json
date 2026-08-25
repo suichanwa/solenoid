@@ -2,32 +2,20 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "pattern": [
-    "C M C",
-    "S F S",
-    "I H I"
+    "CMC",
+    "SFS",
+    "IHI"
   ],
   "key": {
-    "C": {
-      "item": "solenoid:copper_coil"
-    },
-    "M": {
-      "item": "solenoid:magnet"
-    },
-    "S": {
-      "item": "solenoid:screw"
-    },
-    "F": {
-      "item": "solenoid:machine_frame"
-    },
-    "I": {
-      "item": "minecraft:iron_ingot"
-    },
-    "H": {
-      "item": "minecraft:hopper"
-    }
+    "C": "solenoid:copper_coil",
+    "M": "solenoid:magnet",
+    "S": "solenoid:screw",
+    "F": "solenoid:machine_frame",
+    "I": "minecraft:iron_ingot",
+    "H": "minecraft:hopper"
   },
   "result": {
-    "count": 1,
-    "id": "solenoid:magnetic_crane"
+    "id": "solenoid:magnetic_crane",
+    "count": 1
   }
 }

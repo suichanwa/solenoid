@@ -6,15 +6,9 @@
     "MCM"
   ],
   "key": {
-    "M": {
-      "item": "solenoid:magnet"
-    },
-    "C": {
-      "item": "solenoid:copper_coil"
-    },
-    "K": {
-      "item": "solenoid:screen"
-    }
+    "M": "solenoid:magnet",
+    "C": "solenoid:copper_coil",
+    "K": "solenoid:screen"
   },
   "result": {
     "id": "solenoid:repulsor",

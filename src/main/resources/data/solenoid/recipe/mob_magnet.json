@@ -2,26 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "pattern": [
-    "N C N",
-    "C F C",
-    "N S N"
+    "NCN",
+    "CFC",
+    "NSN"
   ],
   "key": {
-    "N": {
-      "item": "solenoid:neodymium_ingot"
-    },
-    "C": {
-      "item": "solenoid:copper_coil"
-    },
-    "F": {
-      "item": "solenoid:machine_frame"
-    },
-    "S": {
-      "item": "solenoid:screw"
-    }
+    "N": "solenoid:neodymium_ingot",
+    "C": "solenoid:copper_coil",
+    "F": "solenoid:machine_frame",
+    "S": "solenoid:screw"
   },
   "result": {
-    "count": 1,
-    "id": "solenoid:mob_magnet"
+    "id": "solenoid:mob_magnet",
+    "count": 1
   }
 }

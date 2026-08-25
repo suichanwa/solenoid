@@ -6,15 +6,9 @@
     " G "
   ],
   "key": {
-    "C": {
-      "item": "solenoid:copper_coil"
-    },
-    "M": {
-      "item": "solenoid:magnet"
-    },
-    "G": {
-      "item": "minecraft:gold_ingot"
-    }
+    "C": "solenoid:copper_coil",
+    "M": "solenoid:magnet",
+    "G": "minecraft:gold_ingot"
   },
   "result": {
     "id": "solenoid:magnet_charm",

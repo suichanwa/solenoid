@@ -6,12 +6,8 @@
     "NNN"
   ],
   "key": {
-    "N": {
-      "item": "solenoid:neodymium_ingot"
-    },
-    "C": {
-      "item": "solenoid:capacitor"
-    }
+    "N": "solenoid:neodymium_ingot",
+    "C": "solenoid:capacitor"
   },
   "result": {
     "id": "solenoid:force_field_generator",
